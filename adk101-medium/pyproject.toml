@@ -1,7 +1,25 @@
 [project]
 name = "adk101-medium"
 version = "0.1.0"
-description = "Add your description here"
+description = "A practical implementation of production-grade AI agents using Google's Agent Developer Kit (ADK) 2.0, following the ADK 101 Medium series for SostaAèè."
 readme = "README.md"
-requires-python = ">=3.14"
-dependencies = []
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+    { name = "Zelda Ailine Luconi", email = "EilinLux@gmail.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Framework :: Google Cloud"
+]
+dependencies = [
+    "google-adk>=2.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9"
+"Source" = "https://github.com/EilinLux/adk2.0-medium"
+
+[tool.setuptools]
+packages = ["adk_agent_app"] # folder contains actual Python source code that needs to be bundled and installed.
