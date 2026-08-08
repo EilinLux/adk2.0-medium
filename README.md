@@ -19,8 +19,38 @@ The primary implementation built throughout this series is **Sosta App**—an in
 ## 📦 Installation & Setup
 
 1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/EilinLux/adk101-medium.git](https://github.com/EilinLux/adk101-medium.git)
-   cd adk101-medium
+```bash
+git clone https://github.com/EilinLux/adk101-medium.git
+cd adk101-medium
+
+```
 
 
+2. **Install dependencies:**
+```bash
+uv sync
+
+```
+
+
+3. **Configure environment variables:**
+Create a `.env` file in the root directory and populate it with your required variables:
+```env
+# Add your environment variables here
+
+```
+
+
+4. **Authenticate with Google Cloud:**
+```bash
+gcloud auth application-default login
+
+```
+
+
+5. **Run tests:**
+Switch to your target branch and verify the setup:
+```bash
+git checkout <branch-name>
+
+```
