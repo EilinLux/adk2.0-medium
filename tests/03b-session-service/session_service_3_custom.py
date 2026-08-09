@@ -1,7 +1,8 @@
+# tests/03b-session-service/session_service_3_custom.py
 """
-ADK 2.0 101 - Article 3b: Session Service Demo
-----------------------------------------------
-WARNING: Ypu must have a valid Google Cloud Project with Firestore enabled to run this demo. 
+ADK 2.0 101 - Article 3b: Session Service Demo (Custom FirestoreSessionService)
+-------------------------------------------------------------------------------
+WARNING: You must have a valid Google Cloud Project with Firestore enabled to run this demo. 
 In this case the code is available in the terraform folder that is present in the adk2.0-medium repo from branch 04-gcp-setup. 
 Please follow the instructions in the README.md file to set up your GCP project and Firestore database before running this demo.
 
@@ -10,7 +11,7 @@ This script demonstrates the complete SessionService lifecycle in Google ADK:
 2. Writing to live session state inside custom tools using `ToolContext`
 3. Dynamically injecting state variables into agent prompt templates
 4. Updating state mid-pipeline via append_event with state_delta
-5. Switching between InMemorySessionService, DatabaseSessionService, and FirestoreSessionService
+5. Implementing a custom backend by extending `BaseSessionService` (FirestoreSessionService)
 """
 
 import asyncio
@@ -39,7 +40,6 @@ from google.adk.events import Event, EventActions
 from google.adk.events.event import Event as ADKEvent
 from google.adk.platform import uuid as platform_uuid
 from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService, _session_util
 from google.adk.sessions.base_session_service import (
     BaseSessionService,
     GetSessionConfig,
@@ -410,8 +410,17 @@ class PreferenceExtraction(BaseModel):
 
 
 async def search_restaurant_api(cuisine: str, tool_context: ToolContext) -> Dict[str, Any]:
-    """Mock external restaurant API tool. Stores metadata in temp: scope."""
-    tool_context.session.state["temp:raw_api_payload"] = {
+    """
+    Mock external restaurant API tool.
+    Demonstrates writing both persistent session state and ephemeral `temp:` state
+    via `tool_context.state` (which tracks changes in `event.actions.state_delta`).
+    """
+    # 1. Write persistent session-scoped data (saved to Firestore)
+    tool_context.state["last_searched_cuisine"] = cuisine
+
+    # 2. Write heavy or temporary execution data to temp: scope
+    # (available during this invocation, automatically stripped before persistence)
+    tool_context.state["temp:raw_api_payload"] = {
         "status_code": 200,
         "query_cuisine": cuisine,
         "results_count": 3,
@@ -557,10 +566,11 @@ async def main():
     )
 
     print("Final State Keys & Values:")
-    print(f"- User Language (user:): {final_session.state.get('user:user_preferred_language')}")
-    print(f"- App Version (app:):   {final_session.state.get('app:system_version')}")
-    print(f"- Workflow Step (plain): {final_session.state.get('workflow_step')}")
-    print(f"- Ephemeral Payload (temp:): {final_session.state.get('temp:raw_api_payload')}")
+    print(f"- User Language (user:):      {final_session.state.get('user:user_preferred_language')}")
+    print(f"- App Version (app:):         {final_session.state.get('app:system_version')}")
+    print(f"- Workflow Step (plain):      {final_session.state.get('workflow_step')}")
+    print(f"- Tool Output (plain):        {final_session.state.get('last_searched_cuisine')}")
+    print(f"- Ephemeral Payload (temp:):  {final_session.state.get('temp:raw_api_payload')} (Expected: None)")
 
     print("\n============================================================")
     print("🧹 5. EVICTING SESSION (DELETE)")

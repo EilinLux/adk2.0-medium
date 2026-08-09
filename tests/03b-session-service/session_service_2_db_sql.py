@@ -1,18 +1,19 @@
+# tests/03b-session-service/session_service_2_db_sql.py
 """
-ADK 2.0 101 - Article 3b: Session Service Demo
-----------------------------------------------
+ADK 2.0 101 - Article 3b: Session Service Demo (DatabaseSessionService - SQLite)
+--------------------------------------------------------------------------------
 This script demonstrates the complete SessionService lifecycle in Google ADK:
 1. Creating & Seeding sessions across state scopes (app:, user:, plain, temp:)
 2. Writing to live session state inside custom tools using `ToolContext`
 3. Dynamically injecting state variables into agent prompt templates
 4. Updating state mid-pipeline via append_event with state_delta
-5. Switching between InMemorySessionService and DatabaseSessionService (SQLite)
+5. Persisting sessions to SQLite via DatabaseSessionService (`sqlite+aiosqlite`)
 """
+import asyncio
+from typing import Any, Dict
+
 from dotenv import load_dotenv
 from google.genai import types
-import asyncio
-import os
-from typing import Any, Dict
 from pydantic import BaseModel, Field
 
 from google.adk.agents import Agent
@@ -20,8 +21,7 @@ from google.adk.events import Event, EventActions
 from google.adk.runners import Runner
 from google.adk.sessions import DatabaseSessionService
 from google.adk.tools import ToolContext
- 
- 
+
 load_dotenv()
 
 # ============================================================================
@@ -37,11 +37,15 @@ class PreferenceExtraction(BaseModel):
 async def search_restaurant_api(cuisine: str, tool_context: ToolContext) -> Dict[str, Any]:
     """
     Mock external restaurant API tool.
-    Demonstrates writing ephemeral execution metadata directly to `temp:` state
-    using `ToolContext`.
+    Demonstrates writing both persistent session state and ephemeral `temp:` state
+    via `tool_context.state` (which tracks changes in `event.actions.state_delta`).
     """
-    # Write heavy or temporary execution data to temp: scope
-    tool_context.session.state["temp:raw_api_payload"] = {
+    # 1. Write persistent session-scoped data (saved to the SQLite database)
+    tool_context.state["last_searched_cuisine"] = cuisine
+
+    # 2. Write heavy or temporary execution data to temp: scope
+    # (available during this invocation, automatically stripped before persistence)
+    tool_context.state["temp:raw_api_payload"] = {
         "status_code": 200,
         "query_cuisine": cuisine,
         "results_count": 3,
@@ -189,10 +193,11 @@ async def main():
     )
 
     print("Final State Keys & Values:")
-    print(f"- User Language (user:): {final_session.state.get('user:user_preferred_language')}")
-    print(f"- App Version (app:):   {final_session.state.get('app:system_version')}")
-    print(f"- Workflow Step (plain): {final_session.state.get('workflow_step')}")
-    print(f"- Ephemeral Payload (temp:): {final_session.state.get('temp:raw_api_payload')}")
+    print(f"- User Language (user:):      {final_session.state.get('user:user_preferred_language')}")
+    print(f"- App Version (app:):         {final_session.state.get('app:system_version')}")
+    print(f"- Workflow Step (plain):      {final_session.state.get('workflow_step')}")
+    print(f"- Tool Output (plain):        {final_session.state.get('last_searched_cuisine')}")
+    print(f"- Ephemeral Payload (temp:):  {final_session.state.get('temp:raw_api_payload')} (Expected: None)")
 
     print("\n============================================================")
     print("🧹 5. EVICTING SESSION (DELETE)")

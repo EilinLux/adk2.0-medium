@@ -1,25 +1,37 @@
+# tests/03c-memory-test/memory_test_3_VertexAiMemoryBankService_in_Runner.py
+"""
+ADK 2.0 101 - Article 3c: VertexAiMemoryBankService Integrated in Runner
+------------------------------------------------------------------------
+This script demonstrates how to wire `VertexAiMemoryBankService` directly into the
+ADK `Runner` and equip an agent with `preload_memory` / `load_memory` so it can
+automatically recall past sessions without manual `search_memory()` plumbing:
+1. Session 1 (3 Weeks Ago): User shares a new preference ("salmon in Seattle");
+   session is ingested into Vertex AI Memory Bank via `add_session_to_memory()`.
+2. Session 2 (Today): A brand-new session (`zelda_session_202`) runs with
+   `Runner(..., memory_service=memory_service)` and `preload_memory` tool,
+   automatically retrieving the salmon preference from Vertex AI Memory Bank.
+"""
 import asyncio
-import os
-import warnings
 from typing import Any
-from pydantic import BaseModel, Field
+import warnings
+
 from dotenv import load_dotenv
+from pydantic import BaseModel, Field
 
 from google.genai import types
-from google.genai.errors import ClientError
 from google.adk.agents import Agent
+from google.adk.memory import VertexAiMemoryBankService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
-from google.adk.tools import ToolContext
-from google.adk.memory import VertexAiMemoryBankService
+from google.adk.tools import ToolContext, load_memory, preload_memory
 from agentplatform import Client as agentplatform_client
 
 # Suppress experimental warnings and deprecation notices
 warnings.filterwarnings("ignore", message=".*JSON_SCHEMA_FOR_FUNC_DECL.*")
 warnings.filterwarnings(
-    "ignore", 
-    category=FutureWarning, 
-    module="google.adk.memory.vertex_ai_memory_bank_service"
+    "ignore",
+    category=FutureWarning,
+    module="google.adk.memory.vertex_ai_memory_bank_service",
 )
 
 load_dotenv()
@@ -28,33 +40,36 @@ load_dotenv()
 # 1. Structured Schemas & Custom Tools
 # ============================================================================
 
+
 class PreferenceExtraction(BaseModel):
     favorite_dish: str = Field(
         description="The user's favorite dish, ingredient, or culinary preference."
     )
 
-async def search_mock_restaurant_api(cuisine: str, tool_context: ToolContext) -> dict:
+
+async def search_mock_restaurant_api(cuisine: str, tool_context: ToolContext) -> dict[str, Any]:
     """Mock API tool that records execution state in temp: scope."""
-    tool_context.session.state["temp:raw_api_payload"] = {
+    tool_context.state["temp:raw_api_payload"] = {
         "status_code": 200,
-        "query": cuisine
+        "query": cuisine,
     }
     return {
         "status": "success",
-        "message": f"Found 3 top-rated restaurants matching '{cuisine}'."
+        "message": f"Found 3 top-rated restaurants matching '{cuisine}'.",
     }
 
+
 def create_memory_bank_and_client():
-    """Creates a Vertex AI Memory Bank and returns the client and agent engine ID."""
+    """Creates a Vertex AI Memory Bank and returns the client, resource name, and numeric ID."""
     client = agentplatform_client()
-    
+
     memory_bank = client.agent_engines.create(
         config={
             "display_name": "sosta_app_memory_bank",
             "description": "Memory Bank for sosta_app dining preferences",
         }
     )
-    
+
     agent_engine_id = memory_bank.api_resource.name.split("/")[-1]
     print("Full resource name:", memory_bank.api_resource.name)
     print("Numeric ID to use:", agent_engine_id)
@@ -62,7 +77,7 @@ def create_memory_bank_and_client():
 
 
 # ============================================================================
-# 2. Define the Two Specialized Micro-Agents
+# 2. Define the Specialized Micro-Agents
 # ============================================================================
 
 # Agent 1: Extracts preferences into session.state under 'user_information'
@@ -71,14 +86,14 @@ gatekeeper_agent = Agent(
     model="gemini-2.5-flash",
     instruction="""
     You are the Gatekeeper for sosta_app.
-    Extract the user's culinary preference or food discoveries from their message 
+    Extract the user's culinary preference or food discoveries from their message
     and save it using the output schema.
     """,
     output_key="user_information",
     output_schema=PreferenceExtraction,
 )
 
-# Agent 2: Reads 'user_information' from session.state and executes search tool
+# Agent 2: Automatically preloads/queries long-term memory via Runner's memory_service
 recommendation_agent = Agent(
     name="recommendation_agent",
     model="gemini-2.5-flash",
@@ -93,77 +108,28 @@ recommendation_agent = Agent(
     - Extracted Preference: {user_information?}
 
     INSTRUCTIONS:
-    1. Check the Extracted Preference ({user_information?}) or memory history for preferred ingredients (e.g. salmon).
+    1. Check the Extracted Preference ({user_information?}) or past conversation memories for preferred ingredients (e.g. salmon).
     2. Call `search_mock_restaurant_api` to search options for that ingredient/cuisine.
     3. Provide a friendly recommendation in the user's preferred language ({user:user_preferred_language?}).
     """,
-    tools=[search_mock_restaurant_api]
+    # preload_memory automatically injects relevant memories from Runner.memory_service
+    # before each LLM turn; load_memory allows explicit on-demand memory lookup if needed.
+    tools=[search_mock_restaurant_api, preload_memory, load_memory],
 )
 
 
-# ============================================================================
-# 3. Define Supervisor Agent & Single Runner
-# ============================================================================
-
-# Supervisor delegates turns to sub_agents based on task requirements
-supervisor_agent = Agent(
-    name="sosta_supervisor",
-    model="gemini-2.5-flash",
-    instruction="""
-    You are the chief supervisor for Sosta App.
-    - If the user is sharing a new food preference, discovery, or dietary habit, route to `gatekeeper_agent`.
-    - If the user is asking for dinner, meal, or restaurant recommendations, route to `recommendation_agent`.
-    """,
-    sub_agents=[gatekeeper_agent, recommendation_agent]
-)
-
-
-
-
-async def main():
-    APP_NAME = "sosta_app"
-    USER_ID = "user_zelda"
-    SESSION_ID = "zelda_session_101"
-
-    session_service = InMemorySessionService()
-    ap_client, full_resource_name, agent_engine_id = create_memory_bank_and_client()
-    memory_service = VertexAiMemoryBankService(agent_engine_id=agent_engine_id)
-
-    # ONE SINGLE RUNNER manages the supervisor and both sub-agents!
-    runner = Runner(
-        agent=supervisor_agent,
-        app_name=APP_NAME,
-        session_service=session_service,
-        memory_service=memory_service
-    )
-
-    global_app_config = {
-        "app:enable_beta_recommendations": True,
-        "app:system_version": "2.1.0"
-    }
-    # Create Session Thread
-    await session_service.create_session(
-        app_name=APP_NAME,
-        user_id=USER_ID,
-        session_id=SESSION_ID,
-        state={
-            "user:user_preferred_language": "English",
-            "user:dietary_restrictions": "None"
-        }
-    )
 # ============================================================================
 # 3. Execution Across 2 Independent Sessions
 # ============================================================================
 
+
 async def main():
     APP_NAME = "sosta_app"
     USER_ID = "user_zelda"
 
     session_service = InMemorySessionService()
-    
-    memory_service = VertexAiMemoryBankService(
-        agent_engine_id=create_memory_bank_and_client()[2]
-    )
+    _, _, agent_engine_id = create_memory_bank_and_client()
+    memory_service = VertexAiMemoryBankService(agent_engine_id=agent_engine_id)
 
     # ------------------------------------------------------------------------
     # SESSION 1: 3 Weeks Ago (Session ID: zelda_session_101)
@@ -172,36 +138,43 @@ async def main():
     print("🗓️ SESSION 1 (3 Weeks Ago) - Agent: gatekeeper_agent")
     print("==================================================================")
 
-    session_1 = await session_service.create_session(
+    await session_service.create_session(
         app_name=APP_NAME,
         user_id=USER_ID,
         session_id="zelda_session_101",
-        state={"user:user_preferred_language": "English"}
+        state={"user:user_preferred_language": "English"},
     )
 
     runner_s1 = Runner(
         agent=gatekeeper_agent,
         app_name=APP_NAME,
         session_service=session_service,
-        memory_service=memory_service
+        memory_service=memory_service,
     )
 
     msg_s1 = types.Content(
         role="user",
-        parts=[types.Part.from_text(
-            text="I used to hate seafood, but last night I tried salmon in Seattle and loved it!"
-        )]
+        parts=[
+            types.Part.from_text(
+                text="I used to hate seafood, but last night I tried salmon in Seattle and loved it!"
+            )
+        ],
     )
 
-    async for event in runner_s1.run_async(user_id=USER_ID, session_id="zelda_session_101", new_message=msg_s1):
+    async for event in runner_s1.run_async(
+        user_id=USER_ID, session_id="zelda_session_101", new_message=msg_s1
+    ):
         if event.is_final_response() and event.content:
             part = event.content.parts[0]
             if hasattr(part, "text") and part.text:
                 print(f"Gatekeeper Output: {part.text}\n")
 
-    # CRITICAL: Manually flush/add Session 1 into the Memory Bank
+    # CRITICAL: Retrieve the updated session (containing the turn events) and ingest into Memory Bank
     print("--> Explicitly saving Session 1 to Vertex AI Memory Bank...")
-    await memory_service.add_session_to_memory(session_1)
+    updated_session_1 = await session_service.get_session(
+        app_name=APP_NAME, user_id=USER_ID, session_id="zelda_session_101"
+    )
+    await memory_service.add_session_to_memory(updated_session_1)
 
     print("\n==================================================================")
     print("⏳ Simulating 3-week gap (45s pause for GCP vector indexing)...")
@@ -216,32 +189,41 @@ async def main():
     print("==================================================================")
 
     await session_service.create_session(
-            app_name=APP_NAME,
-            user_id=USER_ID,
-            session_id="zelda_session_202",
-            state={"user:user_preferred_language": "English"}
-        )
+        app_name=APP_NAME,
+        user_id=USER_ID,
+        session_id="zelda_session_202",
+        state={"user:user_preferred_language": "English"},
+    )
 
     runner_s2 = Runner(
-            agent=recommendation_agent,
-            app_name=APP_NAME,
-            session_service=session_service,
-            memory_service=memory_service
-        )
+        agent=recommendation_agent,
+        app_name=APP_NAME,
+        session_service=session_service,
+        memory_service=memory_service,
+    )
 
     msg_s2 = types.Content(
-            role="user",
-            parts=[types.Part.from_text(text="What can I eat for dinner tonight?")]
-        )
+        role="user",
+        parts=[types.Part.from_text(text="What can I eat for dinner tonight?")],
+    )
 
-    print("--> Invoking Session 2 Runner (Querying Vertex AI Memory Bank)...")
+    print("--> Invoking Session 2 Runner (Querying Vertex AI Memory Bank via preload_memory)...")
 
-    async for event in runner_s2.run_async(user_id=USER_ID, session_id="zelda_session_202", new_message=msg_s2):
+    async for event in runner_s2.run_async(
+        user_id=USER_ID, session_id="zelda_session_202", new_message=msg_s2
+    ):
         if event.is_final_response() and event.content:
-            part = event.content.parts[0]
-            if hasattr(part, "text") and part.text:
-                print(f"\nRecommendation Agent Output:\n{part.text}\n")
-        else:
-            print(f"Intermediate Event: {event.type} - {event.content}")
+            for part in event.content.parts:
+                if part.text:
+                    print(f"\nRecommendation Agent Output:\n{part.text}\n")
+        elif event.content and event.content.parts:
+            for part in event.content.parts:
+                if part.function_call:
+                    print(
+                        f"Intermediate Tool Call ({event.author}): "
+                        f"{part.function_call.name}({part.function_call.args})"
+                    )
+
+
 if __name__ == "__main__":
     asyncio.run(main())

@@ -1,46 +1,55 @@
+# tests/03c-memory-test/memory_test_2_VertexAiMemoryBankService_Manual.py
+"""
+ADK 2.0 101 - Article 3c: VertexAiMemoryBankService (Manual Retrieval)
+----------------------------------------------------------------------
+Demonstrates provisioning a Vertex AI Agent Engine Memory Bank, ingesting a
+historical session via `add_session_to_memory()`, manually searching consolidated
+semantic memories via `search_memory()`, and injecting `user:prior_context` into
+a new session.
+"""
 import asyncio
-import warnings
 from typing import Any
-from pydantic import BaseModel, Field
+import warnings
+
 from dotenv import load_dotenv
+from pydantic import BaseModel, Field
+
 from google.genai import types
 from google.adk.agents import Agent
+from google.adk.memory import VertexAiMemoryBankService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.adk.tools import ToolContext
-from google.adk.memory import VertexAiMemoryBankService
 from agentplatform import Client as agentplatform_client
 
-
-
-# Suppress JSON_SCHEMA experimental warning
+# Suppress JSON_SCHEMA experimental warning and vertexai deprecation notice
 warnings.filterwarnings("ignore", message=".*JSON_SCHEMA_FOR_FUNC_DECL.*")
-import warnings
-# Suppress the vertexai deprecation warning from the Google ADK library
 warnings.filterwarnings(
-    "ignore", 
-    category=FutureWarning, 
-    module="google.adk.memory.vertex_ai_memory_bank_service"
+    "ignore",
+    category=FutureWarning,
+    module="google.adk.memory.vertex_ai_memory_bank_service",
 )
 
 # Import environment variables from .env file
 load_dotenv()
 
+
 def create_memory_bank_and_client():
-    """ Creates a Vertex AI Memory Bank and returns the client and agent engine ID."""
+    """Creates a Vertex AI Memory Bank and returns the client and agent engine ID."""
     client = agentplatform_client()
-    
+
     memory_bank = client.agent_engines.create(
         config={
             "display_name": "sosta_app_memory_bank",
             "description": "Memory Bank for sosta_app dining preferences",
         }
     )
-    
+
     agent_engine_id = memory_bank.api_resource.name.split("/")[-1]
     print("Full resource name:", memory_bank.api_resource.name)
     print("Numeric ID to use:", agent_engine_id)
     return client, agent_engine_id
+
 
 class PreferenceData(BaseModel):
     """Key-value pairs of extracted user preferences (e.g., {'culinary_preference': 'Salmon'})"""
@@ -49,17 +58,16 @@ class PreferenceData(BaseModel):
     )
 
 
-async def search_mock_restaurant_api(cuisine: str, tool_context: ToolContext) -> dict:
+async def search_mock_restaurant_api(cuisine: str, tool_context: ToolContext) -> dict[str, Any]:
     """Searches external API and stores raw payload in ephemeral 'temp:' state."""
-
-    tool_context.session.state["temp:raw_api_payload"] = {
+    tool_context.state["temp:raw_api_payload"] = {
         "status_code": 200,
         "results_count": 3,
-        "raw_response_bytes": "0x4150495f5241575f44415441"
+        "raw_response_bytes": "0x4150495f5241575f44415441",
     }
     return {
         "status": "success",
-        "message": f"Found 3 restaurants for cuisine/ingredient '{cuisine}'."
+        "message": f"Found 3 restaurants for cuisine/ingredient '{cuisine}'.",
     }
 
 

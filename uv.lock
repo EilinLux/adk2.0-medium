@@ -8,8 +8,8 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "adk101-medium"
-version = "0.1.0"
+name = "adk2-0-medium"
+version = "3.3.0"
 source = { virtual = "." }
 dependencies = [
     { name = "google-adk", extra = ["db", "gcp"] },
