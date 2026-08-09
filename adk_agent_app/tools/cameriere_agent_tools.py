@@ -1,7 +1,7 @@
+# adk_agent_app/tools/cameriere_agent_tools.py
 from adk_agent_app.config import logger, db
 from google.adk.tools import FunctionTool
-import uuid
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 # ==========================================
 # 1. CORE FUNCTIONS WITH ERROR HANDLING
@@ -46,5 +46,7 @@ def extract_user_profile(user_id: str) -> Dict[str, Any]:
 
 # ==========================================
 # 2. WRAP FUNCTIONS AS FUNCTION TOOLS
-# ========================================== 
+# ==========================================
+# Note: The tool name exposed to the LLM is `func.__name__` ('extract_user_profile'),
+# not the Python variable name ('extract_user_profile_tool').
 extract_user_profile_tool = FunctionTool(extract_user_profile)

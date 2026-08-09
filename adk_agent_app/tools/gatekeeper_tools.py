@@ -1,15 +1,15 @@
-# agent/tools/gatekeeper_tools.py
+# adk_agent_app/tools/gatekeeper_tools.py
 from adk_agent_app.config import logger, db
 from typing import Dict, Any
 from google.adk.tools import FunctionTool
 
-  
+
 # ==========================================
 # 1. CORE FUNCTIONS WITH ERROR HANDLING
 # ==========================================
 
 
-def is_registered_user(user_id: str) -> Dict[str, Any]:
+def is_registered_user_tool(user_id: str) -> Dict[str, Any]:
     """
     Checks the database to verify if a given User ID is registered.
 
@@ -43,7 +43,10 @@ def is_registered_user(user_id: str) -> Dict[str, Any]:
         }
 
 # ==========================================
-# 2. WRAP FUNCTIONS AS FUNCTION TOOLS
+# 2. OPTIONAL: WRAP FUNCTIONS AS FUNCTION TOOLS
 # ==========================================
-
-is_registered_user_tool = FunctionTool(is_registered_user)
+# Note: When ADK generates the tool schema from a function (or FunctionTool(func)),
+# the tool name exposed to the LLM is `func.__name__`, not the Python variable name.
+# ADK also automatically wraps plain Python functions passed to `tools=[...]` into
+# FunctionTool instances behind the scenes.
+is_registered_user_tool = FunctionTool(is_registered_user_tool)
