@@ -33,34 +33,6 @@ Instead of relying on a monolithic prompt, Sosta is architected as a **Digital A
 
 Each article in the series corresponds to a dedicated git branch containing clean, structured Python code (managed via `uv` with standard `pyproject.toml` configuration).
 
-Here is the review of your proposed **Part 3d ("Runners in ADK")** content, followed by the revised series roadmap table with Part 3d incorporated.
-
----
-
-### Part 1: Editorial & Technical Review of Part 3d
-
-Your proposed draft for **Part 3d** (`Runners in ADK — the orchestrator you never see but always need`) bridges a crucial gap in ADK architecture.
-
-#### Key Feedback & Technical Refinements
-
-1. **Clarified Role in Roadmap**:
-Article 3d explains **how execution happens**—decoupling agent prompts from storage, handling event streaming, tool recursion limits (`RunConfig`), and managing the execution lifecycle.
-2. **Fixed Typos & Terminology**:
-* `"light-motive"` $\rightarrow$ `leitmotif` (or `guiding principle`)
-* `"privious"` $\rightarrow$ `previous`
-* `"shouòd"` $\rightarrow$ `should`
-* Fixed renumbering in section titles (Section `03` followed `01` directly in your TOC).
-
-
-3. **PEP 8 Code Cleanliness**:
-Standardized `InMemoryRunner` vs `Runner` code examples and imports to ensure all snippets match clean Python conventions.
-
----
-
-### Part 2: Complete Series Roadmap Table (Filled In)
-
-Here is the updated series table incorporating **Article 3d**:
-
 | Medium Article & Milestone | GitHub Branch | Key Concept & Technical Implementation | Architectural Pattern |
 | --- | --- | --- | --- |
 | **#1 · Environment Setup & First Agent** | [`01-first-agent`](https://github.com/EilinLux/adk2.0-medium/tree/01-first-agent) | Declarative environment setup using `uv` and `pyproject.toml`. Instantiating the foundational `Agent` class, configuring prompt instructions, and testing execution across three local runtimes (`adk run`, `adk web`, and programmatic Python invocation). | **Single-Agent Baseline** |
