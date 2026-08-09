@@ -3,8 +3,8 @@ revision = 3
 requires-python = ">=3.12"
 
 [[package]]
-name = "adk101-medium"
-version = "0.1.0"
+name = "adk2-0-medium"
+version = "2.3.0"
 source = { virtual = "." }
 dependencies = [
     { name = "google-adk" },
