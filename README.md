@@ -7,6 +7,36 @@ You can access the full series list and updates directly on Medium:
 
 The project demonstrates how to move away from fragile, notebook-bound AI prototypes and build production-grade, event-driven AI agents using **Google's Agent Developer Kit (ADK) 2.0** and agentic architecture best practices.
 
+
+---
+
+## 📑 Table of Contents
+
+1. [🛣️ What is SostaApp?](#-what-is-sostaapp)
+2. [🤖 Micro-Agent Directory (`03b-session-service`)](#-micro-agent-directory-branch-03b-session-service)
+3. [🚀 Repository Structure & Branching Strategy](#-repository-structure--branching-strategy)
+4. [🛠️ Core Agent Architecture & Medium Articles](#-core-agent-architecture--medium-articles)
+5. [📦 Installation & Setup](#-installation--setup)
+
+---
+
+## 🛣️ What is SostaApp?
+
+**SostaApp** is an intelligent highway stop-over (*sosta*) concierge built for travelers driving along the Italian highway network (*Autostrade*). Rather than relying on a single monolithic prompt, SostaApp is engineered as a **Digital Assembly Line** of specialized micro-agents that collaborate to:
+
+* **Authenticate & Onboard Travelers:** Verify returning users by `user_id` or onboard new travelers by capturing their preferred language, dietary/allergen restrictions, and vehicle fuel/charging type.
+* **Remember Context Across Trips:** Persist conversation sessions, long-term user profiles, and episodic trip memories in **Google Cloud Firestore** so drivers never have to repeat their vehicle specs or food allergies.
+* **Recommend Optimal Highway Stops (*Soste*):** Calculate highway routes, query service stations in **BigQuery** via **MCP**, inspect restaurant menus and official PDF allergen sheets via **Hybrid Vertex AI RAG**, compute exact EV charging and meal splits via **sandboxed Python execution**, and redact sensitive PII via **Google Cloud DLP**.
+
+---
+
+## 🤖 Micro-Agent Directory (Branch `03b-session-service`)
+
+* **Gatekeeper (`root_agent`):** Authentication guardrail and entry-point orchestrator (`is_registered_user`).
+* **Registratore:** Onboarding specialist collecting and saving new traveler profiles (`save_new_user`).
+* **Cameriere:** Session coordinator retrieving (`extract_user_profile`) and updating (`update_user_profile`) traveler preferences.
+* **Session Service Test Agents (`tests/03b-session-service/`):** Multi-turn `gatekeeper_agent` and `recommendation_agent` harnesses comparing `InMemorySessionService`, SQLite `DatabaseSessionService`, and a custom `FirestoreSessionService` (`BaseSessionService`).
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
