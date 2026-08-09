@@ -1,9 +1,8 @@
-import os
-import sys
+# adk_agent_app/config.py
 import logging
 from dotenv import load_dotenv
 
-load_dotenv()  # Load .env file 
+load_dotenv()  # Load .env file
 
 # ==========================================
 # 0. SETUP & DATABASE INITIALIZATION
