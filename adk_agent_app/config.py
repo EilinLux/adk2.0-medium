@@ -19,9 +19,9 @@ PROJECT_ID = (
 ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
 
 # Database & Bucket Identifiers (loaded from .env with fallback defaults)
-FIRESTORE_APP_DB = os.getenv("FIRESTORE_APP_DB", "adk-agent-dev-application-db-dev-fs")
+FIRESTORE_APP_DB = os.getenv("FIRESTORE_APP_DB", "adk-agent-dev-application-db-fs")
 FIRESTORE_SESSION_DB = os.getenv("FIRESTORE_SESSION_DB", "adk-agent-dev-session-memory-fs")
-FIRESTORE_FOOD_KB_DB = os.getenv("FIRESTORE_FOOD_KB_DB", "adk-agent-dev-food-kb-dev-fs")
+FIRESTORE_FOOD_KB_DB = os.getenv("FIRESTORE_FOOD_KB_DB", "adk-agent-dev-food-kb-fs")
 BIGQUERY_DATASET = os.getenv("BIGQUERY_DATASET", "soste_app_dev")
 BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE", "db_soste")
 GCS_BUCKET = os.getenv("GCS_BUCKET", "adk-agent-dev-product-specs")
