@@ -1,0 +1,773 @@
+{
+  "eval_set_id": "eval_set_1_new_user",
+  "name": "eval_set_1_new_user",
+  "eval_cases": [
+    {
+      "eval_id": "Zelda, Italian",
+      "conversation": [
+        {
+          "invocation_id": "e-0fc4dc20-03e2-49de-ad82-87639ad3d966",
+          "user_content": {
+            "parts": [
+              {
+                "text": "hello"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Hello! Welcome to Sosta. Are you already a registered user?",
+                "thought_signature": "Co4BAY89a19gkPJCGyIWRZ_c7s7HP7dcJ6vMLmnOI36gN1uAMJFErXUitOAvtdNjOKFNZligizqH0PMSx1DFjumQtCFmoOLKOeK8OhT2jCqUJmRsnlB_Jzg5lx7bslcH_wIl7Q-5PMgo5C83CRKepTm8wPnlumUxrEaIUmsUXG1UN9eYcyUlALNTun0uzJURag=="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789122058.392697
+        },
+        {
+          "invocation_id": "e-b5996050-1435-4496-911a-ffd98db91c65",
+          "user_content": {
+            "parts": [
+              {
+                "text": "no, but I would like to register"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Great! I can help you with that. To get started, what is your full name?",
+                "thought_signature": "CvcBAY89a1_qT9YhP91qgKCGFzgO7olJ4KTwsLFYZ1fphzuSoMVyaUUJG2q1-5ycsN2w95h5GOuXhZjamh3Z4FB3UN-0sRu2dA5c6HVAA97UKg4m_aJ_4OoPd-uZZoiYNS-J0eOO8nwU8uSNRp1ICc9-FrjOx9ZHO78--_1-VW2MYdJh0_6ATUyayyoJhIc46WOkREeKvPd85MfAPkgSIenNCMpTsPL_gMkYOx7hC_HRYHvVcYi2njxjP_yOeG_7DhkF-rZUh8zTaXUdYOyyKijLKUTzlVtG8GGk6X6G_nWLBUs0FsIgWkXwKKfy9EtBL3jPf3r904qoQg=="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Gatekeeper",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "adk-ff622732-30ce-4fc3-999e-8c4412e0f463",
+                        "args": {
+                          "agent_name": "Registratore"
+                        },
+                        "name": "transfer_to_agent"
+                      },
+                      "thought_signature": "CtMBAY89a18R0A3LvXc_1Fnu9vLp3vTlXtgxbslupDzY9NiK-H5-QssjDhxN_xwCfyXyt_744uM8pmbV7zEhnkuQ343YYjoDG1AgjJWhtWy351kaSwW1IGStmeTbnrk9xYF-J2QIJmfhWdID7OUqgmGhVDi8EcjurrVp7XAzT1cbaA9_VK-yf04S2imZ-SXXo9oxbRcO1tRvVCIgpYzq0oHdI68oUaW2qDNZ461bnTIO8fmyhh6YPTCQ4ZdDpMw1DWZUgaEzsFKAVh1yI41qHJb5d4hBEw=="
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Gatekeeper",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "adk-ff622732-30ce-4fc3-999e-8c4412e0f463",
+                        "name": "transfer_to_agent",
+                        "response": {
+                          "result": null
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                }
+              }
+            ]
+          },
+          "creation_timestamp": 1789122072.720688
+        },
+        {
+          "invocation_id": "e-8eddc992-3b2e-4fe8-9b4a-1ea912d46922",
+          "user_content": {
+            "parts": [
+              {
+                "text": "Zelda Ailine Luconi"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Thank you, Zelda. What is your email address?",
+                "thought_signature": "Cu8BAY89a1-vN_lpQtktHlGG79lhm7OdjmmBXVZ0M6jxkJh-TiqH5WYLL2y83BFBrl_iCXjF2amFavVSk6YZXEXEeqB-IhaoaUSYEm_gFke2EoTIU_MArQ8ycQrbcEn5y6DvzpXWdpSIzIQyG8vA68zzqiDUTJT_Fa5oMdLVc2n6u0A4GdYisIESRDcXsyyqljuWwx3Jm_j0F53rPvGakPwJxrD4W8N_TAPCHtidmRIixPRL1zmcxEFHIB3bXwJij5FhYs9SzCNrP5i43fhNj_I4NOFrU8UsSKw-spImqv9DboK5ZjQawwhz09goRS9K4G8="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789122083.41732
+        },
+        {
+          "invocation_id": "e-df673033-4968-4a37-a131-7c92c5221352",
+          "user_content": {
+            "parts": [
+              {
+                "text": "zelda.luconi@gmail.com"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Got it. What is your preferred language?",
+                "thought_signature": "Ct8BAY89a184ZmcNJgOqgF8XTmiMeaCbftkjuVpjx5RGEMzxKlGXRnE6TIxME6xU_FCC6X0H64eMoaFbh_Y1Bpd_Usr5G4XkFEy3reiRcFi9oXWebmMJW_0JjaftGTYTfN_qxrpPONSAjhDqWODkL2qIHsEg3HaDWiaYZ8gtD50tKc-J9ZZBzLZzWotr5Pnr-kORcHC3vSa1oVhqAv9EXbJgaKOyUu84hr2jgd4z9iku3c5vCGIZre4vXSOCd3ElWomNbhyD7iqhm3foN-AC6n2Qd1GTlSRnoljxZwEgAizzlA=="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789122098.4302888
+        },
+        {
+          "invocation_id": "e-f91b6f60-930f-4bdc-a6fe-1a5c6e86aa77",
+          "user_content": {
+            "parts": [
+              {
+                "text": "Italian"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Perfetto! Now, what are your culinary or dietary preferences? For example, are you Vegetarian, Gluten-free, or do you have any allergies?",
+                "thought_signature": "CtkBAY89a1-OSIRdZ_eHgW0zY2gSISWO3X_V0GOWJg2KCX1otcE1obxmExFjhKJVX52AQaaDXqU-LN_JW9Rx12o_WTCco8Vj-e7ca2EJUrFkYFoneA_QN5F14ZXSLqozO6djJKLEMz32UeEZHjRakJC17TjPxaRy4kxXoDyp-IUYBcqnwkgDHnI1DlBhBSpbu3EtY9-0KgUVwSYbEww5D59i1Q_Pa_oIFH2NhMf22wV1w9DONxOGY7EExULNB6EZYgHGuGt8-A2NQ6u-h27_nOvch1KYTn3Gy9U7YQ=="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789122104.316153
+        },
+        {
+          "invocation_id": "e-c8b76ab5-487c-4870-82f4-cb759a808ee3",
+          "user_content": {
+            "parts": [
+              {
+                "text": "I am Vegan, love pasta "
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Great, thank you! Lastly, what type of vehicle do you drive? (e.g., Electric, Gasoline, Hybrid)",
+                "thought_signature": "CsMBAY89a1-YGLO9KesIkMuN5VCJQYKCq5p0Q2YNph78bXAwaxH7BVkHkY7281Yz0eRGFWhLrLbTXzXpDzS7oHc9RkG6VgYUQnrWNGPu51DbTQv-lDEtfUgRR4W34rG1o4H_7uBWr4KacH9Yx0Ck9_40i9cnGWNpcxywbM1NPYHtrP6ZRx6pMwJtpEE_y3HvhE4lsbqlyWnqvDb-jckFGMvzBE4hvLeGvBrDlFuG8m0bMFgrv5ZnnNIrhaUtf-lvtgAbYf8G"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789122116.8898802
+        },
+        {
+          "invocation_id": "e-04b921d5-59c8-4762-b0bb-812ff767edd8",
+          "user_content": {
+            "parts": [
+              {
+                "text": "Electic car"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Benvenuta, Zelda Ailine Luconi! Sono il Cameriere e sono qui per aiutarti a organizzare il tuo viaggio e le tue esperienze culinarie.\n\nPrima di iniziare, vorrei sapere: stai viaggiando con dei compagni? Se sì, hanno delle restrizioni dietetiche aggiuntive di cui dovrei essere a conoscenza?\n\nE qual è la tua destinazione finale?",
+                "thought_signature": "CoMFAY89a18kvVP9ylbFsQ43_C9io1S6hp1RIhjlEE7Hj2DgjgkbOEdoHzAhjGjEARL1AeIXvJnhGHvq9CEEFB-BbBn5J61XGPVEwLfmF8jyBjOcq5PEgVYu3FN283xaCl45r4Dm08T6UywD-dkPWxrIKnWuOo6_72fByFxlNvZeujn5lvLjO6NrGJe-Z41PWjRuHmQMiWndTnaT00ohz3BpUIugVNuzovJeHrtMKb1rn8hggtxtfNyDp7s2Yc20oaTbORO0-MmTun-voj2M1aC5BE1E9Y0XuiTMpsvRg9NLYaHDoxMYI2AzQHtLE4d2rMPyYTROOdDHv8s2T2hGBr8jTkq6gjgkIDpLU_3OIktgN4YdXiuqAAfcQMVBb_Nm5Uql-LaAOswlXKtJaDhnb-DjIPxgrT1EKFAFcgBhYNR8hMaB58PudIwPXC5RGMLgU6ZCElt8XbsTbviMm-D-f9Nda6VLAUlymPre7eyB41J8VKndq3jqk5jfnvNLPQQ2YFUe-gvzy_rH5Wcu-cTMoP9XETl7jsph82t_ICOODKsKRw3NsPzTh3jsKE2e_r344anbbHF30-hOFNymca5lnkXV7EuzT4nDpxFaWwZH6NRWJ47ozL14rRxq6jzOJfrGvVYOvsG31O5RfY_XPPpgDKF6rELfSQP3yP3Lhp89iSQjkNE8P3i4PDTAiltE3dlbne27EDwT2AlQFMIemqdc5dMFJbSnXwOGNN5xFL5UoHEaTJWiqYbYp1Ya0HDw_xGbkQJaSZmKUYR5M2PEap659EadY0xAJOHd7zIGPGXQKj3f0Da4neIQNEfhVoneV8BbdqHVyCACP8w2Tratlk4_ydTJoYdlvg=="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "adk-171e8e71-f2c4-4321-81ff-83a5f497a503",
+                        "args": {
+                          "preferred_language": "Italian",
+                          "full_name": "Zelda Ailine Luconi",
+                          "vehicle_type": "Electric",
+                          "culinary_preferences": [
+                            "Vegan",
+                            "Pasta"
+                          ],
+                          "email": "zelda.luconi@gmail.com"
+                        },
+                        "name": "save_new_user"
+                      },
+                      "thought_signature": "Co4EAY89a18UFmPQj0An6tBftYX-Bb36MRffk5RbmzdsVxJESuKvHH9pGRtHQKoUUvnOXzLupepzvn-N0zIKBDaC0yV2Hr42a1MiJNs39Xt9imRQAehjjW4hFthb8jCzP7PpDxulE8i7Z37x1azXdIq6m4S-v_HnMW-2LgscVxp-c82lkiCczJbtuDQeGU8fCOhKwj-c6TdhCjjjM3eX4qhqXTtwzf8T5Qst5bwVh5_dr7rN4wYe-kBY13LCAYvP5BPloogncCkU8clJrWVY3vahm6LMAJQ4xdOr_BlhRRXKrhxF-qr-D3H7GVPh2hFpeRUcJ8QGzsUy-gVSQFIr6eMjNs7tqqrj82LP9WWMdswWq4qlCR35Ms65jTJEofYGVPoQFL70b9w4s8qOqPvcKrVSHiqTEeZp7PAf3aL7wqBJrzfq9Kpk32DZn9USfeOvx4RUzQzspkm2By5AmJ1lVsBo1El2EHhYdBpd0R_0AjoZ111ovYKdyGXiyd29uuihJn9_nVtd37-ae2h4wvrC7mN7UAIK4otaxG7Wose2SVV8tLkZF9lkoumOXtQVTdaa2AR0HrAUXu5HgcvEmz0zewg2mtVtfsqS4clU8guY0Sls37yv5B1y9TpUrLauD6_zV9JdUaoHVZo9xYGH_EdF2YTwZK8jn7mPtGB-DkAFgy8LIZBI_EPcfqEikVmyZgHSSQ=="
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "adk-171e8e71-f2c4-4321-81ff-83a5f497a503",
+                        "name": "save_new_user",
+                        "response": {
+                          "status": "success",
+                          "user_id": "usr_f93207",
+                          "message": "Successfully registered Zelda Ailine Luconi with ID 'usr_f93207'."
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "Excellent! Your registration is complete, Zelda Ailine Luconi. Your new User ID is `usr_f93207`.\n\nI'm now handing you over to the Cameriere (Dining Concierge), who will be delighted to help you organize your trip and dining experiences.\n",
+                      "thought_signature": "CvICAY89a1_wBNGVqP1hWNzZ25d9DPbSpJfCOage560Hk6VN3T_IL8GF-QBclTVu7J-cIxqA8mtJXR6MyJzGZzeum8FMtYl88iJqion-l4Az_40EcgTayLByfOvZtwrdmdyZ4bcMRixxyoKsuOUPNF5O-6LfXGk4pQiNB5y81VWt4LQE80y2rFHAe9tBZKeWL-tP_ugmOjvRYpOIwqJU8_Ub6zESfd6eTXvjv6EdN9tFCs6fGkwzZak2kfhCKFzaOiNt2pM5eCDkaGRxPP2F6dl27HBkn1WDCpxuYIQdMxIt9eDr8xjq6QzhBYlH02DpbxkebKUnmsqgmsc3JfkGMzwsOaDvQiwNPo4_w0PwXruqRmaYLcTyGZRKpo8KjOGgsmTToGoFH7ZZRvmr1atUofjo9j19TyAk5RqQ_5eACdR1F12Q6mcSKfGD-gPOtqBdGfshb4hlEA0JNBHWP1rjjf3I-05OJnxkv9UVBJk-g52I6c5tjA=="
+                    },
+                    {
+                      "function_call": {
+                        "id": "adk-54840dfa-b72d-40d7-a69a-446dbaaab24c",
+                        "args": {
+                          "agent_name": "Cameriere"
+                        },
+                        "name": "transfer_to_agent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "adk-54840dfa-b72d-40d7-a69a-446dbaaab24c",
+                        "name": "transfer_to_agent",
+                        "response": {
+                          "result": null
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "adk-ea881635-32af-4b80-b6b4-fd1c5f239343",
+                        "args": {
+                          "user_id": "usr_f93207"
+                        },
+                        "name": "extract_user_profile"
+                      },
+                      "thought_signature": "CqwEAY89a1_b4r9XyMzrt4RLOy0eT2BLcPjnyH9ojPIqBLTHvfGE_u0MO3i4NCpV9kPv0WjdVbjGaP5BC5u5TMWhiaMIiZ_Va__OHM9zfMfgFW3lq4jDg8Awn2cH34SDD3aQvmmmxB5sQUdeM5s8Cd1A2QGSqApVIdljb1c7fsQZa-Z5lYR67N5ziy3ISO1gdOlyup589dHWpVdHOMqa9gRjiVwIwCrwbUDOacpokPIo33PlNbnOhszVKvnAspt91M8M641ZDTPUOMpkkqW3x8BoDKnWqccavYPaAw0KsXTkPsymGujD7MEUJOqFTrvS6m_sr_fxPbqVsSr3GYRyumQzJx5kMzMbX7GNPSZ8gfwTebYhiPzb_bhvNyFqVxhPCtS7szLaxDVq59HFQElqzfiBwWIUIfE06yw3oX7J6WtPZdb6jLA50AatJXo05vclOU6yj6kXVCdCSx3w-89gosegauBU9LKq53xKtRDqzMYyyWgVfoox-8FgidOsKY4ZZ6XK7sM6htrohgS0IaWoGfeqzhf6OglqbFio5A-iNNudaj1xSu9R7C9f8HiL0lBIUHY6M3Bmv0cRULPRKpZdXzyUGP4T-ZUSxMyGmOfapn8jaViM3ZpY_Q_wi5B_IRF4qB2C8RDMtoKoxYQHKoH6ipBfea3MOloy7htVVs3QVIgATkrpyWouaLqnGK1fQd1Xave6iQlxBSMAwppJtIZ1pfaESiEFg-MwpA3f_t9syA=="
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "adk-ea881635-32af-4b80-b6b4-fd1c5f239343",
+                        "name": "extract_user_profile",
+                        "response": {
+                          "status": "success",
+                          "message": "Session loaded for Zelda Ailine Luconi.",
+                          "profile": {
+                            "culinary_preferences": [
+                              "Vegan",
+                              "Pasta"
+                            ],
+                            "preferred_language": "Italian",
+                            "account_status": "active",
+                            "user_id": "usr_f93207",
+                            "vehicle": {
+                              "battery_capacity_kWh": null,
+                              "connector_type": null,
+                              "vehicle_type": "Electric"
+                            },
+                            "email": "zelda.luconi@gmail.com",
+                            "created_at": "2026-09-11T10:22:06.078167Z",
+                            "full_name": "Zelda Ailine Luconi"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                }
+              }
+            ]
+          },
+          "creation_timestamp": 1789122123.028256
+        },
+        {
+          "invocation_id": "e-4755d416-62c9-4d49-80f9-8f9e3b577c2c",
+          "user_content": {
+            "parts": [
+              {
+                "text": "Sono sola e vado a Roma"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Perfetto, Zelda. Ricapitolando:\n\n*   **User ID:** `usr_f93207`\n*   **Nome:** Zelda Ailine Luconi\n*   **Preferenze Dietetiche:** Vegana, ama la pasta.\n*   **Veicolo:** Auto elettrica.\n*   **Compagni di Viaggio:** Nessuno.\n*   **Destinazione:** Roma.\n\nÈ corretto questo riepilogo?",
+                "thought_signature": "CvoFAY89a1_fsVzpbZbB4HILlfuQjx1quizRz2e7ewD0SnM5QUOOs8_4Y68CQPNU73k6_mUIMaiQnqW7XSRpZ5s8WzEfqxnl8GBpqW8XMjZ8zouGGjo3Sjzb-TOk-zGsRsM7WF8YXwFU6Xgdof2njSlf16ugxs-JTTwF5jr_c2omuH9nK86Dvxf0_vCWIWU1QoZ-jjUxoZum14V4lmt8yPLcks3DhM98Gq_8LdRAeoWBImmD4TpOlhzfZC9HUePj1JqcWBvRLNB-vi6Dp3U47exgT0KzYuuLUNLwN40T_Wr5QHKyJGQHFA8Tjh48awhMJoh-g7JssKhgvRBlrczcEYwyLj5LGAbdyE1bSukYUqZ_7Ou4yLSIUeoK9m1LG9Wk8RuE6F3UBJSKi7KlrVmHS20splGVhWW7x1Z0EevRCVI4wj_kWht5NHv0LW9L21oGWn0tQI60_D9R2qhZSWvq9weuZzD3K1-S2RNM2Qxs7qlttmmY5zM1WOL-xdhIhrEWTolKtL3VGtIYdOTaQ4qGvnS1HAtBDXfDYvpajqcxvCvgdmqQa9qEyjsB1om35B4VNA5PWvY8-lFm_4cuX9vTLVN7sG4M1reFxAbroarqluf-MBB_PbWY_LEDQ5X_qdUt8XSz7xasPohWJdo4t-sqIvPf53ZuDkSGNfK0pbGUPYoijnkH6SkmCOsn8mpc034u0ZGViwug7ynQlDaXZ_ikBDaovvaoXintyDKeCgnrmU9V402k7cHgOZxkwRUQ-O28r_yAxA2j2Tcxo-o_3Wmb6G-g-dtR_x0saCGZnbfXsln4PD_EOdzoTT5dU-ze_nVO9QMdF7H1MwS35U-TppmBsLjs9R_mCuZEXU1bOvEd6FlVLIQv_7surQe7cMdKHlGV5HVs6zXm-2MEq04sFMQdaMd7Pv7urCZw9IqyAUj3JuTTEURTtC1FuGGlAikUN8NeJWNE6eehD6b_kVRY37tZHLlhgp6FIkqWYkg1UGJjhr_nipkIqh5CMhlEFGvW"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789122151.367123
+        },
+        {
+          "invocation_id": "e-644ffcf3-af9c-4f9a-86bd-4ba3adfdc4a8",
+          "user_content": {
+            "parts": [
+              {
+                "text": "yes"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Fantastico! Ora passerò tutti questi dettagli al Suggeritore, che si occuperà di fornirti i migliori consigli e raccomandazioni per il tuo viaggio e le tue esperienze culinarie a Roma.",
+                "thought_signature": "Cu4IAY89a1_Uhygpi71HcInHuXDRH3bDdYpOwdtC6N-_BmpCy-08Nraea-uBRiWAkUWvV-_4VySMIqS0yfwhYLaLlz_QSLSFCc15BLTTozxYCKnkBiRraCxDCl8wNtUSfJ7fROrii0Bux0yDeIr83AoD8WNdxIakf9eZXZyGdM2gl-TcdurvLWYUr5bAuxL8g6g62yG5nbwy_qKlnxKUA4heLyg2L5Z6vbr2KE5nAhcIZhJVzrgNuPWfw35K-CVWI6ShAb864wEbJhENXzCPHs09w5NmfRssGBSA9gqitmHRbGrErqFzna83J3B7tmsP7CSfBSan5BnJnY2Oj9UtQnLVd6DPqCokTDgco7OtgIcyJuq1dAF_F3vHgnqAchLeKzMYLkwJZoytumrfrx0fidvBX34yLgzX-B4rbjTEbXgQpvTflr8-mzuyeCUQOZJ8crb9hlnpG4vpYYmYhtnawmFQf7_OVqjCJyQWY8D761AixIKTWTGMUT3IOElxGAbEK1h5TbzCzbLNgolZSxccCc2aEhqiVk95WfsTVRoFWLA8hSaaTupRXopicYI8faCqhDxajNt5m7KagqqxQHXq_nXdJeJKfnpY2DmZVwTexoAMTw0-xFLjB73y61ls3oxQxuCmI7SXcOMGwP-PNudpJM_plxsXnzeo7faXrp5elT0ZBJFidhc8FBiSVd6nzLDJUAGzOfDDctGlXHiMjUCr0jNcB4dnyZL4scEvYjafg-EmRvqVjoD-nU-XAfndVoXhihmhqbcPHt3UgRmpk7ATe9JqBZm55INfLbRjsITJRfbFLVLPqDlvstPQUHcJ-7Ix0IcTc-VEhRZ_20qCKpuognJxrW5vs9bLhExvOzXa2bcZ-edtY0gE-GgPeUBESsTQbeyiv8y6M3j1qPIGzvIgLSXM58QNMDqxnrLzKDj0KpcdpqtJLUrGd61T7RXTm1J7MH_8p2Am8tw80K0M09XcyHS8qGNBBOkCX3NZE38iBEWxoHhlYXbf1P4uxeklCP_iJpy8mGv-aaGj6cu4C-s_7UHFUn2-0aEYgYsu6omJws2MrLRO6ea8BLD0dOk-8GX9AUH8W21tQC81LCyRZkoNty793gId0pMlAZaa27svkB18oknCQzqbOOIA2XGQI3yorsejdwjJJI7Cr5po_SBOKI59abdCyx4ZtCL9KWI2rQBsjAfIZcKzHJpAUGVQxuK0oWqkWtzu1_5GEZgw5iv9YPpRep4SFRp9r-siCdgwI8XLvLt-r-reAT0GQR8SUhSpjf8GjhMKF3KC4onR1P_8S-OAIT_ZaTwymvjALShARCgli4SojuyIDLHFI_Ro1uDMg4-OBRMSlNLd6T07cpE77bAMnCTJa5Qq28jhfFF6WtXCc2dQYj0cCj2fw6d0CiFVv1sgm7GwJhTP43KfPGXBLUOCMf7Vw5Pm23iKlLlRwKu7pULzNJxalqwPrKiFJdZODbSNE_tyLwKvRL_Ydsqw-PDfjEhA9KJuB-Q-LvpmcpOG"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789122184.8828921
+        }
+      ],
+      "session_input": {
+        "app_name": "adk_agent_app",
+        "user_id": "user"
+      },
+      "creation_timestamp": 1789122246.060359
+    },
+    {
+      "eval_id": "Flora_English",
+      "conversation": [
+        {
+          "invocation_id": "e-d4385d1a-db26-436b-9845-8063914e5dad",
+          "user_content": {
+            "parts": [
+              {
+                "text": "hello"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Hello! Welcome to Sosta. Are you already a registered user?",
+                "thought_signature": "CsQBAY89a19CZDJJELomD9U0cTyjjif9KehzZQY6fz4zjJHhg0dFsY77zx8xSiF0nszsQ_vLgaTJ0bZWCbZUxTf2Wy4CS97Ug_iCkHCE99aZ3c6yBzs0OQelINZ-p1fjI5p1qFdcO2I0YTe7McvvWs54M3qrm8O4JQ2WC52o4V0XVOOzW5ena8qpxV2CUF60bgKzutX04VeHTZs12FliTQlL1W2GLGbaev4fUfbIQJM3AMekA4lMwXHjAPp-Yh2UzXdJ3H5W0Q=="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789125529.737141
+        },
+        {
+          "invocation_id": "e-2c754d24-6bb9-4913-9cd5-ef6bf70ffb78",
+          "user_content": {
+            "parts": [
+              {
+                "text": "no, "
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Would you like to register?",
+                "thought_signature": "CsUBAY89a1_ijkNULbTYaNzVNzlH6doq1LmlLOoikOPJYatOTWIaTkyOKxGxhAktcboVdpdjPXPSdat7mVqE0yQJLR0md8U2ARrwp28CiAI8TpaZwXRaI8RTi4jr4mBDaEA0kQKTu9K7U_O7MvtTuK4bGTzYbA1P4XLr0h_ZoZ4uOjUODyjANC9LcTkn0XB24LA8oZXFKK2gq4_z75Ycfcy8rcbkOvVxj-aR_BYBSRjJyWQOFd-hqb_95SFs27LbpU5Uz0SEHqU="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789125540.443815
+        },
+        {
+          "invocation_id": "e-33505362-c221-4959-b225-4e58c20a381c",
+          "user_content": {
+            "parts": [
+              {
+                "text": "yes"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Welcome to Sosta! I'm here to help you get registered. To start, could you please tell me your full name?",
+                "thought_signature": "CtYBAY89a1_HyAKNnve892AfDvlfoDN1P7-3_XcFBoKtDLmjmoNPBmiUd6Lr5Jv4KGBew9WeLqyRrnEusrGI9tzt9g_8ybbZFP1A6cMJEjx0Js-L6MtgDLkAb92TTK-Amkcf6vBwTnBH_KUC2IyN62CjLgPTzgAf0TSSYCvFajqXaBLNPxCSo5vQjmbOvfBZLJYKpeLhrL7clt36tDDm3dygyTiwSTr7Ca7DD9KdtNRAHa6sO-xOJ-Sk7WXtBAbYCO4dn-x7vrzWS-ke6VJPjabqtywL4MGBAg=="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Gatekeeper",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "adk-698062d3-0787-451b-a2c0-b1ae9954bb7b",
+                        "args": {
+                          "agent_name": "Registratore"
+                        },
+                        "name": "transfer_to_agent"
+                      },
+                      "thought_signature": "Cq4BAY89a1_cY2_Xh40ta_oOMd5lDeQLuvapUiwFPh9zJzq-yLsgra1jgNgP_5LB2Xb_4ebQ0FtpQ9qrB64lUDMhfLcmgpUoNfiUkb3scXYHR0ZQX_suszFGtVfbElI2JfWuVuoLZ8M-T6vl1Rlwrcn12xMGUqQvfQ6EghjPL3OJ3OgQS1B_yVc6sevrXjHE_AseaQRQ-MQ49-Z9ir_UW-89_b-JloEs0TuSGsOpJ8fT"
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Gatekeeper",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "adk-698062d3-0787-451b-a2c0-b1ae9954bb7b",
+                        "name": "transfer_to_agent",
+                        "response": {
+                          "result": null
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                }
+              }
+            ]
+          },
+          "creation_timestamp": 1789125544.295518
+        },
+        {
+          "invocation_id": "e-8bf3abd4-6d29-454c-9bd5-e2e4d12c9cf3",
+          "user_content": {
+            "parts": [
+              {
+                "text": "Flora Rossi"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Thank you, Flora. What is your email address?",
+                "thought_signature": "CqsBAY89a1-RIG1ndZyACE6z81tfSvV9g2_t2O67Zd1IPVcn_0Ya2UzKh8rrmbI2dlV3RGXSFn2zRJkBS8DZXKKubhkHG1_n43VliTIVl0hQhEETZE8o3V7KCcZ5zM0WCGM9A3FhntJ0ajJCGInemr65K4GTn4edU16Eq5QAN86rW2R83SThMET_jjLLaq3WGP95pUj5cPitqB0J-gQW7a_StVjUw1feukCvLeaw"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789125561.374153
+        },
+        {
+          "invocation_id": "e-903c7a5b-d2da-4b5e-8979-aee9fae67ce2",
+          "user_content": {
+            "parts": [
+              {
+                "text": "f.rossi@gmail.com"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Great. What is your preferred language?",
+                "thought_signature": "CoEBAY89a18zSRnqhdGtR9G3RZ579tZkPlFRFRBG5C7A_J5Jllk3sgt2f7FmUZLxwW_66NV2p55BQuFyOP_-Fjl1H1eph4w9FM7rfhV-HN85Cg6pxK5iXEV8k4IlKpLGisLGwNTESqJh3TafjxoMturfQAkP_cgVKBwj_eb5n9xF3uGc"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789125571.734661
+        },
+        {
+          "invocation_id": "e-7e233fe7-c365-4634-9a01-76abe750dda7",
+          "user_content": {
+            "parts": [
+              {
+                "text": "English"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Understood. Do you have any culinary or dietary preferences, such as Vegetarian, Gluten-free, or anything else I should note?",
+                "thought_signature": "CqABAY89a1-XWsN_--F_KcvCckekNC4nYDztDTAoq0-xiCCb_VuEuWIj2vpR3hOckarJcaYOm5BQ_XpGIdvli__3MQp9yVQnH5GfGOnWDLrr_swS2bRq1RJ1HYOHtyVDEEv4A_6r9K8Y4DWhJAQgg3j8-2agw9L8-QGY6X44mLA19I3osvZIIQcsprk0h6QY2l-AZz2dxt3ttQmOcNChEqOp0Q=="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789125577.309807
+        },
+        {
+          "invocation_id": "e-3721350a-dbc8-4f11-9253-96ed75cd05a8",
+          "user_content": {
+            "parts": [
+              {
+                "text": "I eat everything"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Okay, noted! Finally, what type of vehicle do you drive? For example, Electric, Gasoline, or Hybrid?",
+                "thought_signature": "CqYBAY89a18ZtCbuKp9aIeFENgvBpMidbs7Ok_aErPUHWeypL4fQ8K7sdJuov8a7hAt3wGuEh2Q_Ryyt-Oz2XEi3STPW8ha1uDmVdyKxPoeMuLXZVZ1wOx5hm1MZGzXvVueM0kl2f7VO4r3veHgurAzfz8vo1NE_gX3Xfwgfk-Wothrw5zLGZ7CY7EMaSPXzyUvhba-UnGVGi9R1sddOzGK-Zn2cVjwQuw=="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789125590.660328
+        },
+        {
+          "invocation_id": "e-6bb9759c-5a3e-4f61-9304-64b05e68019b",
+          "user_content": {
+            "parts": [
+              {
+                "text": "Gasoline"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Hello Flora! Now that your registration is complete, I can help you plan your trip.\n\nFirst, are you traveling with companions, and if so, do they have any specific dietary restrictions or preferences I should be aware of?\n\nAlso, what is your final destination for this trip?",
+                "thought_signature": "Co4DAY89a18sfgSKLDHSW_j-uN7DWnW4Xhqk2J82dqD-H9CzV0Sdgkhndyi7omJ5TRcxSqQKYOD6D0Vi-qKqlcMzNEfvkcXdhuc_66wPfXxWYzZza1DQWFv4Df069eM-imCZwoi1pWMgtlMzCNj9C_WHtZSb8t3lIAf-4OuWLXRA91uOJAWpwWcrL2meJwKmtE1HbdZoZtLXufVLv1iqMeA4UEWtqGZUSs2vFvjQET0bWkLge3IDAgsaFlyrIKfvVjDgCBuT95Hzn_BOKyrYBcHFcC65j_-Gnx6K1_lJaubvKPB4xQiF4Ic_zFZty0GaE12AweeS20Jpp23uJBKmnQKhiCdnT7LHFODr4w7geM2suNB78fwh9UBE6lkeE3dJoX-zDRJcoP_WXZzQV-lDy_1JI9C6iWTzyknAofIQK0I9q3AsuamBveZg60bxGJIt80qO2jNmQg8IqWn8Wc_RB5Nta01NRVrNfcWcNWwgZmJJWyB-elZv6naERS5fyBlcjg47tWZlk2E9msekVb6N8Gg="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "adk-38d1fce2-8089-4df0-831f-3e334148ca0c",
+                        "args": {
+                          "vehicle_type": "Gasoline",
+                          "preferred_language": "English",
+                          "full_name": "Flora Rossi",
+                          "culinary_preferences": [
+                            "No specific preferences"
+                          ],
+                          "email": "f.rossi@gmail.com"
+                        },
+                        "name": "save_new_user"
+                      },
+                      "thought_signature": "CrECAY89a1_hYYClNdn46YCfGwR3PI8tQzjhrYPZ7QokkebE18bmXrhfYJcASTIWzJjSNMvhEYnmbyrB88Co7AB7x22HJILNQizbocCcQ88O3L3JbuFxyCGHaI5IzigA5Hon2_cHMK3R9cKKCpxtgxQowFw9zVbIm6Ki-6hyFJKreVJJqDThs2iBXYI7z6YGyN4sVBwutyroeSp1Zy7RfLOTUGEVNEfZfv-6Fid-FxoxRZDmfof-32IR7-pubQdlX_RkqxTDoe2ZWW3bTGMNJxSKV9VkbiE2Vf5jpYJaD7u2w0qA-ORKxTEO89ssO-Ez1tBUJBQO24FSmFCO6HVWakfJzyqQtygjS1U2UZdpcxP90fP7B4fUnt02P9S6-0nQH8YGYp4H4TeJkvqPCpP0IbhdUjk="
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "adk-38d1fce2-8089-4df0-831f-3e334148ca0c",
+                        "name": "save_new_user",
+                        "response": {
+                          "status": "success",
+                          "user_id": "usr_ee1d9f",
+                          "message": "Successfully registered Flora Rossi with ID 'usr_ee1d9f'."
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "Flora, your registration is now complete! Your User ID is `usr_ee1d9f`.\n\nI'm now handing you over to the Cameriere, our Dining Concierge, who will help you organize your trip and dining experiences.\n",
+                      "thought_signature": "CtoBAY89a181_LKF_Nsf5JAn0qrk2lImmTIDxPZJkueVGXgEqfIDThgO9euzqBn4uyx4ZPQitXbdRsGLp6-7ywZv4SCEPBZl-4yOJCDeSnIJEMTjSPndY4v12pWc8qKGlj3N1ZgCu9Rp-vObv60R2RMjqJ5EmEGUer_yUY001S4dmVqmP9h9RFDEwmw7RAKSORItphU24xDK30iveYR2u8ONxg5eqtC4aPap3NtaTrK_V1vy2AfvnXHRzSc-cToD-oWwKBQOWSG54cxD351XJAyRUhFycOX4324HMpY="
+                    },
+                    {
+                      "function_call": {
+                        "id": "adk-b72c8ea4-c17b-44c6-941d-bdeb7da3f890",
+                        "args": {
+                          "agent_name": "Cameriere"
+                        },
+                        "name": "transfer_to_agent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "adk-b72c8ea4-c17b-44c6-941d-bdeb7da3f890",
+                        "name": "transfer_to_agent",
+                        "response": {
+                          "result": null
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "adk-5642c42d-5650-4add-a57c-507e8b186187",
+                        "args": {
+                          "user_id": "usr_ee1d9f"
+                        },
+                        "name": "extract_user_profile"
+                      },
+                      "thought_signature": "CocDAY89a1854KEJ6iNnbgi_giFCWlovvxyz0LNgUxTNSJU3dqdvw8XunVaIJUcWcclYPjxcIdh1kuSJ_0_BlNIRYSNspqSrqeySZqGF4a7zuiExtDTuf-0f6vWn8QJ-LGVQwRddAz_KsORtaKc_q1T3013LjjpI4LLFaLPLS40owOI9mgq1wuZStUIVuNyBNrIhe6Acl4A9SKsqFJ04WtgAp0gKJ5iEzPMSuicZrJDk3yHKSCuZEoGGDJCI-p0CQTZeCqDt7FOjKWDi11qgZJBBaObgW_hWWmrnaCZtvzRhcUISRxJ91LIkIFqkF1IJPa0lqOltAKy3u64FKX-YMww6pdvJq5lieG16_v79GfyhjwmEBy1pEVG4AfPgThtEjYYx-iDmBg-fgBqVob-OMd56H9U2eVJPmNrxvlpxJ2Zn3DSfxAc3DE5bk9i7SREM29SI5DDn_v74ZMHCpudFQfvx1_N9XeA94ivalsk-kN7seYLOuJQblyq62XofAejwlp_WInlPPeQVCw=="
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "adk-5642c42d-5650-4add-a57c-507e8b186187",
+                        "name": "extract_user_profile",
+                        "response": {
+                          "status": "success",
+                          "message": "Session loaded for Flora Rossi.",
+                          "profile": {
+                            "email": "f.rossi@gmail.com",
+                            "account_status": "active",
+                            "preferred_language": "English",
+                            "culinary_preferences": [
+                              "No specific preferences"
+                            ],
+                            "full_name": "Flora Rossi",
+                            "user_id": "usr_ee1d9f",
+                            "created_at": "2026-09-11T11:19:59.578537Z",
+                            "vehicle": {
+                              "vehicle_type": "Gasoline",
+                              "battery_capacity_kWh": null,
+                              "connector_type": null
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                }
+              }
+            ]
+          },
+          "creation_timestamp": 1789125596.604
+        },
+        {
+          "invocation_id": "e-a3bc5325-48ab-444c-950e-b84d361114ee",
+          "user_content": {
+            "parts": [
+              {
+                "text": "I am alone, going to Florence "
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Great, Flora! Thank you for the information.\n\nTo confirm, here's a summary of the details I have:\n*   **User ID:** usr_ee1d9f\n*   **Guest Name:** Flora Rossi\n*   **Dietary Preferences:** You have no specific dietary preferences, and you are traveling alone, so no companion restrictions.\n*   **Vehicle Type:** Gasoline\n*   **Destination:** Florence\n\nDoes all of this sound correct? Once confirmed, I can pass these details to Suggeritore to start getting some recommendations for you.",
+                "thought_signature": "CqQEAY89a1845iYO1E7bwTP_xcJ0a6wB7u7OflD9SNz78QYte7XNMwqkbCn5DiuWF2El9l0rEEr1Fw4TiKEBD1q2nIJS3hNy00m1BCo-YYbOF_llUE5yU12FLApTTkRTAZQrEes_-dNQtx6pTotUcC-gwrZGFdLLSMDAF2H1t-QgLJ8LbWAmIc4yuMguSrpqZtBX_IeAP0w59mnnmRvl2k2cPRuCWsu4BApgxQ2845oHJ8sm_tj-c_TqdhA4c8LqwrgBkpd3Rib4VcTomlfbFXjK2y0kkjl-x7-pDuaS96NwYhnut8az077RHCBeG1OdxXOcRMktQyu0atdexSbaw2v_zhDHxuJ3ntZ3JRvEvaF6lc_1KUZo4wcctak6GQpZKxv-hzcqFFvTQaGuv_aQ7Hn-HPQeYrovVVaFClrwX4jIb6on59dyVmi7BtwBCwp3DncuiqNO3eEgbNJK-PJtoJi6ozkSaHKHcGm4GsGrsuyKwY_iNZDKEHWYuNkhpPFM0POI96XZSVhCqM2DtdNrBYZ8n2cCUyQMHY38Z4sw1brgLYu_a13ykviFi_tumlCEMakuMawvWe0pcCbNB-5-i_X4UnXTz4UqyQlobZ-zyuoa7OI0e6i2NfoMMbIYcujFFbcrFVpdbF562MsIcXkZVxNmWeI5lq4hRFMfSFj5DzW-cpIw4pdJKAE7OLV3w5jimdZel_oUWO2hHR3duoVmli1XZpkdno8="
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {},
+          "creation_timestamp": 1789125617.988408
+        }
+      ],
+      "session_input": {
+        "app_name": "adk_agent_app",
+        "user_id": "user"
+      },
+      "creation_timestamp": 1789125635.875396
+    }
+  ],
+  "creation_timestamp": 1789122230.4246788
+}
