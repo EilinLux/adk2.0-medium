@@ -48,14 +48,14 @@ resource "google_bigquery_table" "db_soste" {
     local.common_labels,
     {
       data_type = "geographical"
-      source    = "autogrill"
+      source    = "stop"
     }
   )
 
   # Define table schema
   schema = jsonencode([
     {
-      name        = "autogrill_name"
+      name        = "stop_name"
       type        = "STRING"
       mode        = "REQUIRED"
       description = "Name of the service station"

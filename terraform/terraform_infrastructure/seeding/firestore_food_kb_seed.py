@@ -5,7 +5,7 @@ from google.cloud import firestore
 # ==========================================
 PROJECT_ID = "adk-workshop-sosta-app-dev"
 DATABASE_ID = "adk-agent-dev-food-kb-dev-fs"         
-COLLECTION_NAME = "autogrill_food_kb"
+COLLECTION_NAME = "stop_food_kb"
 
 print(f"Connecting to Firestore database '{DATABASE_ID}'...")
 
@@ -15,12 +15,12 @@ db = firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
 # ==========================================
 # MOCK DATA (TRANSLATED)
 # ==========================================
-# Using the Autogrill name as the Document ID for direct lookups
+# Using the stop name as the Document ID for direct lookups
 mock_data = {
     # ----------------------------------------------------
     # A1 Autostrada del Sole (North to South)
     # ----------------------------------------------------
-    "Autogrill Somaglia Ovest": {
+    "Somaglia Ovest": {
         "products": [
             {"product_name": "Apollo Sandwich", "quantity": 35},
             {"product_name": "Lombard Piadina", "quantity": 22},
@@ -34,7 +34,7 @@ mock_data = {
             "Great selection of packaged local cheeses to take home."
         ]
     },
-    "Autogrill Fiorenzuola d'Arda": {
+    "Fiorenzuola d'Arda": {
         "products": [
             {"product_name": "Camogli Sandwich", "quantity": 50},
             {"product_name": "Piacenza Mortadella Focaccia", "quantity": 30},
@@ -48,7 +48,7 @@ mock_data = {
             "Good gluten-free baked goods available at the dedicated counter."
         ]
     },
-    "Autogrill Secchia Ovest": {
+    "Secchia Ovest": {
         "products": [
             {"product_name": "Rustichella Sandwich", "quantity": 45},
             {"product_name": "Vegan Salad", "quantity": 12},
@@ -62,7 +62,7 @@ mock_data = {
             "Great stop for anyone looking for vegan options on the highway."
         ]
     },
-    "Area di Servizio Cantagallo": {
+    "Cantagallo": {
         "products": [
             {"product_name": "Capri Sandwich", "quantity": 25},
             {"product_name": "Ligurian Focaccia", "quantity": 40},
@@ -76,7 +76,7 @@ mock_data = {
             "I love this station, the bakery products are excellent."
         ]
     },
-    "Autogrill Badia al Pino Est": {
+    "Badia al Pino Est": {
         "products": [
             {"product_name": "Tuscan Prosciutto Panino", "quantity": 28},
             {"product_name": "Rustichella Sandwich", "quantity": 32},
@@ -90,7 +90,7 @@ mock_data = {
             "Pistachio croissant is a must-try!"
         ]
     },
-    "Autogrill Fabro Ovest": {
+    "Fabro Ovest": {
         "products": [
             {"product_name": "Bufalina Sandwich", "quantity": 22},
             {"product_name": "Wild Mushroom Risotto", "quantity": 10},
@@ -104,7 +104,7 @@ mock_data = {
             "Limited vegan options, but good gluten-free pastries."
         ]
     },
-    "Autogrill Teano Ovest": {
+    "Teano Ovest": {
         "products": [
             {"product_name": "Buffalo Mozzarella Ciabatta", "quantity": 40},
             {"product_name": "Neapolitan Sfogliatella", "quantity": 60},
@@ -122,7 +122,7 @@ mock_data = {
     # ----------------------------------------------------
     # A8 / A4 Northern Belt & Lakes
     # ----------------------------------------------------
-    "Autogrill Villoresi Est": {
+    "Villoresi Est": {
         "products": [
             {"product_name": "Ham and Lactose-Free Cheese Sandwich", "quantity": 15},
             {"product_name": "Rice Salad", "quantity": 20},
@@ -136,7 +136,7 @@ mock_data = {
             "Fast service, even though there was a long line at the counter."
         ]
     },
-    "Autogrill Villoresi Ovest": {
+    "Villoresi Ovest": {
         "products": [
             {"product_name": "Milano Salami Panino", "quantity": 30},
             {"product_name": "Rustichella Sandwich", "quantity": 40},
@@ -150,7 +150,7 @@ mock_data = {
             "Staff at the bar area were exceptionally efficient."
         ]
     },
-    "Autogrill Brianza Nord": {
+    "Brianza Nord": {
         "products": [
             {"product_name": "Apollo Sandwich", "quantity": 25},
             {"product_name": "Quinoa & Avocado Bowl", "quantity": 14},
@@ -164,7 +164,7 @@ mock_data = {
             "Clean bathrooms and helpful personnel."
         ]
     },
-    "Autogrill Novara Nord": {
+    "Novara Nord": {
         "products": [
             {"product_name": "Piedmontese Beef Panino", "quantity": 20},
             {"product_name": "Camogli Sandwich", "quantity": 35},
@@ -178,7 +178,7 @@ mock_data = {
             "Clean facilities and good coffee quality."
         ]
     },
-    "Autogrill Scaligera Ovest": {
+    "Scaligera Ovest": {
         "products": [
             {"product_name": "Verona Sopressa Sandwich", "quantity": 22},
             {"product_name": "Caprese Salad", "quantity": 16},
@@ -196,7 +196,7 @@ mock_data = {
     # ----------------------------------------------------
     # Rome Ring (GRA) & Central Region
     # ----------------------------------------------------
-    "Autogrill Flaminia Est": {
+    "Flaminia Est": {
         "products": [
             {"product_name": "Camogli Sandwich", "quantity": 30},
             {"product_name": "Fresh Orange Juice", "quantity": 15},
@@ -209,7 +209,7 @@ mock_data = {
             "Fresh juice made on the spot, much appreciated."
         ]
     },
-    "Autogrill Casilina Interna": {
+    "Casilina Interna": {
         "products": [
             {"product_name": "Porchetta di Ariccia Panino", "quantity": 35},
             {"product_name": "Rustichella Sandwich", "quantity": 25},
@@ -223,7 +223,7 @@ mock_data = {
             "Can get very crowded during weekday commuter hours."
         ]
     },
-    "Autogrill Feronia Est": {
+    "Feronia Est": {
         "products": [
             {"product_name": "Bufalina Sandwich", "quantity": 28},
             {"product_name": "Caesar Salad", "quantity": 15},
@@ -237,7 +237,7 @@ mock_data = {
             "Good EV charging station availability."
         ]
     },
-    "Autogrill La Macchia Ovest": {
+    "La Macchia Ovest": {
         "products": [
             {"product_name": "Ciociaria Ham Panino", "quantity": 20},
             {"product_name": "Apollo Sandwich", "quantity": 30},
@@ -255,7 +255,7 @@ mock_data = {
     # ----------------------------------------------------
     # A14 Adriatic Coast
     # ----------------------------------------------------
-    "Autogrill Sillaro Ovest": {
+    "Sillaro Ovest": {
         "products": [
             {"product_name": "Romagna Piadina (Squacquerone & Rocket)", "quantity": 45},
             {"product_name": "Rustichella Sandwich", "quantity": 30},
@@ -269,7 +269,7 @@ mock_data = {
             "Spacious outdoor seating area available."
         ]
     },
-    "Autogrill Rubicone Est": {
+    "Rubicone Est": {
         "products": [
             {"product_name": "Romagna Piadina Ham & Cheese", "quantity": 40},
             {"product_name": "Camogli Sandwich", "quantity": 22},
@@ -283,7 +283,7 @@ mock_data = {
             "Good range of regional wine and food souvenirs."
         ]
     },
-    "Autogrill Esino Est": {
+    "Esino Est": {
         "products": [
             {"product_name": "Marche Porchetta Sandwich", "quantity": 25},
             {"product_name": "Capri Sandwich", "quantity": 20},
@@ -297,7 +297,7 @@ mock_data = {
             "Restroom turnstiles accept contactless card payments."
         ]
     },
-    "Autogrill Tower Torre Cerrano East": {
+    "Tower Torre Cerrano East": {
         "products": [
             {"product_name": "Abruzzo Pecorino & Salame Panino", "quantity": 24},
             {"product_name": "Rustichella Sandwich", "quantity": 35},
@@ -315,7 +315,7 @@ mock_data = {
     # ----------------------------------------------------
     # South & Islands (A2 / A18)
     # ----------------------------------------------------
-    "Autogrill Salerno Nord": {
+    "Salerno Nord": {
         "products": [
             {"product_name": "Campanian Mozzarella Ciabatta", "quantity": 38},
             {"product_name": "Babà Pastry", "quantity": 25},
@@ -329,7 +329,7 @@ mock_data = {
             "Busy location near the Amalfi coast exit."
         ]
     },
-    "Autogrill Campotenese Ovest": {
+    "Campotenese Ovest": {
         "products": [
             {"product_name": "Calabrian Nduja & Cheese Panino", "quantity": 20},
             {"product_name": "Camogli Sandwich", "quantity": 15},
@@ -343,7 +343,7 @@ mock_data = {
             "Friendly staff and prompt service."
         ]
     },
-    "Autogrill Lamezia Ovest": {
+    "Lamezia Ovest": {
         "products": [
             {"product_name": "Spicy Soppressata Panino", "quantity": 26},
             {"product_name": "Rustichella Sandwich", "quantity": 28},
@@ -357,7 +357,7 @@ mock_data = {
             "High-speed chargers available in the parking area."
         ]
     },
-    "Autogrill Aci Sant'Antonio Ovest": {
+    "Aci Sant'Antonio Ovest": {
         "products": [
             {"product_name": "Sicilian Cannolo", "quantity": 50},
             {"product_name": "Arancino with Meat Ragù", "quantity": 40},
@@ -371,7 +371,7 @@ mock_data = {
             "Can get crowded with tourists, but line moves fast."
         ]
     },
-    "Autogrill Gelso Bianco Nord": {
+    "Gelso Bianco Nord": {
         "products": [
             {"product_name": "Sicilian Pistachio Cannolo", "quantity": 45},
             {"product_name": "Pistachio Croissant", "quantity": 35},
@@ -397,24 +397,24 @@ def seed_database():
     collection_ref = db.collection(COLLECTION_NAME)
     
     success_count = 0
-    for autogrill_name, data in mock_data.items():
+    for stop_name, data in mock_data.items():
         try:
-            # Using the autogrill_name as the Document ID
-            doc_ref = collection_ref.document(autogrill_name)
+            # Using the stop_name as the Document ID
+            doc_ref = collection_ref.document(stop_name)
             
             # Prepare payload
             payload = {
-                "autogrill_name": autogrill_name,
+                "stop_name": stop_name,
                 "products": data["products"],
                 "reviews": data["reviews"]
             }
             
             doc_ref.set(payload)
-            print(f"  -> Inserted data for: {autogrill_name}")
+            print(f"  -> Inserted data for: {stop_name}")
             success_count += 1
             
         except Exception as e:
-            print(f"  ❌ Failed to insert data for {autogrill_name}: {e}")
+            print(f"  ❌ Failed to insert data for {stop_name}: {e}")
             
     print(f"✅ Successfully seeded {success_count} documents into Firestore!")
 
