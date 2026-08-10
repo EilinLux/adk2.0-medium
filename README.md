@@ -1,21 +1,5 @@
 # ADK 2.0 101: Agent Developer Kit Implementation
 
-This repository contains the codebase and architecture blueprints for the **ADK 101** tutorial series published on Medium by *Zelda Ailine Luconi*. 
-
-The project demonstrates how to move away from fragile, notebook-bound AI prototypes and build production-grade, event-driven AI agents using **Google's Agent Developer Kit (ADK) 2.0**, Agentic Architecture best practices**.
-
-## 🚀 Project Overview: Sosta App
-
-The primary implementation built throughout this series is **Sosta App**—an intelligent travel optimization platform designed to eliminate "range anxiety" and "choice fatigue" for travelers. 
-
-### 🛠️ Core Agent Architecture
-
-Here is a polished, production-ready `README.md` for your repository, incorporating all the structural upgrades, visual flowcharts, complete branch mappings, and explicit run commands.
-
----
-
-# ADK 2.0 101: Agent Developer Kit Implementation
-
 This repository contains the codebase, micro-agent implementations, and architectural blueprints for the **ADK 101** tutorial series published on Medium by *Zelda Ailine Luconi*.
 
 The project demonstrates how to move away from fragile, notebook-bound AI prototypes and build production-grade, event-driven AI agents using **Google's Agent Developer Kit (ADK) 2.0** and enterprise agentic design principles.
@@ -39,9 +23,10 @@ Each article in the series corresponds to a dedicated git branch containing clea
 | **#2a · Assembly Line Principles** | *(Theory / `main`)* | Deconstructing monolithic prompt traps into modular micro-agents using Henry Ford’s assembly line principles. Establishing the 4 core pillars: structured workflows, typed JSON handoffs, technological model heterogeneity, and dual-layer state management (*Travel Sheet* session context vs. *Warehouse* persistent storage). | **System Architecture Blueprint** |
 | **#2b · Multi-Agent Workflows** | [`02b-multi-agent-workflow`](https://github.com/EilinLux/adk2.0-medium/tree/02b-multi-agent-workflow) | Building a hierarchical collaborative team. Implements local tool scoping (`tools=[is_registered_user_tool]`) to enforce the Principle of Least Privilege and eliminate context bloat. Establishes parent-child supervisor delegation (`sub_agents=[registratore, cameriere]`) for dynamic LLM-driven task handoffs. | **Hierarchical Collaborative Team** |
 | **#2c · Graph Workflows & HITL** | [`02c-graph-agent-workflows`](https://www.google.com/search?q=https://github.com/EilinLux/adk2.0-medium/tree/02c-graph-agent-workflows) | Refactoring loose LLM orchestration into a rigid Directed Acyclic Graph (`Workflow`). Implements Human-in-the-Loop (HITL) pauses via `RequestInput` generators, semantic extraction using Pydantic schemas (`output_schema=UserExtraction`), and prompt-injection-proof Python edge routers (`Event(route=...)`). | **Deterministic Pipeline (DAG)** |
-
-
----
+| **#3a · Session & Session States** | [`03a-session-state`](https://www.google.com/search?q=https://github.com/EilinLux/adk2.0-medium/tree/03a-session-state) | Deep-dive into ADK's state mechanics. Automating entity extraction into state via `output_schema` and `output_key`, dynamic prompt templating using `{variable}` injection, and isolating variables across four distinct persistence scopes (`session`, `user:`, `app:`, and `temp:`). | **State & Context Management** |
+| **#3b · Session Service & Backends** | [`03b-session-service`](https://www.google.com/search?q=https://github.com/EilinLux/adk2.0-medium/tree/03b-session-service) | Managing the `SessionService` lifecycle (CRUD). Writing directly to live session state inside tools via `ToolContext`, swapping backends (`InMemorySessionService`, `DatabaseSessionService`, `VertexAiSessionService`), and extending `BaseSessionService` for custom enterprise stores. | **Persistence Layer Abstraction** |
+| **#3c · Memory Service & Semantic Search** | [`03c-memory-service`](https://www.google.com/search?q=https://github.com/EilinLux/adk2.0-medium/tree/03c-memory-service) | Unstructured long-term recall across sessions. Comparing local `InMemoryMemoryService`, LLM-consolidated user insights with `VertexAiMemoryBankService`, and enterprise RAG over document corpora using `VertexAiRagMemoryService` (Knowledge Engine). | **Long-Term Memory & RAG** |
+| **#3d · Session Stete for Sosta App** | [`03d-session-state-sostaapp`](https://www.google.com/search?q=https://github.com/EilinLux/adk2.0-medium/tree/03d-session-state-sostaapp) | Implemented states layers in Sosta App, reframing Tools and Agents' prompts | **States in production** |
 
 ## 🤖 Micro-Agent Directory
 
@@ -124,5 +109,4 @@ uv run adk web adk_agent_app/agent.py
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
-
 
