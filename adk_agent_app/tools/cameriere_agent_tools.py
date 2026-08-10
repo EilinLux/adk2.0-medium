@@ -4,7 +4,7 @@ from typing import Dict, Any, List
 from google.cloud import firestore
 from google.adk.tools import ToolContext, FunctionTool
 
-from adk_agent_app.config import logger
+from ..config import logger
 
 PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
 DATABASE_ID = "adk-agent-dev-application-db-dev-fs"

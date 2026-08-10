@@ -1,6 +1,6 @@
 # agent/subagents/registratore_agent.py
 from google.adk.agents import Agent
-from adk_agent_app.tools.registratore_agent_tools import save_new_user_tool
+from ..tools.registratore_agent_tools import save_new_user_tool
 
 registratore_agent = Agent(
     name="Registratore",

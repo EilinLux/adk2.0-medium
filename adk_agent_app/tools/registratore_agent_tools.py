@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from google.cloud import firestore
 from google.adk.tools import FunctionTool
 
-from adk_agent_app.config import logger
+from ..config import logger
 
 PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
 DATABASE_ID = "adk-agent-dev-application-db-dev-fs"
