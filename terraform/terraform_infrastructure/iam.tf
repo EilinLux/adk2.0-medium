@@ -58,7 +58,7 @@ resource "google_storage_bucket_iam_member" "agent_pdf_reader" {
   bucket = google_storage_bucket.product_specs_bucket.name
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.adk_agent.email}"
-} 
+}
 
 
 # ==========================================

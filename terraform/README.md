@@ -210,3 +210,13 @@ python seeding/firestore_memory_seed.py
 ```
 
 With the infrastructure provisioned via Terraform and the database seeded with initial knowledge, our agent tools now have real backend services to interact with.
+
+
+# Add the remote back end
+
+Run 
+
+gcloud auth application-default login \
+  --impersonate-service-account=terraform-admin@adk-workshop-sosta-app-dev.iam.gserviceaccount.com
+
+Choose setup.sh script again 
