@@ -23,6 +23,7 @@ dependencies = [
     "uvicorn==0.49.0",
     "python-dotenv==1.2.2",
     "greenlet",
+    "pytest"
 ]
 [project.urls]
 "Homepage" = "https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9"
