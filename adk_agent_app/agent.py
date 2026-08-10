@@ -3,7 +3,7 @@ import os
 import sys
 
 # Import your pre-flight check function
-from test_connections import run_all_tests
+from adk_agent_app.test_connections import run_all_tests
 
 # 1. Execute infrastructure pre-flight check before agent startup
 print("\n🔍 Running infrastructure pre-flight checks...")
@@ -12,16 +12,16 @@ if not run_all_tests():
     sys.exit(1)
 
 from google.adk.agents import Agent
-from adk_agent_app.session_and_memory.sessions import FirestoreSessionService
+from adk_agent_app.sessions.session_service import FirestoreSessionService
 
 # 2. Configure persistent Firestore session memory
 PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
-SESSION_DB_NAME = "adk-session-memory"
+SESSION_DB_NAME = os.getenv("SESSION_DB_NAME", "adk-agent-dev-session-memory-fs")
 
 session_service = FirestoreSessionService(
     project=PROJECT_ID,
     database=SESSION_DB_NAME,
-    collection="sessions"
+    collection="sosta_sessions"
 )
 
 from google.adk.agents.llm_agent import Agent
