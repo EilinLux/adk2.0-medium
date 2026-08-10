@@ -1,0 +1,364 @@
+{
+  "eval_set_id": "eval_set_1_new_user",
+  "name": "eval_set_1_new_user",
+  "eval_cases": [
+    {
+      "eval_id": "Zelda, Italian",
+      "conversation": [
+        {
+          "invocation_id": "e-0fc4dc20-03e2-49de-ad82-87639ad3d966",
+          "user_content": {
+            "parts": [{ "text": "hello" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Hello! Welcome to Sosta. Are you already a registered user?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-b5996050-1435-4496-911a-ffd98db91c65",
+          "user_content": {
+            "parts": [{ "text": "no, but I would like to register" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Great! I can help you with that. To get started, what is your full name?" }],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Gatekeeper",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "name": "transfer_to_agent",
+                        "args": { "agent_name": "Registratore" }
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "invocation_id": "e-8eddc992-3b2e-4fe8-9b4a-1ea912d46922",
+          "user_content": {
+            "parts": [{ "text": "Zelda Ailine Luconi" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Thank you, Zelda. What is your email address?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-df673033-4968-4a37-a131-7c92c5221352",
+          "user_content": {
+            "parts": [{ "text": "zelda.luconi@gmail.com" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Got it. What is your preferred language?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-f91b6f60-930f-4bdc-a6fe-1a5c6e86aa77",
+          "user_content": {
+            "parts": [{ "text": "Italian" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Perfetto! Now, what are your culinary or dietary preferences? For example, are you Vegetarian, Gluten-free, or do you have any allergies?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-c8b76ab5-487c-4870-82f4-cb759a808ee3",
+          "user_content": {
+            "parts": [{ "text": "I am Vegan, love pasta" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Great, thank you! Lastly, what type of vehicle do you drive? (e.g., Electric, Gasoline, Hybrid)" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-04b921d5-59c8-4762-b0bb-812ff767edd8",
+          "user_content": {
+            "parts": [{ "text": "Electic car" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Benvenuta, Zelda Ailine Luconi! Sono il Cameriere e sono qui per aiutarti a organizzare il tuo viaggio e le tue esperienze culinarie.\n\nPrima di iniziare, vorrei sapere: stai viaggiando con dei compagni? Se sì, hanno delle restrizioni dietetiche aggiuntive di cui dovrei essere a conoscenza?\n\nE qual è la tua destinazione finale?" }],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "name": "save_new_user",
+                        "args": {
+                          "email": "zelda.luconi@gmail.com",
+                          "full_name": "Zelda Ailine Luconi",
+                          "preferred_language": "Italian",
+                          "vehicle_type": "Electric",
+                          "culinary_preferences": ["Vegan", "Pasta"]
+                        }
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "name": "transfer_to_agent",
+                        "args": { "agent_name": "Cameriere" }
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "name": "extract_user_profile",
+                        "args": { "user_id": "usr_f93207" }
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "invocation_id": "e-4755d416-62c9-4d49-80f9-8f9e3b577c2c",
+          "user_content": {
+            "parts": [{ "text": "Sono sola e vado a Roma" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Perfetto, Zelda. Ricapitolando:\n\n* **User ID:** `usr_f93207`\n* **Nome:** Zelda Ailine Luconi\n* **Preferenze Dietetiche:** Vegana, ama la pasta.\n* **Veicolo:** Auto elettrica.\n* **Compagni di Viaggio:** Nessuno.\n* **Destinazione:** Roma.\n\nÈ corretto questo riepilogo?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-644ffcf3-af9c-4f9a-86bd-4ba3adfdc4a8",
+          "user_content": {
+            "parts": [{ "text": "yes" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Fantastico! Ora passerò tutti questi dettagli al Suggeritore, che si occuperà di fornirti i migliori consigli e raccomandazioni per il tuo viaggio e le tue esperienze culinarie a Roma." }],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "name": "transfer_to_agent",
+                        "args": { "agent_name": "Suggeritore" }
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "adk_agent_app",
+        "user_id": "user"
+      }
+    },
+    {
+      "eval_id": "Flora_English",
+      "conversation": [
+        {
+          "invocation_id": "e-d4385d1a-db26-436b-9845-8063914e5dad",
+          "user_content": {
+            "parts": [{ "text": "hello" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Hello! Welcome to Sosta. Are you already a registered user?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-2c754d24-6bb9-4913-9cd5-ef6bf70ffb78",
+          "user_content": {
+            "parts": [{ "text": "no, " }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Would you like to register?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-8bf3abd4-6d29-454c-9bd5-e2e4d12c9cf3",
+          "user_content": {
+            "parts": [{ "text": "Flora Rossi" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Thank you, Flora. What is your email address?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-903c7a5b-d2da-4b5e-8979-aee9fae67ce2",
+          "user_content": {
+            "parts": [{ "text": "f.rossi@gmail.com" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Great. What is your preferred language?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-7e233fe7-c365-4634-9a01-76abe750dda7",
+          "user_content": {
+            "parts": [{ "text": "English" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Understood. Do you have any culinary or dietary preferences, such as Vegetarian, Gluten-free, or anything else I should note?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-3721350a-dbc8-4f11-9253-96ed75cd05a8",
+          "user_content": {
+            "parts": [{ "text": "I eat everything" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Okay, noted! Finally, what type of vehicle do you drive? For example, Electric, Gasoline, or Hybrid?" }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-6bb9759c-5a3e-4f61-9304-64b05e68019b",
+          "user_content": {
+            "parts": [{ "text": "Gasoline" }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Hello Flora! Now that your registration is complete, I can help you plan your trip.\n\nFirst, are you traveling with companions, and if so, do they have any specific dietary restrictions or preferences I should be aware of?\n\nAlso, what is your final destination for this trip?" }],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "name": "save_new_user",
+                        "args": {
+                          "email": "f.rossi@gmail.com",
+                          "full_name": "Flora Rossi",
+                          "preferred_language": "English",
+                          "vehicle_type": "Gasoline",
+                          "culinary_preferences": ["No specific preferences"]
+                        }
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "name": "transfer_to_agent",
+                        "args": { "agent_name": "Cameriere" }
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "name": "extract_user_profile",
+                        "args": { "user_id": "usr_ee1d9f" }
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "invocation_id": "e-a3bc5325-48ab-444c-950e-b84d361114ee",
+          "user_content": {
+            "parts": [{ "text": "I am alone, going to Florence " }],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [{ "text": "Great, Flora! Thank you for the information.\n\nTo confirm, here's a summary of the details I have:\n* **User ID:** usr_ee1d9f\n* **Guest Name:** Flora Rossi\n* **Dietary Preferences:** You have no specific dietary preferences, and you are traveling alone, so no companion restrictions.\n* **Vehicle Type:** Gasoline\n* **Destination:** Florence\n\nDoes all of this sound correct? Once confirmed, I can pass these details to Suggeritore to start getting some recommendations for you." }],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        }
+      ],
+      "session_input": {
+        "app_name": "adk_agent_app",
+        "user_id": "user"
+      }
+    }
+  ]
+}
