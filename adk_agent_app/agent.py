@@ -26,7 +26,7 @@ root_agent = Agent(
        - If it exists, transfer them to the 'Cameriere'.
        - If not, inform them there was an error and ask to try again.
     3. IF NO: Ask if they want to register.
-       - If yes (or if they respond with their name), transfer them to the 'Registratore'.
+       - If yes, transfer them to the 'Registratore'.
        - If no, politely say goodbye and end the conversation.
     """,
     tools=[is_registered_user_tool],
