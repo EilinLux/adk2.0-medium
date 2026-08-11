@@ -1,6 +1,7 @@
 # agent/subagents/registratore_agent.py
 from google.adk.agents import Agent
 from ..tools.registratore_agent_tools import save_new_user_tool
+from ..schemas.user_schemas import RegistrationSummaryOutput
 
 registratore_agent = Agent(
     name="Registratore",
@@ -27,4 +28,20 @@ registratore_agent = Agent(
        - invoke transfer_to_agent('Cameriere') immediately
     """,
     tools=[save_new_user_tool],
+    output_key="raw_registration_result"  # Saves output text/result to session state
+)
+
+# 2. Downstream Formatter Agent (Applies output_schema strictly without tools)
+registration_formatter_agent = Agent(
+    name="RegistrationFormatter",
+    model="gemini-2.5-flash",
+    description="Formats raw registration output into structured JSON for downstream orchestrators.",
+    instruction="""
+    Extract the registration status, user_id, full_name, and preferred_language from this execution result:
+    {raw_registration_result}
+
+    Respond ONLY with valid JSON matching the provided output schema. No markdown fences, no preamble.
+    """,
+    output_schema=RegistrationSummaryOutput,  # Enforces Pydantic contract
+    output_key="structured_registration_summary"
 )
