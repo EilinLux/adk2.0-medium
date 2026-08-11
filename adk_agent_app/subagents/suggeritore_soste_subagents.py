@@ -1,7 +1,13 @@
 # adk_agent_app/subagents/suggeritore_soste_subagents.py
 from google.adk.agents import Agent
-from ..tools.suggeritore_agent_route_tools import route_generator_tool
+
+from ..schemas.suggeritore_schemas import (
+    MenuCheckerInput,
+    RoutePlannerInput,
+    SosteSearchInput,
+)
 from ..tools.suggeritore_agent_bq_soste_tools import soste_search_tool
+from ..tools.suggeritore_agent_route_tools import route_generator_tool
 
 # Placeholder for MCP integration in 05b:
 # import asyncio
@@ -28,7 +34,7 @@ from ..tools.suggeritore_agent_bq_soste_tools import soste_search_tool
 #     async with stdio_client(mcp_params) as (read, write):
 #         async with ClientSession(read, write) as session:
 #             await session.initialize()
-            
+#
 #             # Argomenti da passare al FastMCP tool
 #             args = {
 #                 "latitude": latitude,
@@ -36,11 +42,9 @@ from ..tools.suggeritore_agent_bq_soste_tools import soste_search_tool
 #             }
 #             if fuel_type:
 #                 args["fuel_type"] = fuel_type
-                
+#
 #             result = await session.call_tool("find_soste_by_fuel_and_location", arguments=args)
 #             return str(result.content)
-        
- 
 
 
 # SUB-AGENT 1: Route Planner
@@ -50,11 +54,12 @@ route_planner_agent = Agent(
     description="Calculates route direction and target midpoint stop coordinates for a given origin and destination city.",
     instruction="""
     You are the Route Planner Specialist.
-    When given origin and destination cities, call 'calculate_route_and_target_stop' to determine 
-    the optimal midpoint stop coordinates (latitude and longitude).
+    When given `origin_city` and `destination_city`, call `calculate_route_and_target_stop` to determine
+    the optimal midpoint stop coordinates (`latitude` and `longitude`).
     Return the coordinates and route summary clearly.
     """,
-    tools=[route_generator_tool]
+    input_schema=RoutePlannerInput,
+    tools=[route_generator_tool],
 )
 
 # SUB-AGENT 2: Highway Stops Search
@@ -64,11 +69,13 @@ soste_search_agent = Agent(
     description="Searches BigQuery for highway service areas and restaurants near target coordinates matching vehicle fuel or charging requirements.",
     instruction="""
     You are the Highway Service Areas Specialist.
-    Call 'find_soste_by_fuel_and_location' using the latitude, longitude, and required fuel/charging type.
-    If no stops are found for a specific fuel type, retry without the fuel_type filter to return all available nearby stops.
+    Call `find_soste_by_fuel_and_location` using the `latitude`, `longitude`, and `fuel_type` provided in the input JSON.
+    If no stops are found for a specific fuel type, retry without the `fuel_type` filter to return all available nearby stops.
+    Return the list of stops found, including their exact `stop_name`, `fuel_types`, `services`, and `distance_meters`.
     """,
+    input_schema=SosteSearchInput,
     # tools=[get_mcp_soste_session]  # Using the MCP session for BigQuery access
-    tools=[soste_search_tool]   # Using the FunctionTool for BigQuery access
+    tools=[soste_search_tool],  # Using the FunctionTool for BigQuery access
 )
 
 # SUB-AGENT 3: Menu & Dietary Checker
@@ -78,7 +85,8 @@ menu_checker_agent = Agent(
     description="Evaluates restaurant services and menu options against user and companion dietary preferences.",
     instruction="""
     You are a Dining and Dietary Specialist.
-    Review the list of highway stops provided to you and compare their available services and dining options against the user's dietary preferences.
-    Highlight special amenities (e.g., 'FRESH_PASTRY', 'PANORAMIC_VIEW') and rank the best matching options.
-    """
+    Review the `stop_names` provided in the input JSON and evaluate how well each stop's dining and restaurant services suit the `dietary_preferences`.
+    Rank the best matching stops and highlight why they are recommended for the traveler's diet.
+    """,
+    input_schema=MenuCheckerInput,
 )
