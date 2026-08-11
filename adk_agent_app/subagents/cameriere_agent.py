@@ -27,8 +27,9 @@ cameriere_agent = Agent(
 
     4. HANDOFF PREPARATION:
        - Summarize all gathered details clearly: User ID, Profile Preferences, Companion Restrictions, and Destination.
-       - Confirm the summary with the user before passing details to Suggeritore for recommendations.
     """,
+       #- Confirm the summary with the user before passing details to Suggeritore, invoke transfer_to_agent('Suggeritore') immediately"
+    
     tools=[extract_user_profile_tool, update_dietary_preferences_tool],
     #sub_agents=[suggeritore_agent]
 )

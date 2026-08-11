@@ -13,7 +13,7 @@ PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
 APPLICATION_DB_NAME = os.getenv("APPLICATION_DB_NAME", "adk-agent-dev-application-db-dev-fs")
 
 def _get_firestore_client():
-    return firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+    return firestore.Client(project=PROJECT_ID, database=APPLICATION_DB_NAME)
 
 async def extract_user_profile(user_id: str, tool_context: ToolContext) -> Dict[str, Any]:
     """

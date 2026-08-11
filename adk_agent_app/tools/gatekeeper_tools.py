@@ -14,7 +14,7 @@ APPLICATION_DB_NAME = os.getenv("APPLICATION_DB_NAME", "adk-agent-dev-applicatio
 
 def _get_firestore_client():
     """Lazy initializer to prevent gRPC fork / event loop conflicts."""
-    return firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+    return firestore.Client(project=PROJECT_ID, database=APPLICATION_DB_NAME)
 
 
 async def is_registered_user(user_id: str, tool_context: ToolContext) -> Dict[str, Any]:
