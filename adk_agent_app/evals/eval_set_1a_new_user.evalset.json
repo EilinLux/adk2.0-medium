@@ -18,14 +18,12 @@
           "final_response": {
             "parts": [
               {
-                "text": "Hello! Welcome to Sosta. May I ask if you are already registered with us?",
-                "thought_signature": "CrUBAY89a18xEL6jSximxJSAalWBf_s6t1d3m9MtEfWtPpkZyhoyQKFcrZo6DRXdoXM5pRRo4ySsdk3Ftu8qQnNE82qEezmO17-_mDy2AudiyZP8GV_ugCKO41PHnIeVGIWQCd77ZJcNdHpl_vBH2G11UJwTyfBCobn1Cowu6IYloZiIwfEHHtpNQ114sQFHYwOXaMhRTPbuOiYJ3t0svag9onnjt6sAogRVbns6u2bt0GDbF6EHSQ=="
+                "text": "Hello! Welcome to Sosta. May I ask if you are already registered with us?"
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {},
-          "creation_timestamp": 1789461596.5247638
+          "intermediate_data": {}
         },
         {
           "invocation_id": "e-b6acc69d-9b56-406f-a055-eeb2df8b9813",
@@ -40,8 +38,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Great! I can help you with that. To get you registered, I'll need a few details. Could you please provide your full name, email address, your preferred language, any culinary or dietary preferences you have (like Vegetarian or Gluten-free), and the type of vehicle you drive (e.g., Electric, Gasoline, Hybrid)?",
-                "thought_signature": "CtsCAY89a18IBeK3EdA-pl8PrdscH7NRpXdFXePAuvMUSA-apPrNbyjIVS99-lqpX_OWAh30aMkw-I_qSgZrEP7ofIGiCL0LOv1ZEUM5wLT_tvUOM8wKeoLrgHHyyu9sX-GCNPwSNT3Bd39k-vCcQyC1GmcMNjhYDzNiQO2jydu54nZN-sOHy8tNojQ2irRvH-ZgHiqRFIXYQrZ_qjsfwAsukXcpZBjXOmyg0v-HclvZlkPgkFle_trULc2JRtdvem_Sfjz8QZSDaZ7RJWDsonZr47TtqS4FngciLfsVKuS5EX__OeCqbvag7jAEqKURA5vbsiDznLyuF-bFVhpjtQvxrLRo3CwjUkvvAUJTPL5CkWX4-GA2yRGDcV7jVpsg_LqyiF-RPDxWJoPSRzPPGuPxjzkwtz_Fi342xsODBcbP8qTnOZxRlOH1AAX4SJQLWFQ8JlQ9-_ROrfdnBus="
+                "text": "Great! I can help you with that. To get you registered, I'll need a few details. Could you please provide your full name, email address, your preferred language, any culinary or dietary preferences you have (like Vegetarian or Gluten-free), and the type of vehicle you drive (e.g., Electric, Gasoline, Hybrid)?"
               }
             ],
             "role": "model"
@@ -54,38 +51,18 @@
                   "parts": [
                     {
                       "function_call": {
-                        "id": "adk-50be4977-acfd-42af-8a0d-8ec7cf32a019",
                         "args": {
                           "agent_name": "Registratore"
                         },
                         "name": "transfer_to_agent"
-                      },
-                      "thought_signature": "CsMBAY89a1_mB54MJDIZUV6JYXFraTML-qppzY6ikIBJ5ItQe4wsbPqlyk5LjeXAEclydxxmjHor5zbQmq0hswRVfsQTmvE9O_mJ_L5MEA_EtnpylTwSJyJTKnNCm5-j8fhsUXXviMVNa_hzTTkqyioAg0MGyzwTVnR0iZJZi4IBedvQowxxyhb-0vLhPLogRRhlzWZj39fAZnSMU6NJSICaqE7KMbzs__AwGI88Lgq4mHooU8fLJc7QMujXJXsdoijntFhC"
+                      }
                     }
                   ],
                   "role": "model"
                 }
-              },
-              {
-                "author": "Gatekeeper",
-                "content": {
-                  "parts": [
-                    {
-                      "function_response": {
-                        "id": "adk-50be4977-acfd-42af-8a0d-8ec7cf32a019",
-                        "name": "transfer_to_agent",
-                        "response": {
-                          "result": null
-                        }
-                      }
-                    }
-                  ],
-                  "role": "user"
-                }
               }
             ]
-          },
-          "creation_timestamp": 1789461612.7956648
+          }
         },
         {
           "invocation_id": "e-58e84eaf-cd07-48a7-8554-9d56395fa482",
@@ -100,8 +77,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Hello Zelda Ailine Luconi! I see you're all set up with your profile, and it looks like you prefer Vegan food and drive an Electric car.\n\nTo help me plan your trip, could you tell me if you're traveling with companions? If so, do they have any dietary restrictions? Also, what is your final destination?",
-                "thought_signature": "CvMDAY89a19FMaaUXWsS3uJGMffBAI6eVNUHIPU09bK-GKqbEM-gGZyY6bH8l79QMuh4IoB-Og-ONmXM7Sn-tfnkcL-245AV5vESp7xoOoDzLrPDu28j7nr0lgd843shRsQgoNb0fccwSevbuQwEuCwwKA0epKputBViELlDjZPtO_dgFEXIJbE7dNgwUkvFjhNfassP33r8zDsn7GnPMOjStan8hZmIfsfsN2ctM5HPAbbiFfbpmt0JwL676wHqhGmwdnYAdMxnwXg615Oz02aGQJPTfi0Jw6uI-yaJwC3zEKGxit7GUldinHTav6E1B0_HSONn7UtdquhwHTKtNXkEr1kG-sUTZWpex-XS90G0Q1t5WTFWZAWwrIvhXMnPXn7KnC5U-w4jSZWmVJCUCg0suuzRsYNvp4iBBd8T9dAxFtLvzfpCMy8NQcZhh90Dc1LG9cZGpDxJCTINZkTraDFDLQ_zdZYXp-PeqLhXQHzKfxRtKWUVFJAeoyza6rHfAyZxMXeHMkrHE_val-oK1Ko6Mo6Z7zlMqZNPYYI0Dt1s_yRV8u_B8mWfxrGVYrinF0gYUD0PulX9VfxchMAnTD-T_r8Yr-g5Ryc3Se4yGY1IyS4eUvHY_WKnNB7dBrNAEpZz2YIYnaqoiUyanOYqMawpzFn0Vg=="
+                "text": "Hello Zelda Ailine Luconi! I see you're all set up with your profile, and it looks like you prefer Vegan food and drive an Electric car.\n\nTo help me plan your trip, could you tell me if you're traveling with companions? If so, do they have any dietary restrictions? Also, what is your final destination?"
               }
             ],
             "role": "model"
@@ -114,7 +90,6 @@
                   "parts": [
                     {
                       "function_call": {
-                        "id": "adk-17536a18-8536-4c2d-b128-ef53704e1791",
                         "args": {
                           "culinary_preferences": [
                             "Vegan"
@@ -125,8 +100,7 @@
                           "vehicle_type": "Electric"
                         },
                         "name": "save_new_user"
-                      },
-                      "thought_signature": "Cr8DAY89a18fkTxbcbeYXc6xQDxQRJNDHzAgPvCJ2SkL_04hGsV5ffTCw63gL7zi_d3pjV6WLKVH3eWfMrP_ZkIixSAPnHTHNPbsWjODruU_oe1t8taF2B2fJ84ODku1KqvL6IBfv_q6NfXM4Qbj7KYYnFrvv-juPXEduTmhJ6PFPNkDJCk90zBGbokbeVFx1Gkm_S5__GFH7kb6Tpoz_Z8-ksYFDik_SPK8kZBsc-v87GHnz52jtNmUm1qpeJlRdRPNiJxFJ3nHxUnl7Rf1OjMc8IcQ4UjDiFOCngmNZRh3WTYx5SAIqR1OZNEvkMUw1ynxq3s49wYGNu0FYV797Q3fqcbfxD9G5gjbk1JnuJ4FQYs0dYHP7r5SiLCCx0otyf0CndY_RdIE3buRntVnnUaedrKYXZ3NvlTulcRi3eBv4vtC5jHPBEE1McRhNKuC67fdtzz5MQ8MwOILX_HT4drsMgjzB-OcI9GjwD1Byo1Ax6Mw1bobfCVl65i5fw25wkFZ35XNXVwviCLgO9cW0Abh6tEKZOy6TtwZoxKSVzo-oG4Sw91GLtcXlwLs1rM-HZkLyBPP60xU0_q1T6gR8XWJ"
+                      }
                     }
                   ],
                   "role": "model"
@@ -137,31 +111,7 @@
                 "content": {
                   "parts": [
                     {
-                      "function_response": {
-                        "id": "adk-17536a18-8536-4c2d-b128-ef53704e1791",
-                        "name": "save_new_user",
-                        "response": {
-                          "status": "success",
-                          "user_id": "usr_7c0adf",
-                          "message": "Successfully registered Zelda Ailine Luconi with ID 'usr_7c0adf'."
-                        }
-                      }
-                    }
-                  ],
-                  "role": "user"
-                }
-              },
-              {
-                "author": "Registratore",
-                "content": {
-                  "parts": [
-                    {
-                      "text": "Wonderful! Your registration is complete, Zelda Ailine Luconi. Your User ID is 'usr_7c0adf'.\n\nI'm now handing you over to our Cameriere, who will help you organize your trip and dining experiences.",
-                      "thought_signature": "CqADAY89a18Ybfh1kgaLcfYsKh2LDr-SduMwr6BpVfMtZPnKdLnMBC-vqbcj-fV2TgcYgkaMXB3FB9FuOEh4h0nYdk6eINCmE0X2y0yljk-a2ibwg2T8NbrgdJMLCxjuXuAthT9BKGvbwPuN0y3BU-d4NSNZBAoNgYIew78S1oxOMpJWZpJ-2Ob7Vw7yUap2iiU6rC9H0QXhEpSoZcHobJ0QIrCk7_GF0V-ZLjqNG0g55daxX-XqfiqT_6VbvSCT-z22DEM-DPDea481TKaCvPodB7JxUuovsdtFNNSP7UeU0lNVF4mvP4fmwokGxWB2Rr-nx0f0xoHlW_4ZNuWBot_hxTjbxzQ-S9kziI1ZmiaDDjgtgMKkF3pWVhkwCIqgjS3uj7gSexxj7UKALnFln0g3XZbSbQISOa5oS9DmrWryG6WyEvYC6gxSqTGJDnVux8gKhmB5IYDWWdsQon9zZQ9ZiVnairxbnY97SClnBpMHO5LFsijwUELxudBxaiKI_Jnk7O1tCJjnKary7LugEh6AE6iwMlSk-l7chb35FzsRSL0="
-                    },
-                    {
                       "function_call": {
-                        "id": "adk-33cc1328-cc11-4ee5-9e82-8a3565bb6628",
                         "args": {
                           "agent_name": "Cameriere"
                         },
@@ -173,77 +123,23 @@
                 }
               },
               {
-                "author": "Registratore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_response": {
-                        "id": "adk-33cc1328-cc11-4ee5-9e82-8a3565bb6628",
-                        "name": "transfer_to_agent",
-                        "response": {
-                          "result": null
-                        }
-                      }
-                    }
-                  ],
-                  "role": "user"
-                }
-              },
-              {
                 "author": "Cameriere",
                 "content": {
                   "parts": [
                     {
                       "function_call": {
-                        "id": "adk-31764609-e83d-48f5-92c2-12eab5aa8b40",
                         "args": {
                           "user_id": "usr_7c0adf"
                         },
                         "name": "extract_user_profile"
-                      },
-                      "thought_signature": "CrsDAY89a1_WPOu3EV4Ch4Qu5wlzNZcPOU4NdFEEUEo8bqlSbnp0PL81u_drUwxpoA80x3D6yAe8HqQ5Ik5KcENOx-OZeazcqXM0c5vKfTUHq8CJ8DVduybXEEQkAenNyO3M92PilsvDJQa0HCof5r-x-XqtWgALZHEIbIrd1zykDwGlRmRJ3CHmQI7tAd8ZRs83sUZCxbs2MAUfO_-dxAvQnlg6pDvwSqlEcMFZKs2Rjyn7Ku1Xo9YntO7z6btLwXKL325yPlU1v6_1SSnZ5yuB5hlhMKdEryQra2JYbgFisoFfsKMXd01IibBa1BxW622ogct_cAccKVthhErGL1zBgC41mwZ6ENU6vsyCQ8NtRcVlNEyhaUwWw8lTWGKyt7uTCco08YoojOTvgOLa-4eu5SqAm8cYwcgNi7bV-eMcfBmtykk9qO5LfEPPNibD-dGpEFoPLB81-ZWHoR0dY59pqi_x3TisHTqKxc82dzCMdPkg_B4sos1lwuqc2p6hUZ3I9yKrZFF6UGN80gQCfYWJIpGDIqEgOLFBQxiUemzFWoWAqjF5rFviHKjpFkbbRBS7WO1g0MPeq83Bhgc="
+                      }
                     }
                   ],
                   "role": "model"
                 }
-              },
-              {
-                "author": "Cameriere",
-                "content": {
-                  "parts": [
-                    {
-                      "function_response": {
-                        "id": "adk-31764609-e83d-48f5-92c2-12eab5aa8b40",
-                        "name": "extract_user_profile",
-                        "response": {
-                          "status": "success",
-                          "message": "Session loaded for Zelda Ailine Luconi.",
-                          "profile": {
-                            "vehicle": {
-                              "connector_type": null,
-                              "battery_capacity_kWh": null,
-                              "vehicle_type": "Electric"
-                            },
-                            "full_name": "Zelda Ailine Luconi",
-                            "created_at": "2026-09-15T08:41:37.736065Z",
-                            "culinary_preferences": [
-                              "Vegan"
-                            ],
-                            "preferred_language": "English",
-                            "user_id": "usr_7c0adf",
-                            "email": "zelda.luconi@gmail.com",
-                            "account_status": "active"
-                          }
-                        }
-                      }
-                    }
-                  ],
-                  "role": "user"
-                }
               }
             ]
-          },
-          "creation_timestamp": 1789461694.2974
+          }
         },
         {
           "invocation_id": "e-98b0b5a5-5772-438f-9fe0-cf01aafa7d30",
@@ -258,14 +154,12 @@
           "final_response": {
             "parts": [
               {
-                "text": "Excellent! So, to confirm, you are Zelda Ailine Luconi (User ID: usr_7c0adf), your culinary preference is Vegan, and you drive an Electric car. You're traveling alone, and your destination is Rome.\n\nDoes this all sound correct?",
-                "thought_signature": "CqQGAY89a18SRlFFGSVwinQc4PoULfGQFRSWnY7xkzfUDprfTUVXxTwZaTAyoZBzzO6e0EkjpF0SfexfeHudkxYWyiYr1nmNn-7kjJrxHjNIRfEFk48urdxRnexzOx09O1WItku-9c-VQjhlaGD49UCNvUNFmyfqJ3iwvaG0zoolCIDwxOAT6upuQMGESEKEQPiGhcoTtp-eQbmZdOzQku-vXcssmcis7RVj1Ddlnh1XuiOJFQ3IiAKcq1J3kCazeHRz5o6p13f34GQx80zwmJMPhJrl1jYW9qvAxzLtCXD2FyD44DEiGpG9Zw6MBFi9guJ8BXq8gjiePsmsOBCmNXseXACkQP-QyhfKjWhDV6kKT62gJaWTBUJ3EPgtQN3sbIB6WLNzh7bWne7nV8GZXxyKRRDFNNwTIbg81I5Hu8tTiLAQ-P5pNN9PDW2oCWPhhVSXutrE3WexQjxrV8kIGB1T7yden8gm3pxgv8kmoVhTXxUWwLH-rUFcZaVyBXochJ4z7S1BUDXW3QhUaiTV-qBaqPapZ31_ZbUa_JlgsBnzBCGo1D3K4IvkFpxuS6UnDs1jblcpvK1ctPL84-dzE2QFlFmzQv1ZJJ0UF4ey0ylmvAlBwM39L1svgrsBb8pf-21kR2SgFFxzmy5omIIqMG2r6DjSd4XKVvqQnWypiTlS70qWpD14U9A-bsH9FkPjF0U3IqVrscC-ghYGjvKsxOd071AYv_aJgvCjZP5T9kyQnqhqqQZZcN6lgn4iHgEODcGkKM4cVryGbc37Q3YjVc8RMXt3ymbwpjcR0CUmy58CPjl2S9EessGmmYP3xDjePGS_tFqzP7pZWnQ1GHW1pTpDhsst-jhYWwiLGcycRZvYEuhFG4k9QJSQQquyS-qdmxKvNuQhFkvxsA8gOw2aMThNAWMF7HuBm-AbSD1HYeSsP-lO3B3Xniwyod3cbdVOFG8Q1etRwGC5Ckr1Y2Gfm9C_ZKz6y59TCs50PVBQtHxQcoG9sffzes_6ah7x_8tdYeWpA1Fq4Ttms7ze4bnLdAza6jj028sRxFn_zpcr8kFErhSDvnq2"
+                "text": "Excellent! So, to confirm, you are Zelda Ailine Luconi (User ID: usr_7c0adf), your culinary preference is Vegan, and you drive an Electric car. You're traveling alone, and your destination is Rome.\n\nDoes this all sound correct?"
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {},
-          "creation_timestamp": 1789461733.156924
+          "intermediate_data": {}
         },
         {
           "invocation_id": "e-ef120b86-2e34-464e-a399-c89932dd0228",
@@ -285,16 +179,13 @@
             ],
             "role": "model"
           },
-          "intermediate_data": {},
-          "creation_timestamp": 1789461748.3490272
+          "intermediate_data": {}
         }
       ],
       "session_input": {
         "app_name": "adk_agent_app",
         "user_id": "zelda_en_test_user"
-      },
-      "creation_timestamp": 1789461969.127402
+      }
     }
-  ],
-  "creation_timestamp": 1789461963.549566
+  ]
 }
