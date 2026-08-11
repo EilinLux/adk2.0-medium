@@ -1,28 +1,37 @@
+# adk_agent_app/tools/suggeritore_agent_bq_mcp_soste_tool.py
 import json
+import logging
 import os
+import sys
+from typing import Optional
+
+from dotenv import load_dotenv
 from google.cloud import bigquery
 from mcp.server.mcpserver import MCPServer
-import logging
-from dotenv import load_dotenv
 
-load_dotenv()  # Load .env file 
+load_dotenv()  # Load .env file
 
 # ==========================================
 # 0. SETUP & DATABASE INITIALIZATION
 # ==========================================
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+# Note: MCP stdio servers communicate over stdout, so all logs MUST go to stderr.
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: %(message)s",
+    stream=sys.stderr,
+)
 logger = logging.getLogger(__name__)
-
-
 
 mcp = MCPServer("BigQuery-Soste-Server")
 
-FULL_TABLE_PATH = f"{os.getenv('GOOGLE_CLOUD_PROJECT')}.{os.getenv('DATASET_ID')}.{os.getenv('TABLE_ID')}"
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+BIGQUERY_DATASET = os.getenv("BIGQUERY_DATASET", "soste_app_dev")
+BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE", "db_soste")
+FULL_TABLE_PATH = f"{PROJECT_ID}.{BIGQUERY_DATASET}.{BIGQUERY_TABLE}"
 
 try:
-    bq_client = bigquery.Client(project=os.getenv('GOOGLE_CLOUD_PROJECT'))
-
-    logger.info(f"BigQuery client initialized for project: {os.getenv('GOOGLE_CLOUD_PROJECT')}")
+    bq_client = bigquery.Client(project=PROJECT_ID)
+    logger.info(f"BigQuery client initialized for project: {PROJECT_ID}")
 except Exception as e:
     logger.error(f"Failed to initialize BigQuery client: {e}")
     bq_client = None
@@ -33,13 +42,21 @@ except Exception as e:
 def find_soste_by_fuel_and_location(
     latitude: float,
     longitude: float,
-    fuel_type: str = None,
+    fuel_type: Optional[str] = None,
     radius_meters: int = 150000,  # 150km default
-    limit: int = 5
+    limit: int = 5,
 ) -> str:
-    """
-    Queries BigQuery for highway service areas and restaurants within a search radius.
-    Includes full execution logging for debugging.
+    """Queries BigQuery for highway service areas and restaurants within a search radius.
+
+    Args:
+        latitude: Target midpoint latitude coordinate.
+        longitude: Target midpoint longitude coordinate.
+        fuel_type: Optional vehicle fuel or charging type (e.g., 'ELECTRIC_FAST', 'GASOLINE').
+        radius_meters: Search radius in meters around the target coordinates (default 150000).
+        limit: Maximum number of stops to return (default 5).
+
+    Returns:
+        str: JSON-encoded list of matching highway stops or an error dictionary.
     """
     logger.info("=" * 60)
     logger.info("MCP TOOL CALLED: find_soste_by_fuel_and_location")
@@ -54,16 +71,16 @@ def find_soste_by_fuel_and_location(
         logger.error(err_msg)
         return json.dumps({"error": err_msg})
 
-    # Recupera i metadati della tabella senza eseguire query SQL
-    table_ref = bq_client.get_table(FULL_TABLE_PATH)
-    total_rows = table_ref.num_rows
-
-    if total_rows == 0:
-        err_msg = f"Big query table `{FULL_TABLE_PATH}` is empty! "
-        logger.error(err_msg)
-        return json.dumps({"error": err_msg})
-
     try:
+        # Retrieve table metadata without running a full SQL scan
+        table_ref = bq_client.get_table(FULL_TABLE_PATH)
+        total_rows = table_ref.num_rows
+
+        if total_rows == 0:
+            err_msg = f"BigQuery table `{FULL_TABLE_PATH}` is empty!"
+            logger.error(err_msg)
+            return json.dumps({"error": err_msg})
+
         # Validate coordinates
         if latitude is None or longitude is None:
             err_msg = f"Invalid coordinates received: lat={latitude}, lon={longitude}"
@@ -83,13 +100,20 @@ def find_soste_by_fuel_and_location(
             clean_fuel = fuel_type.upper().strip()
             # Map common LLM string variants to BigQuery enum strings
             fuel_mapping = {
-                "GASOLINE": "GASOLINE", "BENZINA": "GASOLINE", "PETROL": "GASOLINE",
-                "DIESEL": "DIESEL", "GASOLIO": "DIESEL",
-                "LPG": "LPG", "GPL": "LPG",
-                "METHANE": "METHANE", "METANO": "METHANE",
-                "ELECTRIC": "ELECTRIC_FAST", "EV": "ELECTRIC_FAST",
-                "ELECTRIC_FAST": "ELECTRIC_FAST", "ELECTRIC_ULTRAFAST": "ELECTRIC_ULTRAFAST",
-                "ELECTRIC_STANDARD": "ELECTRIC_STANDARD"
+                "GASOLINE": "GASOLINE",
+                "BENZINA": "GASOLINE",
+                "PETROL": "GASOLINE",
+                "DIESEL": "DIESEL",
+                "GASOLIO": "DIESEL",
+                "LPG": "LPG",
+                "GPL": "LPG",
+                "METHANE": "METHANE",
+                "METANO": "METHANE",
+                "ELECTRIC": "ELECTRIC_FAST",
+                "EV": "ELECTRIC_FAST",
+                "ELECTRIC_FAST": "ELECTRIC_FAST",
+                "ELECTRIC_ULTRAFAST": "ELECTRIC_ULTRAFAST",
+                "ELECTRIC_STANDARD": "ELECTRIC_STANDARD",
             }
             mapped_fuel = fuel_mapping.get(clean_fuel, clean_fuel)
             logger.info(f"  -> Mapped fuel_type '{fuel_type}' to '{mapped_fuel}'")
@@ -125,7 +149,9 @@ def find_soste_by_fuel_and_location(
 
         # FALLBACK: If primary query returned 0 rows and fuel_type was used, retry without fuel_type
         if not results and fuel_type:
-            logger.warning("Primary query returned 0 rows. Attempting FALLBACK QUERY (ignoring fuel_type filter)...")
+            logger.warning(
+                "Primary query returned 0 rows. Attempting FALLBACK QUERY (ignoring fuel_type filter)..."
+            )
             fallback_query = f"""
                 SELECT 
                     stop_name,
@@ -152,7 +178,9 @@ def find_soste_by_fuel_and_location(
 
         # Log found results
         for idx, row in enumerate(results, 1):
-            logger.info(f"  Result #{idx}: {row.get('stop_name')} - Distance: {row.get('distance_meters')}m")
+            logger.info(
+                f"  Result #{idx}: {row.get('stop_name')} - Distance: {row.get('distance_meters')}m"
+            )
 
         logger.info("=" * 60)
         return json.dumps(results, ensure_ascii=False)

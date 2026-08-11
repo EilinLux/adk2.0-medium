@@ -177,8 +177,7 @@
                           "preferred_language": "Italian",
                           "vehicle_type": "Electric",
                           "culinary_preferences": [
-                            "Vegan",
-                            "Pasta"
+                            "Vegan"
                           ]
                         }
                       }
@@ -211,7 +210,7 @@
                       "function_call": {
                         "name": "extract_user_profile",
                         "args": {
-                          "user_id": "usr_f93207"
+                          "user_id": "usr_7c0adf"
                         }
                       }
                     }
@@ -235,7 +234,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Perfetto, Zelda. Ricapitolando:\n\n* **User ID:** `usr_f93207`\n* **Nome:** Zelda Ailine Luconi\n* **Preferenze Dietetiche:** Vegana, ama la pasta.\n* **Veicolo:** Auto elettrica.\n* **Compagni di Viaggio:** Nessuno.\n* **Destinazione:** Roma.\n\nÈ corretto questo riepilogo?"
+                "text": "Perfetto, Zelda. Ricapitolando:\n\n* **User ID:** `usr_7c0adf`\n* **Nome:** Zelda Ailine Luconi\n* **Preferenze Dietetiche:** Vegana, ama la pasta.\n* **Veicolo:** Auto elettrica.\n* **Compagni di Viaggio:** Nessuno.\n* **Destinazione:** Roma.\n\nÈ corretto questo riepilogo?"
               }
             ],
             "role": "model"
@@ -255,7 +254,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Fantastico! Ora passerò tutti questi dettagli al Suggeritore, che si occuperà di fornirti i migliori consigli e raccomandazioni per il tuo viaggio e le tue esperienze culinarie a Roma."
+                "text": "Ecco l'itinerario consigliato per il tuo viaggio da Milano a Roma con il tuo veicolo elettrico e le tue preferenze vegane:\n\n1. **Badia al Pino Est**\n   * **Posizione:** Lungo il percorso da Milano a Roma.\n   * **Ricarica:** Dispone di ricarica rapida **ELECTRIC_FAST**.\n   * **Opzioni Vegane:** Ristorante con insalate, pasta al pomodoro e verdure grigliate.\n\n2. **Cantagallo**\n   * **Posizione:** Lungo il percorso da Milano a Roma.\n   * **Ricarica:** Dispone di ricarica rapida **ELECTRIC_FAST**.\n   * **Opzioni Vegane:** Offre opzioni vegane come insalate, primi piatti di pasta, verdure e latte vegetale per la colazione.\n\n3. **Sillaro Ovest** e **Secchia Ovest**\n   * **Ricarica:** Entrambe dispongono di colonnine **ELECTRIC_FAST** e servizi di ristorazione adatti a chi segue una dieta vegana.\n\nBuon viaggio verso Roma!"
               }
             ],
             "role": "model"
@@ -268,10 +267,69 @@
                   "parts": [
                     {
                       "function_call": {
-                        "name": "transfer_to_agent",
                         "args": {
                           "agent_name": "Suggeritore"
-                        }
+                        },
+                        "name": "transfer_to_agent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "destination_city": "Roma",
+                          "origin_city": "Milano"
+                        },
+                        "name": "RoutePlannerAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "fuel_type": "ELECTRIC_FAST",
+                          "latitude": 43.678,
+                          "longitude": 10.8506
+                        },
+                        "name": "SosteSearchAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "dietary_preferences": [
+                            "Vegan"
+                          ],
+                          "stop_names": [
+                            "Badia al Pino Est",
+                            "Cantagallo",
+                            "Sillaro Ovest",
+                            "Secchia Ovest"
+                          ]
+                        },
+                        "name": "MenuCheckerAgent"
                       }
                     }
                   ],
@@ -284,7 +342,7 @@
       ],
       "session_input": {
         "app_name": "adk_agent_app",
-        "user_id": "flora_test_user"
+        "user_id": "zelda_test_user"
       }
     },
     {
@@ -335,7 +393,7 @@
           "user_content": {
             "parts": [
               {
-                "text": "Flora Rossi"
+                "text": "Yes, my name is Flora Rossi"
               }
             ],
             "role": "user"
@@ -494,7 +552,7 @@
                       "function_call": {
                         "name": "extract_user_profile",
                         "args": {
-                          "user_id": "usr_ee1d9f"
+                          "user_id": "usr_ba7db8"
                         }
                       }
                     }
@@ -518,7 +576,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Great, Flora! Thank you for the information.\n\nTo confirm, here's a summary of the details I have:\n* **User ID:** usr_ee1d9f\n* **Guest Name:** Flora Rossi\n* **Dietary Preferences:** You have no specific dietary preferences, and you are traveling alone, so no companion restrictions.\n* **Vehicle Type:** Gasoline\n* **Destination:** Florence\n\nDoes all of this sound correct? Once confirmed, I can pass these details to Suggeritore to start getting some recommendations for you."
+                "text": "Great, Flora! Thank you for the information.\n\nTo confirm, here's a summary of the details I have:\n* **User ID:** usr_ba7db8\n* **Guest Name:** Flora Rossi\n* **Dietary Preferences:** You have no specific dietary preferences, and you are traveling alone, so no companion restrictions.\n* **Vehicle Type:** Gasoline\n* **Destination:** Florence\n\nDoes all of this sound correct? Once confirmed, I can pass these details to Suggeritore to start getting some recommendations for you."
               }
             ],
             "role": "model"
@@ -528,7 +586,7 @@
       ],
       "session_input": {
         "app_name": "adk_agent_app",
-        "user_id": "zelda_test_user"
+        "user_id": "flora_test_user"
       }
     }
   ]

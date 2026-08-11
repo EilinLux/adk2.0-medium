@@ -1,16 +1,15 @@
-# agent/tools/soste_tools.py
+# adk_agent_app/tools/suggeritore_agent_bq_soste_tools.py
 import json
 from google.cloud import bigquery
 from google.adk.tools import FunctionTool
-import os 
-from ..config import logger
-FULL_TABLE_PATH = f"{os.getenv('GOOGLE_CLOUD_PROJECT')}.{os.getenv('DATASET_ID')}.{os.getenv('TABLE_ID')}"
+from ..config import BIGQUERY_DATASET, BIGQUERY_TABLE, PROJECT_ID, logger
+
+FULL_TABLE_PATH = f"{PROJECT_ID}.{BIGQUERY_DATASET}.{BIGQUERY_TABLE}"
 
 
 try:
-    bq_client = bigquery.Client(project=os.getenv('GOOGLE_CLOUD_PROJECT'))
-
-    logger.info(f"BigQuery client initialized for project: {os.getenv('GOOGLE_CLOUD_PROJECT')}")
+    bq_client = bigquery.Client(project=PROJECT_ID)
+    logger.info(f"BigQuery client initialized for project: {PROJECT_ID}")
 except Exception as e:
     logger.error(f"Failed to initialize BigQuery client: {e}")
     bq_client = None

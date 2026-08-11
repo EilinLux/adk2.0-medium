@@ -1,15 +1,18 @@
 import os
+from dotenv import load_dotenv
 from google.cloud import firestore
+
+load_dotenv()
 
 # ==========================================
 # CONFIGURATION
 # ==========================================
-PROJECT_ID = "adk-workshop-sosta-app-dev"
-APPLICATION_DB_NAME = "adk-agent-dev-session-memory-fs"
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+DATABASE_ID = os.getenv("FIRESTORE_SESSION_DB", "adk-agent-dev-session-memory-fs")
 COLLECTION_NAME = "users"
 
-print(f"Connecting to Firestore database '{APPLICATION_DB_NAME}'...")
-db = firestore.Client(project=PROJECT_ID, database=APPLICATION_DB_NAME)
+print(f"Connecting to Firestore database '{DATABASE_ID}'...")
+db = firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
 
 # ==========================================
 # MOCK USER DATA
