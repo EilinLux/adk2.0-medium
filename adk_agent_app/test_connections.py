@@ -1,22 +1,24 @@
+# adk_agent_app/test_connections.py
 import os
-import sys
 from pathlib import Path
-from google.cloud import firestore
+import sys
+
+# Ensure project root is on sys.path when run directly as a script
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from google.cloud import bigquery
+from google.cloud import firestore
 from google.cloud import storage
 
-# ==========================================
-# CONFIGURATION
-# ==========================================
-PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
-ENVIRONMENT = "dev"
-
-# Database & Bucket Identifiers
-FIRESTORE_SESSION_DB = "adk-agent-dev-session-memory-fs"
-FIRESTORE_FOOD_KB_DB = "adk-agent-dev-food-kb-dev-fs"
-BIGQUERY_DATASET = "soste_app_dev"
-BIGQUERY_TABLE = "db_soste"
-GCS_BUCKET = f"adk-agent-dev-product-specs"
+from adk_agent_app.config import (
+    BIGQUERY_DATASET,
+    BIGQUERY_TABLE,
+    FIRESTORE_APP_DB,
+    FIRESTORE_FOOD_KB_DB,
+    FIRESTORE_SESSION_DB,
+    GCS_BUCKET,
+    PROJECT_ID,
+)
 
 
 def test_firestore(db_name: str, label: str) -> bool:
@@ -24,7 +26,7 @@ def test_firestore(db_name: str, label: str) -> bool:
     print(f"Testing Firestore ({label} -> '{db_name}')...", end=" ")
     try:
         db = firestore.Client(project=PROJECT_ID, database=db_name)
-        # Fix: Fetch the first collection reference without using page_size
+        # Fetch the first collection reference without using page_size
         col_iter = db.collections()
         _ = next(col_iter, None)
         print("✅ SUCCESS")
@@ -32,6 +34,7 @@ def test_firestore(db_name: str, label: str) -> bool:
     except Exception as e:
         print(f"❌ FAILED\n   Error: {e}")
         return False
+
 
 def test_bigquery() -> bool:
     """Tests query execution against the BigQuery dataset & table."""
@@ -63,7 +66,9 @@ def test_gcs_bucket() -> bool:
         print(f"❌ FAILED\n   Error: {e}")
         return False
 
+
 def run_all_tests() -> bool:
+    os.environ["_ADK_PREFLIGHT_RAN"] = "1"
     print("=" * 60)
     print(f" RUNNING GCP RESOURCE CONNECTIVITY TESTS FOR: {PROJECT_ID}")
     print("=" * 60 + "\n")
@@ -71,6 +76,7 @@ def run_all_tests() -> bool:
     results = []
 
     # 1. Test Firestore Databases
+    results.append(test_firestore(FIRESTORE_APP_DB, "Application DB"))
     results.append(test_firestore(FIRESTORE_SESSION_DB, "Session Memory"))
     results.append(test_firestore(FIRESTORE_FOOD_KB_DB, "Food Knowledge Base"))
 
@@ -82,7 +88,7 @@ def run_all_tests() -> bool:
 
     print("\n" + "=" * 60)
     is_success = all(results)
-    
+
     if is_success:
         print("🎉 ALL GCP RESOURCES PASSED CONNECTIVITY CHECKS!")
     else:
@@ -93,5 +99,7 @@ def run_all_tests() -> bool:
     # CRITICAL: Return the boolean status to agent.py
     return is_success
 
+
 if __name__ == "__main__":
-    run_all_tests()
+    if not os.getenv("_ADK_PREFLIGHT_RAN"):
+        run_all_tests()

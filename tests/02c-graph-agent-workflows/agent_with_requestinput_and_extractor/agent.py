@@ -1,3 +1,4 @@
+# tests/02c-graph-agent-workflows/agent_with_requestinput_and_extractor/agent.py
 from typing import Dict, Any, Optional
 from pydantic import BaseModel, Field
 from google.adk import Agent, Workflow, Event
@@ -5,8 +6,8 @@ from google.adk.events import RequestInput
 
 # Mock database of registered users
 REGISTERED_USER_DB = {
-"usr_12345": {"name": "Alice"},
-"usr_67890": {"name": "Bob"}
+    "usr_12345": {"name": "Alice"},
+    "usr_67890": {"name": "Bob"}
 }
 
 def is_registered_tool(user_id: str) -> Dict[str, Any]:
@@ -14,9 +15,9 @@ def is_registered_tool(user_id: str) -> Dict[str, Any]:
     normalized_id = str(user_id).strip().lower()
     if normalized_id in REGISTERED_USER_DB:
         return {
-        "status": "registered",
-        "user_id": normalized_id,
-        "data": REGISTERED_USER_DB[normalized_id]
+            "status": "registered",
+            "user_id": normalized_id,
+            "data": REGISTERED_USER_DB[normalized_id]
         }
     return {"status": "unregistered", "user_id": normalized_id}
 
@@ -25,13 +26,13 @@ def is_registered_tool(user_id: str) -> Dict[str, Any]:
 # ==========================================
 class UserExtraction(BaseModel):
     user_id: Optional[str] = Field(
-    None,
-    description="The extracted user ID. It must be strictly formatted (e.g., 'usr_12345')."
+        None,
+        description="The extracted user ID. It must be strictly formatted (e.g., 'usr_12345')."
     )
     wants_to_register: bool = Field(
         ...,
         description="Set to True if the user says they are not registered, want to sign up, or don't have an ID."
-        )
+    )
 
 # ==========================================
 # 2. Workflow Nodes
@@ -39,8 +40,9 @@ class UserExtraction(BaseModel):
 # Node A: Pause and get raw input
 def ask_user_for_id():
     yield RequestInput(
-    message="Welcome to Sosta! Please enter your User ID, or type 'no' if you aren't registered yet:"
+        message="Welcome to Sosta! Please enter your User ID, or type 'no' if you aren't registered yet:"
     )
+
 # Node B: Use Gemini to cleanly extract the data
 extractor_agent = Agent(
     name="extractor_agent",
@@ -52,7 +54,7 @@ extractor_agent = Agent(
     """,
     # Enforce structured output via output_schema
     output_schema=UserExtraction
-    )
+)
 
 # Node C: The Deterministic Router (now receives clean structured data!)
 def router(node_input: UserExtraction) -> Event:
@@ -65,6 +67,7 @@ def router(node_input: UserExtraction) -> Event:
     if result.get("status") == "registered":
         return Event(route="RUN_AGENT_CAMERIERE")
     return Event(route="RUN_AGENT_REGISTRATORE")
+
 # ==========================================
 # 3. Specialists (Execution Nodes)
 # ==========================================
@@ -82,13 +85,15 @@ registratore_agent = Agent(
 cameriere_agent = Agent(
     name="cameriere_agent",
     model="gemini-2.5-flash",
-    instruction="""Help the registered user plan thier stop:
+    instruction="""
+    Help the registered user plan their stop:
     1. Ask if they are traveling with anyone else and if those companions have dietary preferences.
     2. Ask what their final destination is.
     3. IF the user provides a city or place name, NEVER ask for coordinates. 
     4. Summarize all gathered info (ID, Profile, Companions, Destination) for the Suggeritore.
     """
 )
+
 # ==========================================
 # 4. The Orchestration Graph
 # ==========================================
@@ -99,10 +104,11 @@ root_agent = Workflow(
         ("START", ask_user_for_id, extractor_agent),
         (extractor_agent, router),
         # Router executes the correct specialist agent
-        (router,
+        (
+            router,
             {
-            "RUN_AGENT_CAMERIERE": cameriere_agent,
-            "RUN_AGENT_REGISTRATORE": registratore_agent,
+                "RUN_AGENT_CAMERIERE": cameriere_agent,
+                "RUN_AGENT_REGISTRATORE": registratore_agent,
             },
         ),
     ],
