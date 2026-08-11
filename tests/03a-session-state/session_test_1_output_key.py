@@ -1,41 +1,24 @@
+# tests/03a-session-state/session_test_1_output_key.py
 import asyncio
+from dotenv import load_dotenv
 from google.genai import types
 from google.adk.agents import Agent
 from google.adk.runners import Runner
-from pydantic import BaseModel, Field
 from google.adk.sessions import InMemorySessionService
 
-
-# Set your standard AI Studio key
-from dotenv import load_dotenv
 load_dotenv()
 
 
-from typing import Any
-from pydantic import BaseModel, Field
-
-class PopulateStateInput(BaseModel):
-    preferences: dict[str, Any] = Field(
-        description=(
-            "A dictionary of state variables extracted from user input. "
-            "Keys should be descriptive state variable names (e.g., 'favorite_dish', 'favorite_city', 'user_age'), "
-            "and values should be the corresponding user preferences. for example: "
-            "{'favorite_dish': 'Risotto Alla Milanese', 'favorite_city': 'Milan', 'preferred_theme': 'dark'} "
-        ),
-
-    )
-    
 async def main():
-    # 1. Define the ADK Agent
+    # 1. Define the ADK Agent (output_key without output_schema)
     gatekeeper_agent = Agent(
         name="gatekeeper_agent",
         model="gemini-2.5-flash",
         instruction="""
         You are a helpful assistant for sosta_app. Whenever a user 
-        provides personal details or preference information,
-        save it into the session state as preference_xxx : preference_value.""",
-        output_key="user_information",
-        output_schema=PopulateStateInput,
+        provides personal details or preference information, automatically
+        extract the key and value, then save it into the session state as preference_xxx : preference_value.""",
+        output_key="preferences",
     )
 
     # 2. Setup Session Service & Populate Initial Session Data
@@ -45,7 +28,7 @@ async def main():
     user_id = "user_4567"
     session_id = "s_8f9a2b1c-9012"
 
-    # Create the session with your initial state
+    # Create the session with initial state
     session = await session_service.create_session(
         app_name=app_name,
         user_id=user_id,
@@ -54,6 +37,7 @@ async def main():
             "user_preferred_language": "Italian",
             "registered_user": True,
             "current_subagent": "gatekeeper_agent",
+            "state": "here"
         }
     )
 
@@ -69,11 +53,11 @@ async def main():
         session_service=session_service
     )
 
-    # Unstructured input: The LLM will parse "favorite dish" -> key, "Risotto" -> value
+    # Unstructured input: Without output_schema, the raw conversational text is saved to state["preferences"]
     user_message = types.Content(
         role="user",
         parts=[types.Part.from_text(text="My favorite dish is Risotto Alla Milanese.")]
-    )   
+    )
     print("Sending message to agent...")
     for turn in runner.run(
         user_id=user_id,

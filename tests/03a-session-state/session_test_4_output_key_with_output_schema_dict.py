@@ -1,30 +1,31 @@
+# tests/03a-session-state/session_test_4_output_key_with_output_schema_dict.py
 import asyncio
+from typing import Any
+from dotenv import load_dotenv
+from pydantic import BaseModel, Field
 from google.genai import types
 from google.adk.agents import Agent
 from google.adk.runners import Runner
-from pydantic import BaseModel, Field
 from google.adk.sessions import InMemorySessionService
-from google.adk.tools import ToolContext
 
-import os
-
-# Clear Vertex AI routing environment variables
-os.environ.pop("GOOGLE_GENAI_USE_VERTEXAI", None)
-os.environ.pop("GCP_PROJECT", None)
-os.environ.pop("GOOGLE_CLOUD_PROJECT", None)
-
-# Set your standard AI Studio key
-from dotenv import load_dotenv
 load_dotenv()
 
-class PopulateStateInput(BaseModel):
-    preference: str = Field(
-        description="The state variable name extracted from the user input (e.g., 'favorite_city', 'user_age', 'preferred_theme')."
-    )
-    value: str = Field(
-        description="The value extracted from the user input to assign to the key."
-    )
 
+# Note on `dict[str, Any]` in `output_schema`:
+# Open-ended `dict[str, Any]` generates `additionalProperties: True` in the JSON Schema,
+# which requires Vertex AI (`GOOGLE_GENAI_USE_VERTEXAI=1`) and is not supported by the
+# Gemini Developer API (`GOOGLE_GENAI_USE_VERTEXAI=0`). Additionally, because an open-ended
+# dict has no explicit sub-properties in the schema, Gemini's strict Controlled Generation
+# decoder may return an empty `{}` unless a nested Pydantic `BaseModel` is used.
+class PopulateStateInput(BaseModel):
+    preferences: dict[str, Any] = Field(
+        description=(
+            "A dictionary of state variables extracted from user input. "
+            "Keys should be descriptive state variable names (e.g., 'favorite_dish', 'favorite_city', 'user_age'), "
+            "and values should be the corresponding user preferences. For example: "
+            "{'favorite_dish': 'Risotto Alla Milanese', 'favorite_city': 'Milan', 'preferred_theme': 'dark'}"
+        ),
+    )
 
 
 async def main():
@@ -36,7 +37,7 @@ async def main():
         You are a helpful assistant for sosta_app. Whenever a user 
         provides personal details or preference information,
         save it into the session state as preference_xxx : preference_value.""",
-        output_key="preferences",
+        output_key="user_information",
         output_schema=PopulateStateInput,
     )
 
@@ -47,7 +48,7 @@ async def main():
     user_id = "user_4567"
     session_id = "s_8f9a2b1c-9012"
 
-    # Create the session with your initial state
+    # Create the session with initial state
     session = await session_service.create_session(
         app_name=app_name,
         user_id=user_id,
@@ -71,11 +72,11 @@ async def main():
         session_service=session_service
     )
 
-    # Unstructured input: The LLM will parse "favorite dish" -> key, "Risotto" -> value
+    # Unstructured input: Extracted into nested dictionary under state["user_information"]["preferences"]
     user_message = types.Content(
         role="user",
         parts=[types.Part.from_text(text="My favorite dish is Risotto Alla Milanese.")]
-    )   
+    )
     print("Sending message to agent...")
     for turn in runner.run(
         user_id=user_id,
