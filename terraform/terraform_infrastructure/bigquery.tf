@@ -10,9 +10,9 @@ resource "google_bigquery_dataset" "soste_app_dev" {
   location      = local.bigquery_config.dataset_location
   project       = var.gcp_project
 
-  # Access control
-  default_table_expiration_ms     = var.bigquery_table_expiration_days > 0 ? var.bigquery_table_expiration_days * 24 * 60 * 60 * 1000 : 0
-  default_partition_expiration_ms = 0
+  # Access control (null = never expire; BigQuery provider rejects 0ms)
+  default_table_expiration_ms     = var.bigquery_table_expiration_days > 0 ? var.bigquery_table_expiration_days * 24 * 60 * 60 * 1000 : null
+  default_partition_expiration_ms = null
 
   # Labels for resource management
   labels = local.common_labels

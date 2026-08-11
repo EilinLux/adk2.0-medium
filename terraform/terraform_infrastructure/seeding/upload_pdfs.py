@@ -1,14 +1,18 @@
+import os
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
 from google.cloud import storage
 from google.cloud.storage import transfer_manager
+
+load_dotenv()
 
 # ==========================================
 # CONFIGURATION
 # ==========================================
-PROJECT_ID = "adk-agent" 
-ENVIRONMENT = "dev"
-BUCKET_NAME = f"{PROJECT_ID}-{ENVIRONMENT}-product-specs"
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
+BUCKET_NAME = os.getenv("GCS_BUCKET", f"adk-agent-{ENVIRONMENT}-product-specs")
 
 # Locate 'product_pdfs' folder inside the current 'seeding' directory
 SCRIPT_DIR = Path(__file__).resolve().parent

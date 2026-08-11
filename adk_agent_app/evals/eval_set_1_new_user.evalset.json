@@ -177,8 +177,7 @@
                           "preferred_language": "Italian",
                           "vehicle_type": "Electric",
                           "culinary_preferences": [
-                            "Vegan",
-                            "Pasta"
+                            "Vegan"
                           ]
                         }
                       }
@@ -211,7 +210,7 @@
                       "function_call": {
                         "name": "extract_user_profile",
                         "args": {
-                          "user_id": "usr_f93207"
+                          "user_id": "usr_7c0adf"
                         }
                       }
                     }
@@ -235,7 +234,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Perfetto, Zelda. Ricapitolando:\n\n* **User ID:** `usr_f93207`\n* **Nome:** Zelda Ailine Luconi\n* **Preferenze Dietetiche:** Vegana, ama la pasta.\n* **Veicolo:** Auto elettrica.\n* **Compagni di Viaggio:** Nessuno.\n* **Destinazione:** Roma.\n\nÈ corretto questo riepilogo?"
+                "text": "Perfetto, Zelda. Ricapitolando:\n\n* **User ID:** `usr_7c0adf`\n* **Nome:** Zelda Ailine Luconi\n* **Preferenze Dietetiche:** Vegana, ama la pasta.\n* **Veicolo:** Auto elettrica.\n* **Compagni di Viaggio:** Nessuno.\n* **Destinazione:** Roma.\n\nÈ corretto questo riepilogo?"
               }
             ],
             "role": "model"
@@ -260,31 +259,12 @@
             ],
             "role": "model"
           },
-          "intermediate_data": {
-            "invocation_events": [
-              {
-                "author": "Cameriere",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "name": "transfer_to_agent",
-                        "args": {
-                          "agent_name": "Suggeritore"
-                        }
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              }
-            ]
-          }
+          "intermediate_data": {}
         }
       ],
       "session_input": {
         "app_name": "adk_agent_app",
-        "user_id": "flora_test_user"
+        "user_id": "zelda_test_user"
       }
     },
     {
@@ -335,7 +315,7 @@
           "user_content": {
             "parts": [
               {
-                "text": "Flora Rossi"
+                "text": "Yes, my name is Flora Rossi"
               }
             ],
             "role": "user"
@@ -494,7 +474,7 @@
                       "function_call": {
                         "name": "extract_user_profile",
                         "args": {
-                          "user_id": "usr_ee1d9f"
+                          "user_id": "usr_ba7db8"
                         }
                       }
                     }
@@ -518,7 +498,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Great, Flora! Thank you for the information.\n\nTo confirm, here's a summary of the details I have:\n* **User ID:** usr_ee1d9f\n* **Guest Name:** Flora Rossi\n* **Dietary Preferences:** You have no specific dietary preferences, and you are traveling alone, so no companion restrictions.\n* **Vehicle Type:** Gasoline\n* **Destination:** Florence\n\nDoes all of this sound correct? Once confirmed, I can pass these details to Suggeritore to start getting some recommendations for you."
+                "text": "Great, Flora! Thank you for the information.\n\nTo confirm, here's a summary of the details I have:\n* **User ID:** usr_ba7db8\n* **Guest Name:** Flora Rossi\n* **Dietary Preferences:** You have no specific dietary preferences, and you are traveling alone, so no companion restrictions.\n* **Vehicle Type:** Gasoline\n* **Destination:** Florence\n\nDoes all of this sound correct? Once confirmed, I can pass these details to Suggeritore to start getting some recommendations for you."
               }
             ],
             "role": "model"
@@ -528,7 +508,7 @@
       ],
       "session_input": {
         "app_name": "adk_agent_app",
-        "user_id": "zelda_test_user"
+        "user_id": "flora_test_user"
       }
     }
   ]
