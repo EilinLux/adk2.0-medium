@@ -7,6 +7,36 @@ You can access the full series list and updates directly on Medium:
 
 The project demonstrates how to move away from fragile, notebook-bound AI prototypes and build production-grade, event-driven AI agents using **Google's Agent Developer Kit (ADK) 2.0** and agentic architecture best practices.
 
+
+---
+
+## 📑 Table of Contents
+
+1. [🛣️ What is SostaApp?](#-what-is-sostaapp)
+2. [🤖 Micro-Agent Directory (`04a-evaluating-with-adk`)](#-micro-agent-directory-branch-04a-evaluating-with-adk)
+3. [🚀 Repository Structure & Branching Strategy](#-repository-structure--branching-strategy)
+4. [🛠️ Core Agent Architecture & Medium Articles](#-core-agent-architecture--medium-articles)
+5. [📦 Installation & Setup](#-installation--setup)
+
+---
+
+## 🛣️ What is SostaApp?
+
+**SostaApp** is an intelligent highway stop-over (*sosta*) concierge built for travelers driving along the Italian highway network (*Autostrade*). Rather than relying on a single monolithic prompt, SostaApp is engineered as a **Digital Assembly Line** of specialized micro-agents that collaborate to:
+
+* **Authenticate & Onboard Travelers:** Verify returning users by `user_id` or onboard new travelers by capturing their preferred language, dietary/allergen restrictions, and vehicle fuel/charging type.
+* **Remember Context Across Trips:** Persist conversation sessions, long-term user profiles, and episodic trip memories in **Google Cloud Firestore** so drivers never have to repeat their vehicle specs or food allergies.
+* **Recommend Optimal Highway Stops (*Soste*):** Calculate highway routes, query service stations in **BigQuery** via **MCP**, inspect restaurant menus and official PDF allergen sheets via **Hybrid Vertex AI RAG**, compute exact EV charging and meal splits via **sandboxed Python execution**, and redact sensitive PII via **Google Cloud DLP**.
+
+---
+
+## 🤖 Micro-Agent Directory (Branch `04a-evaluating-with-adk`)
+
+* **Gatekeeper (`root_agent`):** Authentication guardrail and entry-point orchestrator. Validates user accounts in Cloud Firestore (`is_registered_user`) and routes users to `Registratore` or `Cameriere`.
+* **Registratore:** Onboarding specialist. Collects culinary preferences, dietary restrictions, and vehicle specifications for new users (`save_new_user`).
+* **Cameriere:** Session coordinator. Retrieves (`extract_user_profile`) and updates (`update_user_profile`) stored user profiles in Cloud Firestore.
+* **Suggeritore *(Placeholder in `04a`)*:** Downstream stop-matching specialist (implemented in `05a`).
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
@@ -49,14 +79,6 @@ To keep the codebase clean, isolated, and easy to follow, **each article in the 
 
 ---
 
-## 🤖 Micro-Agent Directory
-
-* **Gatekeeper:** Authentication guardrail and entry-point orchestrator. Validates user accounts and routes users to the appropriate flow.
-* **Registratore:** Onboarding specialist. Collects culinary preferences, dietary restrictions, and vehicle specifications for new users.
-* **Cameriere:** Session coordinator. Retrieves stored user profiles, gathers active trip context (companions, final destination), and prepares context for search.
-* **Suggeritore:** Matching engine. Queries stop databases, filters by charging compatibility, and surfaces optimal stop suggestions.
-
----
 
 ## 📦 Installation & Setup
 
