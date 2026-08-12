@@ -13,6 +13,10 @@ from ..schemas.suggeritore_schemas import (
     SosteSearchInput,
 )
 from ..tools.suggeritore_agent_bq_soste_tools import soste_search_tool
+from ..tools.suggeritore_agent_food_kb_rag_tools import (
+    product_specs_rag_tool,
+    stop_food_kb_tool,
+)
 from ..tools.suggeritore_agent_route_tools import route_generator_tool
 
 # 1. Resolve the absolute path of the MCP Server script safely
@@ -93,15 +97,17 @@ soste_search_agent = Agent(
     # tools=[soste_search_tool]     # Using the FunctionTool for BigQuery access
 )
 
-# SUB-AGENT 3: Menu & Dietary Checker
+# SUB-AGENT 3: Menu & Dietary Checker (Firestore Food KB + Vertex AI RAG over Product Spec PDFs)
 menu_checker_agent = Agent(
     name="MenuCheckerAgent",
     model="gemini-2.5-flash",
-    description="Evaluates restaurant services and menu options against user and companion dietary preferences.",
+    description="Evaluates restaurant services and menu options against user and companion dietary preferences using the Firestore Food KB and Product Specification RAG.",
     instruction="""
     You are a Dining and Dietary Specialist.
-    Review the `stop_names` provided in the input JSON and evaluate how well each stop's dining and restaurant services suit the `dietary_preferences`.
-    Rank the best matching stops and highlight why they are recommended for the traveler's diet.
+    1. First, call `get_stop_food_inventory_and_reviews` with the `stop_names` provided in the input JSON to inspect the stocked food items and traveler reviews at each stop.
+    2. Next, call `retrieve_product_specs_rag` with a query combining the candidate food products and `dietary_preferences` to verify exact ingredients, allergen declarations ('CONTAINS' vs 'FREE FROM'), and certifications from the official Product Specification PDFs.
+    3. Evaluate each stop in `stop_names`, highlighting which specific stocked items are verified safe for the traveler's `dietary_preferences` (such as 'Vegan Salad' / 'Vegan Rainbow Salad' and 'Espresso Coffee' at Secchia Ovest, or 'Fruit Bowl' at Sillaro Ovest) and which items contain restricted allergens.
     """,
     input_schema=MenuCheckerInput,
+    tools=[stop_food_kb_tool, product_specs_rag_tool],
 )

@@ -39,6 +39,7 @@ To keep the codebase clean, isolated, and easy to follow, **each article in the 
 | **#4b: [Running Evaluations with `adk eval`](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`04b-evaluating-with-adk-run`](https://github.com/EilinLux/adk2.0-medium/tree/04b-evaluating-with-adk-run) <br> ([`adk_agent_app/evals`](https://github.com/EilinLux/adk2.0-medium/tree/04b-evaluating-with-adk-run/adk_agent_app/evals)) | Running and debugging multi-turn evaluation suites via the `adk eval` CLI (`--print_detailed_results` & `--config_file_path`), resolving relative imports, deterministic per-user ID hashing (`ADK_EVAL_MODE=true`), session isolation across parallel eval cases, and imperative handoff prompts. |
 | **#5a: [Tools, Input/Output Schemas & `AgentTool`](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`05a-tools-and-input-output-schemas`](https://github.com/EilinLux/adk2.0-medium/tree/05a-tools-and-input-output-schemas) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/05a-tools-and-input-output-schemas/adk_agent_app) & [`tests/05a-tools-and-input-output-schemas`](https://github.com/EilinLux/adk2.0-medium/tree/05a-tools-and-input-output-schemas/tests/05a-tools-and-input-output-schemas)) | Production-grade tool design (`FunctionTool`, Google-style docstrings, type hints, and structured dictionary return payloads), Pydantic `input_schema` / `output_schema` contracts, introducing `Suggeritore` with `AgentTool` (`RoutePlannerAgent`, `SosteSearchAgent`, `MenuCheckerAgent`), full end-to-end evaluation ([`eval_set_3_full_workflow_suggeritore.evalset.json`](https://github.com/EilinLux/adk2.0-medium/blob/05a-tools-and-input-output-schemas/adk_agent_app/evals/eval_set_3_full_workflow_suggeritore.evalset.json)), and testing the `output_schema` + `tools` separation pattern:<br>• [**1. `schema_tools_test_1_single_agent_conflict.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05a-tools-and-input-output-schemas/tests/05a-tools-and-input-output-schemas/schema_tools_test_1_single_agent_conflict.py): Anti-pattern showing how attaching `output_schema=RegistrationSummaryOutput` directly to a conversational tool-calling agent forces premature/fabricated JSON output before all required tool parameters are gathered.<br>• [**2. `schema_tools_test_2_two_agent_split.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05a-tools-and-input-output-schemas/tests/05a-tools-and-input-output-schemas/schema_tools_test_2_two_agent_split.py): Production 2-station pipeline (`Workflow`) separating the Tool Agent (`save_new_user_tool` $\rightarrow$ `output_key="raw_registration_result"`) from the Schema Formatter Agent (`RegistrationFormatter` $\rightarrow$ `output_schema=RegistrationSummaryOutput`). |
 | **#5b: [From FunctionTool to Model Context Protocol (MCP)](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`05b-from-tool-to-mcp`](https://github.com/EilinLux/adk2.0-medium/tree/05b-from-tool-to-mcp) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/05b-from-tool-to-mcp/adk_agent_app)) | Decoupling BigQuery geospatial stop search into a standalone **Model Context Protocol (MCP)** stdio server ([`suggeritore_agent_bq_mcp_soste_tool.py`](https://github.com/EilinLux/adk2.0-medium/blob/05b-from-tool-to-mcp/adk_agent_app/tools/suggeritore_agent_bq_mcp_soste_tool.py)) using `@mcp.tool()` and connecting `SosteSearchAgent` via `stdio_client` and `ClientSession` (`get_mcp_soste_session`) in [`suggeritore_soste_subagents.py`](https://github.com/EilinLux/adk2.0-medium/blob/05b-from-tool-to-mcp/adk_agent_app/subagents/suggeritore_soste_subagents.py). |
+| **#5c: [RAG & Hybrid Knowledge Base Grounding](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`05c-rag-and-knowledge-base`](https://github.com/EilinLux/adk2.0-medium/tree/05c-rag-and-knowledge-base) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/05c-rag-and-knowledge-base/adk_agent_app) & [`tests/05c-rag-and-knowledge-base`](https://github.com/EilinLux/adk2.0-medium/tree/05c-rag-and-knowledge-base/tests/05c-rag-and-knowledge-base)) | Eliminating ungrounded menu hallucinations in `MenuCheckerAgent` by combining a structured **Firestore Food Knowledge Base** (`adk-agent-dev-food-kb-fs`, `stop_food_kb` collection) with **Vertex AI RAG Engine** over official Autogrill Product Specification PDFs in Cloud Storage (`gs://adk-agent-dev-product-specs/product_specs/`):<br>• [**`vertex_rag_seed.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/terraform/terraform_infrastructure/seeding/vertex_rag_seed.py): Provisions the Vertex AI RAG Corpus (`sosta-product-specs-corpus` with `text-embedding-005`) and imports the 8 Product Specification PDFs from GCS.<br>• [**`suggeritore_agent_food_kb_rag_tools.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/adk_agent_app/tools/suggeritore_agent_food_kb_rag_tools.py): Defines `get_stop_food_inventory_and_reviews` (`stop_food_kb_tool`) and `retrieve_product_specs_rag` (`product_specs_rag_tool`) wired into `MenuCheckerAgent`.<br>• [**1. `rag_test_1_builtin_vertex_rag_retrieval.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/tests/05c-rag-and-knowledge-base/rag_test_1_builtin_vertex_rag_retrieval.py): Demonstrates ADK's built-in `VertexAiRagRetrieval` on a standalone agent vs. the Gemini 2.x `400 INVALID_ARGUMENT` constraint when mixing native `Retrieval` tools with custom `FunctionTool` declarations.<br>• [**2. `rag_test_2_hybrid_firestore_and_rag.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/tests/05c-rag-and-knowledge-base/rag_test_2_hybrid_firestore_and_rag.py): End-to-end verification of `MenuCheckerAgent` combining Firestore stop inventory lookups (`europe-west1`) with Vertex AI RAG product spec retrieval (`europe-west3`). |
 
 ---
 
@@ -74,10 +75,10 @@ To follow along with a specific Medium article, create and switch to a local bra
 git checkout -b <branch-name> origin/<branch-name>
 ```
 
-Example for this article (`05b-from-tool-to-mcp`):
+Example for this article (`05c-rag-and-knowledge-base`):
 
 ```bash
-git checkout -b 05b-from-tool-to-mcp origin/05b-from-tool-to-mcp
+git checkout -b 05c-rag-and-knowledge-base origin/05c-rag-and-knowledge-base
 ```
 
 2. **Install dependencies:**
@@ -109,6 +110,8 @@ FIRESTORE_FOOD_KB_DB=adk-agent-dev-food-kb-fs
 BIGQUERY_DATASET=soste_app_dev
 BIGQUERY_TABLE=db_soste
 GCS_BUCKET=adk-agent-dev-product-specs
+VERTEX_RAG_LOCATION=europe-west3
+VERTEX_RAG_CORPUS_DISPLAY_NAME=sosta-product-specs-corpus
 
 # ============================================================================
 # OPTION B: Google AI Studio Configuration (Alternative via API Key)
@@ -118,23 +121,32 @@ GCS_BUCKET=adk-agent-dev-product-specs
 ```
 
 4. **Authenticate with Google Cloud & Provision Infrastructure:**
-Follow the instructions in [`terraform/README.md`](file:///Users/zelda.luconi/Medium/adk2.0-testing-env/adk2.0-medium/terraform/README.md) to provision and seed the Firestore and BigQuery resources, then authenticate locally:
+Follow the instructions in [`terraform/README.md`](file:///Users/zelda.luconi/Medium/adk2.0-testing-env/adk2.0-medium/terraform/README.md) to provision and seed the Firestore, BigQuery, Cloud Storage, and Vertex AI RAG resources, then authenticate locally:
 
 ```bash
 gcloud auth application-default login
+
+# Upload Product Spec PDFs to GCS and seed the Vertex AI RAG Corpus
+uv run python terraform/terraform_infrastructure/seeding/upload_pdfs.py
+uv run python terraform/terraform_infrastructure/seeding/vertex_rag_seed.py
 ```
 
-5. **Run Pre-Flight Connectivity Checks, Launch the Sosta App & Run Evaluations:**
+5. **Run Pre-Flight Connectivity Checks, Standalone RAG Tests, Dev UI & Evaluations:**
 
 ```bash
 # 1. Verify connectivity to Firestore, BigQuery, and Cloud Storage
 uv run python adk_agent_app/test_connections.py
 
-# 2. Launch the interactive ADK Dev UI for the Sosta app (to inspect traces and create evalsets)
+# 2. Run the standalone RAG & Hybrid Knowledge Base verification scripts
+uv run python tests/05c-rag-and-knowledge-base/rag_test_1_builtin_vertex_rag_retrieval.py
+uv run python tests/05c-rag-and-knowledge-base/rag_test_2_hybrid_firestore_and_rag.py
+
+# 3. Launch the interactive ADK Dev UI for the Sosta app (to inspect traces and create evalsets)
 uv run adk web
 
-# 3. Run the Sosta App evaluation suites from the CLI
+# 4. Run the Sosta App evaluation suites from the CLI
 ADK_EVAL_MODE=true uv run adk eval adk_agent_app adk_agent_app/evals/eval_set_1_new_user.evalset.json --config_file_path=adk_agent_app/evals/eval_config.json --print_detailed_results
 ADK_EVAL_MODE=true uv run adk eval adk_agent_app adk_agent_app/evals/eval_set_2_existing_user.evalset.json --config_file_path=adk_agent_app/evals/eval_config.json --print_detailed_results
 ADK_EVAL_MODE=true uv run adk eval adk_agent_app adk_agent_app/evals/eval_set_3_full_workflow_suggeritore.evalset.json --config_file_path=adk_agent_app/evals/eval_config.json --print_detailed_results
 ```
+
