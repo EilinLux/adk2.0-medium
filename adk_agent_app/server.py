@@ -64,7 +64,7 @@ async def health_check() -> Dict[str, str]:
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(req: ChatRequest) -> ChatResponse:
-    """Executes one conversational turn using the persistent ADK `Runner`."""
+    """Executes one conversational turn using the persistent ADK `Runner` (JSON POST)."""
     should_save_memory = req.save_to_memory or bool(req.persist_memory)
     result = await execute_turn(
         runner=sosta_runner,
@@ -81,6 +81,32 @@ async def chat_endpoint(req: ChatRequest) -> ChatResponse:
         tool_calls=result["tool_calls"],
         session_state=result["session_state"],
     )
+
+
+@app.get("/chat", response_model=ChatResponse)
+async def chat_get_endpoint(
+    user_id: str = "usr_0a8f67",
+    session_id: str = "prod_trip_001",
+    message: str = "Ciao! Sono già registrata, il mio ID è usr_0a8f67.",
+    persist_memory: bool = True,
+) -> ChatResponse:
+    """Browser-friendly GET /chat endpoint so clicking http://127.0.0.1:8000/chat runs a turn."""
+    result = await execute_turn(
+        runner=sosta_runner,
+        user_id=user_id,
+        session_id=session_id,
+        message_text=message,
+        save_to_memory=persist_memory,
+    )
+    return ChatResponse(
+        session_id=result["session_id"],
+        user_id=result["user_id"],
+        author=result["author"],
+        response=result["response"],
+        tool_calls=result["tool_calls"],
+        session_state=result["session_state"],
+    )
+
 
 
 @app.get("/sessions/{user_id}/{session_id}")
