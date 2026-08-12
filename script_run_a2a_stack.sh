@@ -220,21 +220,25 @@ echo "  ✅ Cameriere Client Agent & Web UI are online!"
 # ------------------------------------------------------------------------------
 echo ""
 echo "======================================================================"
-echo "🧪 Running End-to-End Test Request via Cameriere Agent..."
-echo "======================================================================"
-
-TEST_PAYLOAD='{
-  "app_name": "adk_agent_app",
-  "user_content": "Hello."
-}'
-
-echo "  📤 Sending POST request to http://localhost:$CAMERIERE_PORT/run_sse..."
-echo ""
-
-curl -s -X POST "http://localhost:$CAMERIERE_PORT/run_sse" \
-  -H "Content-Type: application/json" \
-  -d "$TEST_PAYLOAD" || true
-
+if [ "${USE_CUSTOM_RUNNER:-false}" = "true" ]; then
+    echo "🧪 Running Health Check against SostaApp Production FastAPI Runner..."
+    echo "======================================================================"
+    echo "  📤 Sending GET request to http://127.0.0.1:$CAMERIERE_PORT/health..."
+    echo ""
+    curl -s "http://127.0.0.1:$CAMERIERE_PORT/health" | python3 -m json.tool || true
+else
+    echo "🧪 Running End-to-End Test Request via Cameriere Agent (ADK Web)..."
+    echo "======================================================================"
+    TEST_PAYLOAD='{
+      "app_name": "adk_agent_app",
+      "user_content": "Hello."
+    }'
+    echo "  📤 Sending POST request to http://localhost:$CAMERIERE_PORT/run_sse..."
+    echo ""
+    curl -s -X POST "http://localhost:$CAMERIERE_PORT/run_sse" \
+      -H "Content-Type: application/json" \
+      -d "$TEST_PAYLOAD" || true
+fi
 
 echo ""
 echo ""
@@ -249,22 +253,42 @@ echo ""
 echo "  2. 📡 FastMCP SSE Tool Stream (Port $MCP_PORT):"
 echo "     👉 http://127.0.0.1:$MCP_PORT/sse"
 echo ""
-echo "  3. 🤵 Cameriere Client SSE Endpoint (Port $CAMERIERE_PORT):"
-echo "     👉 http://localhost:$CAMERIERE_PORT/run_sse"
-echo ""
-echo "  4. 🛠️ ADK Developer Web UI (Port $CAMERIERE_PORT):"
-echo "     👉 http://localhost:$CAMERIERE_PORT/dev-ui/"
+if [ "${USE_CUSTOM_RUNNER:-false}" = "true" ]; then
+    echo "  3. 🤵 SostaApp Production FastAPI Runner Health & Docs (Port $CAMERIERE_PORT):"
+    echo "     👉 http://127.0.0.1:$CAMERIERE_PORT/health"
+    echo "     👉 http://127.0.0.1:$CAMERIERE_PORT/docs"
+    echo ""
+    echo "  4. 💬 SostaApp Production Chat & Session Endpoints (Port $CAMERIERE_PORT):"
+    echo "     👉 POST http://127.0.0.1:$CAMERIERE_PORT/chat"
+    echo "     👉 GET  http://127.0.0.1:$CAMERIERE_PORT/sessions/{user_id}/{session_id}"
+else
+    echo "  3. 🤵 Cameriere Client SSE Endpoint (Port $CAMERIERE_PORT):"
+    echo "     👉 http://localhost:$CAMERIERE_PORT/run_sse"
+    echo ""
+    echo "  4. 🛠️ ADK Developer Web UI (Port $CAMERIERE_PORT):"
+    echo "     👉 http://localhost:$CAMERIERE_PORT/dev-ui/"
+fi
 echo ""
 echo "======================================================================"
 echo "📋 QUICK COMMANDS TO TEST IN A NEW TERMINAL:"
 echo ""
-echo "  • Verify Agent Card metadata:"
-echo "    curl -s http://localhost:$SUGGERITORE_PORT/.well-known/agent-card.json | jq ."
-echo ""
+if [ "${USE_CUSTOM_RUNNER:-false}" = "true" ]; then
+    echo "  1. Check health & Firestore service wiring:"
+    echo "     curl -s http://127.0.0.1:$CAMERIERE_PORT/health | python3 -m json.tool"
+    echo ""
+    echo "  2. Send a conversation turn to POST /chat:"
+    echo "     curl -s -X POST http://127.0.0.1:$CAMERIERE_PORT/chat \\"
+    echo "       -H \"Content-Type: application/json\" \\"
+    echo "       -d '{\"user_id\": \"usr_0a8f67\", \"session_id\": \"prod_trip_001\", \"message\": \"Ciao! Sono già registrata, il mio ID è usr_0a8f67.\", \"persist_memory\": true}' | python3 -m json.tool"
+    echo ""
+    echo "  3. Inspect persisted session state & event count in Firestore:"
+    echo "     curl -s http://127.0.0.1:$CAMERIERE_PORT/sessions/usr_0a8f67/prod_trip_001 | python3 -m json.tool"
+    echo ""
+fi
 echo "  • Tail live log output across all services:"
 echo "    tail -f $LOG_DIR/mcp_server.log $LOG_DIR/suggeritore_app.log $LOG_DIR/cameriere_app.log"
 echo "======================================================================"
-echo "💡 Press [CTRL+C] at any time to shut down all microservices."
+echo "💡 Keep this terminal open while testing, or press [CTRL+C] to shut down all microservices."
 
 
 wait

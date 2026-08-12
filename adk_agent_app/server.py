@@ -34,6 +34,10 @@ class ChatRequest(BaseModel):
         default=False,
         description="If true, commits the session to long-term MemoryService after this turn.",
     )
+    persist_memory: bool | None = Field(
+        default=None,
+        description="Alias for save_to_memory: if true, commits the session to long-term MemoryService after this turn.",
+    )
 
 
 class ChatResponse(BaseModel):
@@ -61,12 +65,13 @@ async def health_check() -> Dict[str, str]:
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(req: ChatRequest) -> ChatResponse:
     """Executes one conversational turn using the persistent ADK `Runner`."""
+    should_save_memory = req.save_to_memory or bool(req.persist_memory)
     result = await execute_turn(
         runner=sosta_runner,
         user_id=req.user_id,
         session_id=req.session_id,
         message_text=req.message,
-        save_to_memory=req.save_to_memory,
+        save_to_memory=should_save_memory,
     )
     return ChatResponse(
         session_id=result["session_id"],
@@ -99,3 +104,19 @@ async def inspect_session(user_id: str, session_id: str) -> Dict[str, Any]:
         "events_count": len(session.events),
         "last_update_time": session.last_update_time,
     }
+
+
+@app.delete("/sessions/{user_id}/{session_id}")
+async def delete_session_endpoint(user_id: str, session_id: str) -> Dict[str, str]:
+    """Purges a persisted session and its events subcollection from Firestore."""
+    await sosta_runner.session_service.delete_session(
+        app_name=sosta_runner.app_name,
+        user_id=user_id,
+        session_id=session_id,
+    )
+    return {
+        "status": "deleted",
+        "user_id": user_id,
+        "session_id": session_id,
+    }
+

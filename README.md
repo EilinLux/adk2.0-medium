@@ -219,3 +219,24 @@ USE_CUSTOM_RUNNER=true ./script_run_a2a_stack.sh
 # 5. Or launch with the ADK Web UI on :8000
 ./script_run_a2a_stack.sh
 ```
+
+Once `USE_CUSTOM_RUNNER=true ./script_run_a2a_stack.sh` is running in Terminal 1, open a **second terminal** to interact with the production `Runner` via HTTP:
+
+```bash
+# 1. Check health & Firestore service wiring
+curl -s http://127.0.0.1:8000/health | python3 -m json.tool
+
+# 2. Send a conversation turn to POST /chat
+curl -s -X POST http://127.0.0.1:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "usr_0a8f67",
+    "session_id": "prod_trip_001",
+    "message": "Ciao! Sono già registrata, il mio ID è usr_0a8f67.",
+    "persist_memory": true
+  }' | python3 -m json.tool
+
+# 3. Inspect persisted session state & event count in Firestore
+curl -s http://127.0.0.1:8000/sessions/usr_0a8f67/prod_trip_001 | python3 -m json.tool
+```
+
