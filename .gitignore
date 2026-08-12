@@ -34,7 +34,11 @@ __pycache__/
 
 # --- Google ADK & Application Runtime Logs ---
 .adk/
+logs/
 *.log
+*.db
+*.db-journal
+*.db-wal
 adk_run*.json
 .agents_state/
 .mcp_cache/

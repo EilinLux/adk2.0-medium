@@ -1,22 +1,15 @@
-# agent/tools/soste_tools.py
+# adk_agent_app_suggeritore/tools/suggeritore_agent_bq_soste_tools.py
 import json
-from google.cloud import bigquery
 from google.adk.tools import FunctionTool
-import os 
-from ..config import logger
+from google.cloud import bigquery
+from ..config import BIGQUERY_DATASET, BIGQUERY_TABLE, PROJECT_ID, logger
 
-from dotenv import load_dotenv
-
-load_dotenv()  # Load .env file 
-
-
-FULL_TABLE_PATH = f"{os.getenv('GOOGLE_CLOUD_PROJECT')}.{os.getenv('DATASET_ID')}.{os.getenv('TABLE_ID')}"
+FULL_TABLE_PATH = f"{PROJECT_ID}.{BIGQUERY_DATASET}.{BIGQUERY_TABLE}"
 
 
 try:
-    bq_client = bigquery.Client(project=os.getenv('GOOGLE_CLOUD_PROJECT'))
-
-    logger.info(f"BigQuery client initialized for project: {os.getenv('GOOGLE_CLOUD_PROJECT')}")
+    bq_client = bigquery.Client(project=PROJECT_ID)
+    logger.info(f"BigQuery client initialized for project: {PROJECT_ID}")
 except Exception as e:
     logger.error(f"Failed to initialize BigQuery client: {e}")
     bq_client = None
@@ -27,7 +20,7 @@ def find_soste_by_fuel_and_location(
     longitude: float,
     fuel_type: str = None,
     radius_meters: int = 150000,  # 150km for sparse mock data
-    limit: int = 5
+    limit: int = 5,
 ) -> str:
     """
     Queries BigQuery for highway service areas and restaurants within a search radius.
@@ -66,13 +59,20 @@ def find_soste_by_fuel_and_location(
             clean_fuel = fuel_type.upper().strip()
             # Map common LLM string variants to BigQuery enum strings
             fuel_mapping = {
-                "GASOLINE": "GASOLINE", "BENZINA": "GASOLINE", "PETROL": "GASOLINE",
-                "DIESEL": "DIESEL", "GASOLIO": "DIESEL",
-                "LPG": "LPG", "GPL": "LPG",
-                "METHANE": "METHANE", "METANO": "METHANE",
-                "ELECTRIC": "ELECTRIC_FAST", "EV": "ELECTRIC_FAST",
-                "ELECTRIC_FAST": "ELECTRIC_FAST", "ELECTRIC_ULTRAFAST": "ELECTRIC_ULTRAFAST",
-                "ELECTRIC_STANDARD": "ELECTRIC_STANDARD"
+                "GASOLINE": "GASOLINE",
+                "BENZINA": "GASOLINE",
+                "PETROL": "GASOLINE",
+                "DIESEL": "DIESEL",
+                "GASOLIO": "DIESEL",
+                "LPG": "LPG",
+                "GPL": "LPG",
+                "METHANE": "METHANE",
+                "METANO": "METHANE",
+                "ELECTRIC": "ELECTRIC_FAST",
+                "EV": "ELECTRIC_FAST",
+                "ELECTRIC_FAST": "ELECTRIC_FAST",
+                "ELECTRIC_ULTRAFAST": "ELECTRIC_ULTRAFAST",
+                "ELECTRIC_STANDARD": "ELECTRIC_STANDARD",
             }
             mapped_fuel = fuel_mapping.get(clean_fuel, clean_fuel)
             logger.info(f"  -> Mapped fuel_type '{fuel_type}' to '{mapped_fuel}'")
@@ -108,7 +108,9 @@ def find_soste_by_fuel_and_location(
 
         # FALLBACK 1: If primary query returned 0 rows and fuel_type was used, retry without fuel_type
         if not results and fuel_type:
-            logger.warning("Primary query returned 0 rows. Attempting FALLBACK QUERY (ignoring fuel_type filter)...")
+            logger.warning(
+                "Primary query returned 0 rows. Attempting FALLBACK QUERY (ignoring fuel_type filter)..."
+            )
             fallback_query = f"""
                 SELECT 
                     stop_name,
@@ -147,11 +149,17 @@ def find_soste_by_fuel_and_location(
                 logger.error(err_msg)
                 return json.dumps({"error": err_msg})
 
-            return json.dumps({"warning": f"No stops found within {radius_meters/1000}km of coordinates ({lat_float}, {lon_float})."})
+            return json.dumps(
+                {
+                    "warning": f"No stops found within {radius_meters/1000}km of coordinates ({lat_float}, {lon_float})."
+                }
+            )
 
         # Log found results
         for idx, row in enumerate(results, 1):
-            logger.info(f"  Result #{idx}: {row.get('stop_name')} - Distance: {row.get('distance_meters')}m")
+            logger.info(
+                f"  Result #{idx}: {row.get('stop_name')} - Distance: {row.get('distance_meters')}m"
+            )
 
         logger.info("=" * 60)
         return json.dumps(results, ensure_ascii=False)
@@ -159,5 +167,6 @@ def find_soste_by_fuel_and_location(
     except Exception as e:
         logger.error(f"EXCEPTION IN SOSTE_TOOLS: {str(e)}", exc_info=True)
         return json.dumps({"error": f"BigQuery Execution Exception: {str(e)}"})
-    
+
+
 soste_search_tool = FunctionTool(find_soste_by_fuel_and_location)
