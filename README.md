@@ -37,6 +37,48 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Cameriere (`adk_agent_app`):** Session coordinator. Retrieves stored user profiles, recalls past episodic trip memories across sessions via `FirestoreMemoryService` (`sosta_memories` + `PreloadMemoryTool`), and delegates optimization over A2A (`RemoteA2aAgent`).
 * **Suggeritore (`adk_agent_app_suggeritore`):** Remote A2A microservice (`port=8001`). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE on `port=8002`), and `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG).
 
+### 📐 Branch Architecture Diagram (`06a-runner-session-and-memory`)
+
+> **🆕 Highlight:** Replaces `adk web`'s ephemeral in-memory runtime with a custom **FastAPI `Runner`** (`adk_agent_app/runner.py`) backed by `FirestoreSessionService` (`sosta_sessions`) and `FirestoreMemoryService` (`sosta_memories` + `PreloadMemoryTool` on `Cameriere`).
+> *(🩷 Pink nodes = newly introduced in `06a-runner-session-and-memory` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart TB
+    U(["👤 Traveler"]) <-->|"HTTP /chat (:8080)"| RUNNER
+
+    subgraph CustomRunner["⚙️ Custom Production Runner (🆕 06a — adk_agent_app/runner.py)"]
+        RUNNER["🆕 FastAPI + ADK Runner\nrunner.run_async()"]:::newNode
+        SS_SVC["🆕 FirestoreSessionService\nappend_event() -> sosta_sessions"]:::newNode
+        MEM_SVC["🆕 FirestoreMemoryService\nadd_session_to_memory() -> sosta_memories"]:::newNode
+    end
+
+    subgraph Agents["🤖 Main SostaApp Agents"]
+        GK["Gatekeeper"]:::agentNode
+        REG["Registratore"]:::agentNode
+        CAM["🆕 Cameriere\n+ PreloadMemoryTool()\n(<PAST_CONVERSATIONS>)"]:::newNode
+        PROXY["RemoteA2aAgent"]:::protoNode
+    end
+
+    subgraph FirestoreDBs["🔥 Cloud Firestore Databases (🆕 06a)"]
+        FS_SESS[("🆕 adk-agent-dev-session-memory-fs\n• sosta_sessions (Active Threads)\n• sosta_memories (Episodic Archive)")]:::newNode
+        FS_APP[("adk-agent-dev-application-db-fs\n• sosta_users (User Profiles)")]:::dataNode
+    end
+
+    A2A["🌐 Suggeritore A2A (:8001)\n+ MCP SSE (:8002)"]:::protoNode
+
+    RUNNER --> GK & REG & CAM
+    RUNNER <--> SS_SVC & MEM_SVC
+    SS_SVC & MEM_SVC <--> FS_SESS
+    CAM <-->|"PreloadMemoryTool"| MEM_SVC
+    GK & REG & CAM <--> FS_APP
+    CAM --> PROXY <-->|"A2A HTTP"| A2A
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
