@@ -51,5 +51,78 @@ agent = Agent(
 # Alias root_agent so `adk eval adk_agent_app_suggeritore` and `adk web` can discover the agent
 root_agent = agent
 
-# Expose the agent as an A2A ASGI FastAPI application
-a2a_app = to_a2a(agent, port=8001)
+# Configure A2A public RPC endpoint (supports local port 8001 and Cloud Run HTTPS URLs)
+from urllib.parse import urlparse
+import json
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import JSONResponse, Response
+from .tools.suggeritore_soste_subagents import MCP_SSE_URL
+
+a2a_public_url = os.getenv("A2A_PUBLIC_URL")
+if a2a_public_url:
+    parsed_url = urlparse(a2a_public_url)
+    a2a_protocol = parsed_url.scheme or "https"
+    a2a_host = parsed_url.hostname or "localhost"
+    a2a_port = parsed_url.port or (443 if a2a_protocol == "https" else 80)
+else:
+    a2a_protocol = os.getenv("A2A_PROTOCOL", "http")
+    a2a_host = os.getenv("A2A_HOST", "localhost")
+    a2a_port = int(os.getenv("A2A_PORT", "8001"))
+
+# Expose the agent as an A2A ASGI Starlette application
+a2a_app = to_a2a(
+    agent,
+    host=a2a_host,
+    port=a2a_port,
+    protocol=a2a_protocol,
+)
+
+
+class CloudRunA2AMiddleware(BaseHTTPMiddleware):
+    """Provides Cloud Run /health probes and dynamically resolves the public AgentCard RPC URL from X-Forwarded headers."""
+
+    async def dispatch(self, request: Request, call_next) -> Response:
+        if request.url.path in ("/health", "/health/live", "/health/ready"):
+            return JSONResponse(
+                {
+                    "status": "ok",
+                    "service": "sosta-suggeritore-a2a",
+                    "agent": agent.name,
+                    "mcp_sse_url": MCP_SSE_URL,
+                }
+            )
+
+        response = await call_next(request)
+
+        # When hosted behind Cloud Run's HTTPS proxy without a hardcoded A2A_PUBLIC_URL,
+        # rewrite the AgentCard's "url" field using X-Forwarded-Proto and Host headers
+        # so RemoteA2aAgent posts JSON-RPC messages to the public Cloud Run HTTPS URL.
+        if (
+            request.url.path in ("/.well-known/agent-card.json", "/.well-known/agent.json")
+            and response.status_code == 200
+            and not os.getenv("A2A_PUBLIC_URL")
+        ):
+            forwarded_proto = request.headers.get("x-forwarded-proto")
+            host_header = request.headers.get("host")
+            if forwarded_proto and host_header:
+                body_bytes = b""
+                async for chunk in response.body_iterator:
+                    body_bytes += chunk
+                try:
+                    card_data = json.loads(body_bytes.decode("utf-8"))
+                    card_data["url"] = f"{forwarded_proto}://{host_header}/"
+                    return JSONResponse(card_data, status_code=200)
+                except Exception:
+                    return Response(
+                        content=body_bytes,
+                        status_code=response.status_code,
+                        headers=dict(response.headers),
+                        media_type=response.media_type,
+                    )
+
+        return response
+
+
+a2a_app.add_middleware(CloudRunA2AMiddleware)
+

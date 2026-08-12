@@ -1,0 +1,26 @@
+# Git & Virtual Environment
+.git
+.gitignore
+.venv
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Secrets & Local Env Files
+.env
+**/.env
+*.json.key
+terraform-key.json
+
+# Terraform State & Provider Binaries
+terraform/.terraform/
+terraform/terraform_infrastructure/.terraform/
+terraform/**/*.tfstate*
+terraform/**/tfplan*
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+*.log

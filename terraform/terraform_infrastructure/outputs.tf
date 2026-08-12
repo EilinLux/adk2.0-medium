@@ -5,28 +5,29 @@
 
 
 # ==========================================
-# CLOUD RUN OUTPUTS
+# CLOUD RUN OUTPUTS (3-Service Stack)
 # ==========================================
 
-# output "cloud_run_service_url" {
-#   description = "The URL of the Cloud Run service"
-#   value       = google_cloud_run_service.adk_agent.status[0].url
-# }
+output "cloud_run_service_url" {
+  description = "The URL of the SostaApp Production Runner Cloud Run service"
+  value       = google_cloud_run_v2_service.adk_agent.uri
+}
 
-# output "cloud_run_service_name" {
-#   description = "The name of the Cloud Run service"
-#   value       = google_cloud_run_service.adk_agent.name
-# }
+output "cloud_run_service_name" {
+  description = "The name of the SostaApp Production Runner Cloud Run service"
+  value       = google_cloud_run_v2_service.adk_agent.name
+}
 
-# output "cloud_run_service_id" {
-#   description = "The ID of the Cloud Run service"
-#   value       = google_cloud_run_service.adk_agent.id
-# }
+output "cloud_run_suggeritore_a2a_url" {
+  description = "The URL of the Suggeritore A2A Cloud Run service"
+  value       = google_cloud_run_v2_service.suggeritore_a2a.uri
+}
 
-# output "cloud_run_latest_revision" {
-#   description = "The latest revision of the Cloud Run service"
-#   value       = google_cloud_run_service.adk_agent.status[0].latest_created_revision_name
-#}
+output "cloud_run_mcp_sse_url" {
+  description = "The URL of the BigQuery MCP SSE Cloud Run service"
+  value       = google_cloud_run_v2_service.mcp_sse.uri
+}
+
 
 
 # ==========================================
@@ -127,23 +128,26 @@ output "environment" {
 
 # ==========================================
 # DEPLOYMENT INFORMATION
-#==========================================
+# ==========================================
 
-# output "deployment_summary" {
-#   description = "Summary of the deployed infrastructure"
-#  value = {
-#     service_name     = google_cloud_run_service.adk_agent.name
-#   service_url      = google_cloud_run_service.adk_agent.status[0].url
-#   service_account  = google_service_account.adk_agent.email
-#   bigquery_table   = "${google_bigquery_table.db_soste.project}.${google_bigquery_table.db_soste.dataset_id}.${google_bigquery_table.db_soste.table_id}"
-#   firestore_dbs    = [
-#     google_firestore_database.adk_session_memory.name,
-#     google_firestore_database.food_knowledge_base.name
-#   ]
-#   region = var.gcp_region
-#   environment = var.environment
-# }
-# }
+output "deployment_summary" {
+  description = "Summary of the deployed 3-service Cloud Run infrastructure"
+  value = {
+    runner_service_name = google_cloud_run_v2_service.adk_agent.name
+    runner_service_url  = google_cloud_run_v2_service.adk_agent.uri
+    suggeritore_a2a_url = google_cloud_run_v2_service.suggeritore_a2a.uri
+    mcp_sse_url         = google_cloud_run_v2_service.mcp_sse.uri
+    service_account     = google_service_account.adk_agent.email
+    bigquery_table      = "${google_bigquery_table.db_soste.project}.${google_bigquery_table.db_soste.dataset_id}.${google_bigquery_table.db_soste.table_id}"
+    firestore_dbs = [
+      google_firestore_database.application_db.name,
+      google_firestore_database.adk_session_memory.name,
+      google_firestore_database.food_knowledge_base.name,
+    ]
+    region      = var.gcp_region
+    environment = var.environment
+  }
+}
 
 # ==========================================
 # AUTHENTICATION INFORMATION
@@ -152,10 +156,10 @@ output "environment" {
 output "authentication_info" {
   description = "Information needed for authentication and configuration"
   value = {
-    service_account_email = google_service_account.adk_agent.email
-    service_account_id    = google_service_account.adk_agent.unique_id
-    gcp_project           = var.gcp_project
-    #cloud_run_url         = google_cloud_run_service.adk_agent.status[0].url
+    service_account_email   = google_service_account.adk_agent.email
+    service_account_id      = google_service_account.adk_agent.unique_id
+    gcp_project             = var.gcp_project
+    cloud_run_url           = google_cloud_run_v2_service.adk_agent.uri
     requires_authentication = var.require_authentication
   }
 }
@@ -164,15 +168,15 @@ output "authentication_info" {
 # MONITORING ENDPOINTS
 # ==========================================
 
-#output "cloud_run_metrics_dashboard" {
-#description = "URL to Cloud Run metrics dashboard"
-#value       = "https://console.cloud.google.com/run/detail/${var.gcp_region}/${google_cloud_run_service.adk_agent.name}/metrics"
-#}
+output "cloud_run_metrics_dashboard" {
+  description = "URL to Cloud Run metrics dashboard"
+  value       = "https://console.cloud.google.com/run/detail/${var.gcp_region}/${google_cloud_run_v2_service.adk_agent.name}/metrics?project=${var.gcp_project}"
+}
 
-#output "cloud_run_logs_url" {
-#description = "URL to Cloud Run logs in Cloud Logging"
-#value       = "https://console.cloud.google.com/logs/query;query=resource.type=%22cloud_run_revision%22%20resource.labels.service_name=%22${google_cloud_run_service.adk_agent.name}%22?project=${var.gcp_project}"
-#}
+output "cloud_run_logs_url" {
+  description = "URL to Cloud Run logs in Cloud Logging"
+  value       = "https://console.cloud.google.com/logs/query;query=resource.type=%22cloud_run_revision%22%20resource.labels.service_name=%22${google_cloud_run_v2_service.adk_agent.name}%22?project=${var.gcp_project}"
+}
 
 output "bigquery_console_url" {
   description = "URL to BigQuery dataset in Cloud Console"

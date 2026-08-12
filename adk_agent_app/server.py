@@ -45,17 +45,25 @@ class ChatResponse(BaseModel):
     session_state: Dict[str, Any]
 
 
+from .subagents.cameriere_agent import SUGGERITORE_A2A_URL
+
+
 @app.get("/health")
+@app.get("/health/live")
+@app.get("/health/ready")
 async def health_check() -> Dict[str, str]:
-    """Liveness and persistence configuration check."""
+    """Liveness and readiness probe endpoint for Cloud Run."""
     return {
         "status": "ok",
+        "service": "sosta-runner",
         "app_name": APP_NAME,
         "project_id": PROJECT_ID,
         "session_db": FIRESTORE_SESSION_DB,
         "session_service": type(sosta_runner.session_service).__name__,
         "memory_service": type(sosta_runner.memory_service).__name__,
+        "suggeritore_a2a_url": SUGGERITORE_A2A_URL,
     }
+
 
 
 @app.post("/chat", response_model=ChatResponse)

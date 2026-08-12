@@ -1,0 +1,53 @@
+services:
+  sosta-mcp-sse:
+    build: .
+    image: adk-agent:latest
+    environment:
+      - SERVICE_ROLE=mcp
+      - PORT=8002
+      - GOOGLE_GENAI_USE_VERTEXAI=1
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-adk-workshop-sosta-app-dev}
+      - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-europe-west1}
+      - BIGQUERY_DATASET=${BIGQUERY_DATASET:-soste_app_dev}
+      - BIGQUERY_TABLE=${BIGQUERY_TABLE:-db_soste}
+    ports:
+      - "8002:8002"
+
+  sosta-suggeritore-a2a:
+    build: .
+    image: adk-agent:latest
+    depends_on:
+      - sosta-mcp-sse
+    environment:
+      - SERVICE_ROLE=a2a
+      - PORT=8001
+      - A2A_HOST=sosta-suggeritore-a2a
+      - A2A_PORT=8001
+      - MCP_SSE_URL=http://sosta-mcp-sse:8002/sse
+      - GOOGLE_GENAI_USE_VERTEXAI=1
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-adk-workshop-sosta-app-dev}
+      - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-europe-west1}
+      - FIRESTORE_FOOD_KB_DB=${FIRESTORE_FOOD_KB_DB:-adk-agent-dev-food-kb-fs}
+      - VERTEX_RAG_LOCATION=${VERTEX_RAG_LOCATION:-europe-west3}
+      - VERTEX_RAG_CORPUS_DISPLAY_NAME=${VERTEX_RAG_CORPUS_DISPLAY_NAME:-sosta-product-specs-corpus}
+    ports:
+      - "8001:8001"
+
+  sosta-runner:
+    build: .
+    image: adk-agent:latest
+    depends_on:
+      - sosta-suggeritore-a2a
+    environment:
+      - SERVICE_ROLE=runner
+      - PORT=8000
+      - SUGGERITORE_A2A_URL=http://sosta-suggeritore-a2a:8001
+      - GOOGLE_GENAI_USE_VERTEXAI=1
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-adk-workshop-sosta-app-dev}
+      - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-europe-west1}
+      - FIRESTORE_APP_DB=${FIRESTORE_APP_DB:-adk-agent-dev-application-db-fs}
+      - FIRESTORE_SESSION_DB=${FIRESTORE_SESSION_DB:-adk-agent-dev-session-memory-fs}
+      - FIRESTORE_FOOD_KB_DB=${FIRESTORE_FOOD_KB_DB:-adk-agent-dev-food-kb-fs}
+      - GCS_BUCKET=${GCS_BUCKET:-adk-agent-dev-product-specs}
+    ports:
+      - "8000:8000"

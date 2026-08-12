@@ -55,14 +55,16 @@ locals {
     location = var.firestore_location
   }
 
-  # Cloud Run configuration
+  # Cloud Run configuration (3-Service Distributed Stack)
   cloud_run_config = {
-    service_name  = local.resource_prefix
-    min_instances = var.cloud_run_min_instances
-    max_instances = var.cloud_run_max_instances
-    memory        = var.cloud_run_memory
-    cpu           = var.cloud_run_cpu
-    timeout       = var.cloud_run_timeout
+    service_name             = local.resource_prefix
+    mcp_service_name         = "${local.resource_prefix}-mcp-sse"
+    suggeritore_service_name = "${local.resource_prefix}-suggeritore-a2a"
+    min_instances            = var.cloud_run_min_instances
+    max_instances            = var.cloud_run_max_instances
+    memory                   = var.cloud_run_memory
+    cpu                      = var.cloud_run_cpu
+    timeout                  = var.cloud_run_timeout
   }
   # Bucket configuration
   product_specs_bucket_config = {

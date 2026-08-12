@@ -1,4 +1,5 @@
 # adk_agent_app/agent.py
+import os
 import sys
 
 from google.adk.agents import Agent
@@ -8,11 +9,12 @@ from .subagents.registratore_agent import registratore_agent
 from .test_connections import run_all_tests
 from .tools.gatekeeper_tools import is_registered_user_tool
 
-# 1. Execute infrastructure pre-flight check before agent startup
-print("\n🔍 Running infrastructure pre-flight checks...")
-if not run_all_tests():
-    print("❌ Pre-flight checks failed! Halting agent startup.")
-    sys.exit(1)
+# 1. Execute infrastructure pre-flight check before agent startup (can be skipped on Cloud Run cold start)
+if os.getenv("SKIP_PREFLIGHT_CHECKS", "").lower() != "true":
+    print("\n🔍 Running infrastructure pre-flight checks...")
+    if not run_all_tests():
+        print("❌ Pre-flight checks failed! Halting agent startup.")
+        sys.exit(1)
 
 root_agent = Agent(
     name="Gatekeeper",

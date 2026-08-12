@@ -202,7 +202,28 @@ def find_soste_by_fuel_and_location(
         return json.dumps({"error": f"BigQuery Execution Exception: {str(e)}"})
 
 
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+
+
+@mcp.custom_route("/health", methods=["GET"])
+@mcp.custom_route("/health/live", methods=["GET"])
+@mcp.custom_route("/health/ready", methods=["GET"])
+async def mcp_health_check(request: Request) -> JSONResponse:
+    """Health check endpoint for Cloud Run startup and liveness probes."""
+    return JSONResponse(
+        {
+            "status": "ok",
+            "service": "sosta-mcp-sse",
+            "project_id": PROJECT_ID,
+            "table": FULL_TABLE_PATH,
+        }
+    )
+
+
 if __name__ == "__main__":
-    # Change transport from STDIO to SSE so it runs as a persistent web server
-    mcp_port = int(os.getenv("MCP_PORT", "8002"))
-    mcp.run(transport="sse", host="127.0.0.1", port=mcp_port)
+    # Change transport from STDIO to SSE so it runs as a persistent web server.
+    # On Cloud Run, PORT (default 8080) is injected and the server binds to 0.0.0.0.
+    mcp_port = int(os.getenv("PORT", os.getenv("MCP_PORT", "8002")))
+    mcp_host = os.getenv("MCP_HOST", "0.0.0.0")
+    mcp.run(transport="sse", host=mcp_host, port=mcp_port)
