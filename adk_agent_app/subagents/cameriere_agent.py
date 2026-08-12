@@ -1,14 +1,19 @@
 # adk_agent_app/subagents/cameriere_agent.py
+import os
+
 from google.adk.agents import Agent
 from google.adk.agents.remote_a2a_agent import (
     AGENT_CARD_WELL_KNOWN_PATH,
     RemoteA2aAgent,
 )
+from google.adk.tools import preload_memory
 
 from ..tools.cameriere_agent_tools import (
     extract_user_profile_tool,
     update_dietary_preferences_tool,
 )
+
+SUGGERITORE_A2A_URL = os.getenv("SUGGERITORE_A2A_URL", "http://localhost:8001").rstrip("/")
 
 # Create a RemoteA2aAgent that connects to our Suggeritore A2A Microservice
 # This acts as a client-side proxy - Cameriere can transfer to it like a local sub-agent
@@ -16,7 +21,7 @@ suggeritore_agent = RemoteA2aAgent(
     name="Suggeritore",
     description="Orchestrates multi-agent trip optimization to find ideal stops based on charging/fuel and dining needs.",
     # Point to the agent card URL - this is where the A2A protocol metadata lives
-    agent_card=f"http://localhost:8001{AGENT_CARD_WELL_KNOWN_PATH}",
+    agent_card=f"{SUGGERITORE_A2A_URL}{AGENT_CARD_WELL_KNOWN_PATH}",
 )
 
 
@@ -48,6 +53,6 @@ cameriere_agent = Agent(
        - Summarize gathered details: User ID, Guest Name ({user:name?}), Vehicle ({user:vehicle_type?}), Primary Preferences ({user:culinary_preferences?}), Companions ({trip:companion_preferences?}), and Destination ({trip:destination?}), and ask the user if the summary is correct.
        - Once the user confirms the summary, invoke `transfer_to_agent(agent_name='Suggeritore')` immediately.
     """,
-    tools=[extract_user_profile_tool, update_dietary_preferences_tool],
+    tools=[extract_user_profile_tool, update_dietary_preferences_tool, preload_memory],
     sub_agents=[suggeritore_agent],
 )
