@@ -1,30 +1,18 @@
 from google.adk.agents import Agent
 from ..tools.suggeritore_agent_route_tools import route_generator_tool
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
+from mcp import ClientSession
+from mcp.client.sse import sse_client
+import os
 
-from ..tools.suggeritore_agent_route_tools import route_generator_tool
-#from ..tools.suggeritore_agent_bq_soste_tools import soste_search_tool
-import sys
-from pathlib import Path
-import asyncio
+MCP_PORT = os.getenv("MCP_PORT", "8002")
+MCP_SSE_URL = f"http://127.0.0.1:{MCP_PORT}/sse"
 
-# # 1. Risolvi il percorso assoluto dello script FastMCP in modo sicuro
-CURRENT_DIR = Path(__file__).parent.resolve()
-FAST_MCP_SCRIPT_PATH = str(CURRENT_DIR.parent / "tools" / "suggeritore_agent_bq_mcp_soste_tool.py")
-
-# 2. Usa l'interprete Python corrente (sys.executable) dell'ambiente .venv attivo
-mcp_params = StdioServerParameters(
-    command=sys.executable,
-    args=[FAST_MCP_SCRIPT_PATH]
-)
-
-# 2. Definiamo la funzione asincrona che l'ADK eseguirà direttamente quando l'agente la chiama
+# Definiamo la funzione asincrona che l'ADK eseguirà direttamente quando l'agente la chiama
 async def get_mcp_soste_session(latitude: float, longitude: float, fuel_type: str = None) -> str:
     """
     Searches BigQuery for highway service areas and restaurants near target coordinates matching fuel requirements.
     """
-    async with stdio_client(mcp_params) as (read, write):
+    async with sse_client(MCP_SSE_URL) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
             
@@ -63,7 +51,7 @@ soste_search_agent = Agent(
     description="Searches BigQuery for highway service areas and restaurants near target coordinates matching vehicle fuel or charging requirements.",
     instruction="""
     You are the Highway Service Areas Specialist.
-    Call 'find_soste_by_fuel_and_location' using the latitude, longitude, and required fuel/charging type.
+    Call 'get_mcp_soste_session' using the latitude, longitude, and required fuel/charging type.
     If no stops are found for a specific fuel type, retry without the fuel_type filter to return all available nearby stops.
     """,
     tools=[get_mcp_soste_session]  # Using the MCP session for BigQuery access
