@@ -38,6 +38,39 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
   * **`before_tool_guardrail` & `after_tool_guardrail`:** Enforces `^usr_[a-z0-9]{6}$` format, blocks cross-user writes, and logs immutable `audit:tool_execution_log` entries.
 * **Suggeritore (`adk_agent_app_suggeritore`):** Remote A2A microservice (`port=8001` locally / `adk-agent-dev-suggeritore-a2a` on Cloud Run). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE), and `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG).
 
+### 📐 Branch Architecture Diagram (`07a-callbacks-and-guardrails`)
+
+> **🆕 Highlight:** Wraps `Gatekeeper`, `Registratore`, and `Cameriere` with 4 deterministic **ADK Guardrail Callbacks** (`adk_agent_app/callbacks/guardrails.py`): prompt-injection short-circuiting, allergen compliance footers, SQLi/cross-user tool argument blocking, and immutable `audit:tool_execution_log`.
+> *(🩷 Pink nodes = newly introduced in `07a-callbacks-and-guardrails` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    U(["👤 Traveler Prompt"]) --> BM
+
+    subgraph Callbacks["🛡️ Deterministic Guardrail Callbacks (🆕 07a — guardrails.py)"]
+        BM["🆕 1. before_model_guardrail\nRegex Jailbreak Scanner\n(Short-Circuits LlmResponse @ 0 Tokens)"]:::newNode
+        AM["🆕 2. after_model_guardrail\nAppends Mandatory Footer:\n[🛡️ SostaApp Allergen Guardrail]"]:::newNode
+        BT["🆕 3. before_tool_guardrail\nValidates ^usr_[a-z0-9]{6}$ &\nBlocks Cross-User Profile Writes"]:::newNode
+        AT["🆕 4. after_tool_guardrail\nAppends Immutable Entry to\nstate['audit:tool_execution_log']"]:::newNode
+    end
+
+    LLM[("☁️ Gemini 2.5 Flash")]:::protoNode
+    TOOLS["🔧 Firestore Tools\n(is_registered_user, save_new_user,\nextract/update_user_profile)"]:::toolNode
+    FS[("🔥 Cloud Firestore\nsosta_users")]:::dataNode
+
+    BM -->|"Safe Prompt"| LLM --> AM --> U
+    BM -.->|"🛑 Blocked (0 LLM Tokens)"| U
+    LLM -->|"ToolCall(args)"| BT
+    BT -->|"Valid Args"| TOOLS <--> FS
+    TOOLS --> AT --> LLM
+    BT -.->|"🛑 Policy Violation Dict\n(Firestore Untouched)"| LLM
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
