@@ -37,6 +37,40 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Cameriere (`adk_agent_app`):** Session coordinator with `FirestoreSessionService`, `FirestoreMemoryService` (`preload_memory`), and IAM-authenticated A2A delegation (`CloudRunOIDCAuth`).
 * **Suggeritore (`adk_agent_app_suggeritore`):** Remote A2A microservice (`port=8001` locally / `adk-agent-dev-suggeritore-a2a` on Cloud Run with `CloudRunA2AMiddleware`). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE on `port=8002` locally / `adk-agent-dev-mcp-sse` on Cloud Run), and `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG).
 
+### 📐 Branch Architecture Diagram (`06b-cloud-deployment`)
+
+> **🆕 Highlight:** Deploys the 3-service stack to **Google Cloud Run** (`cloud-run.tf`) from a single Docker image (`docker-entrypoint.sh` dispatched via `SERVICE_ROLE=runner|a2a|mcp`), secured with `CloudRunOIDCAuth` IAM Bearer tokens and `CloudRunA2AMiddleware` dynamic Agent Card URL rewriting.
+> *(🩷 Pink nodes = newly introduced in `06b-cloud-deployment` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    IMG["🐳 Single Docker Image (🆕 06b)\nArtifact Registry + docker-entrypoint.sh\nDispatched by SERVICE_ROLE"]:::newNode
+
+    subgraph CloudRun["☁️ Google Cloud Run Serverless Mesh (🆕 06b — europe-west1)"]
+        CR_RUN["🆕 Service 1: sosta-runner\nSERVICE_ROLE=runner\n(Gatekeeper, Registratore, Cameriere)"]:::newNode
+        CR_A2A["🆕 Service 2: suggeritore-a2a\nSERVICE_ROLE=a2a\n+ CloudRunA2AMiddleware\n(Rewrites agent-card.json URL)"]:::newNode
+        CR_MCP["🆕 Service 3: mcp-sse\nSERVICE_ROLE=mcp\n(FastMCP BigQuery Server)"]:::newNode
+    end
+
+    subgraph GCPData["🗄️ Managed GCP Data Plane"]
+        FS[("🔥 Cloud Firestore\n(3 Databases)")]:::dataNode
+        BQ[("📊 BigQuery\n(db_soste)")]:::dataNode
+        RAG[("🧠 Vertex AI RAG\n+ GCS PDFs")]:::dataNode
+    end
+
+    IMG -.->|"Deploys"| CR_RUN & CR_A2A & CR_MCP
+    CR_RUN <-->|"🆕 CloudRunOIDCAuth\n(IAM Bearer ID Token)"| CR_A2A
+    CR_A2A <-->|"🆕 CloudRunOIDCAuth\n(IAM Bearer ID Token)"| CR_MCP
+    CR_RUN <--> FS
+    CR_A2A <--> RAG
+    CR_MCP <--> BQ
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
