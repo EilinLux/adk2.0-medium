@@ -84,7 +84,7 @@ async def main() -> None:
         runner=runner_2,
         user_id=user_id,
         session_id=session_id,
-        message_text="Italiano va bene! Viaggio da sola verso Roma.",
+        message_text="English is okay! I travel alone to Rome.",
     )
     print(f"\n[Turn 2 Author (Resumed on `runner_2`)]: {turn_2['author']}")
     print(f"[Turn 2 Response]:\n{turn_2['response']}\n")
