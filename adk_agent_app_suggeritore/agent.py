@@ -5,12 +5,10 @@ from google.adk.a2a.utils.agent_to_a2a import to_a2a
 from google.adk.agents import Agent
 from google.adk.tools import AgentTool
 
-from .tools.suggeritore_soste_subagents import (
-    menu_checker_agent,
-    route_planner_agent,
-    soste_search_agent,
-    trip_calculator_agent,
-)
+from .subagents.menu_checker_agent import menu_checker_agent
+from .subagents.route_planner_agent import route_planner_agent
+from .subagents.soste_search_agent import soste_search_agent
+from .subagents.trip_calculator_agent import trip_calculator_agent
 
 # Force Vertex AI environment if project ID is present
 if os.getenv("GOOGLE_CLOUD_PROJECT"):
@@ -61,7 +59,7 @@ import json
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
-from .tools.suggeritore_soste_subagents import MCP_SSE_URL
+from .subagents.soste_search_agent import MCP_SSE_URL
 
 a2a_public_url = os.getenv("A2A_PUBLIC_URL")
 if a2a_public_url:
