@@ -39,6 +39,34 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
   * **`MenuCheckerAgent`:** Hybrid Firestore Food KB + Vertex AI RAG menu and PDF allergen verification.
   * **`TripCalculatorAgent` (`BuiltInCodeExecutor`):** Sandboxed Python code execution specialist computing exact EV charging (`kWh`, minutes, EUR) and per-passenger meal/trip cost splits.
 
+### 📐 Branch Architecture Diagram (`07b-code-executor`)
+
+> **🆕 Highlight:** Adds Step 4 (`TripCalculatorAgent` with `code_executor=BuiltInCodeExecutor()`) to `Suggeritore` (`adk_agent_app_suggeritore`) to execute sandboxed Python code for exact EV charging (`kWh`, duration, EUR) and per-passenger meal/trip cost splits.
+> *(🩷 Pink nodes = newly introduced in `07b-code-executor` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    CAM["Cameriere\n(Main App)"]:::agentNode <-->|"A2A Protocol"| SUG
+
+    subgraph Suggeritore4Step["🧭 Suggeritore 4-Step Pipeline (adk_agent_app_suggeritore)"]
+        SUG["Suggeritore Orchestrator"]:::agentNode
+        S1["1. RoutePlannerAgent\n(Google Maps Corridor)"]:::agentNode
+        S2["2. SosteSearchAgent\n(BigQuery MCP SSE)"]:::agentNode
+        S3["3. MenuCheckerAgent\n(Firestore + Vertex RAG)"]:::agentNode
+        S4["🆕 4. TripCalculatorAgent (07b)\ncode_executor=BuiltInCodeExecutor()"]:::newNode
+        SUG --> S1 & S2 & S3 & S4
+    end
+
+    SANDBOX[("🐍 Gemini Sandboxed Python Interpreter (🆕 07b)\nComputes Exact:\n• EV kWh Needed & Charge Minutes\n• Charging Cost (EUR) + Menu Subtotal\n• Exact Per-Passenger Split (round 2 dec)")]:::newNode
+
+    S4 <-->|"Generates & Runs Python Code"| SANDBOX
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
