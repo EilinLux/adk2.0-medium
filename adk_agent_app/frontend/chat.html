@@ -28,34 +28,40 @@
       flex-direction: column;
     }
     header {
-      padding: 14px 24px;
+      padding: 12px 24px;
       background: var(--panel-2);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      flex-wrap: wrap;
     }
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 1.02rem;
     }
     .badge {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       padding: 4px 10px;
       border-radius: 999px;
       background: rgba(16, 185, 129, 0.15);
       color: #34d399;
       border: 1px solid rgba(16, 185, 129, 0.35);
       font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .badge:hover {
+      background: rgba(16, 185, 129, 0.25);
     }
     .layout {
       flex: 1;
       display: grid;
-      grid-template-columns: 1fr 400px;
+      grid-template-columns: 1fr 410px;
       min-height: 0;
     }
     .chat-col {
@@ -65,36 +71,42 @@
       min-height: 0;
     }
     .toolbar {
-      padding: 12px 20px;
+      padding: 10px 20px;
       background: var(--panel);
       border-bottom: 1px solid var(--border);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
     .field {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--muted);
     }
     .field input[type="text"] {
       background: var(--panel-2);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 6px 10px;
+      padding: 5px 9px;
       border-radius: 6px;
-      font-size: 0.85rem;
-      width: 145px;
+      font-size: 0.82rem;
+      width: 135px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      transition: 0.2s;
+    }
+    .field input.highlight-id {
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.35);
+      color: #34d399;
     }
     .toggle {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--text);
       cursor: pointer;
       user-select: none;
@@ -105,12 +117,44 @@
       border: 1px solid var(--border);
       padding: 6px 11px;
       border-radius: 6px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       cursor: pointer;
       transition: 0.15s;
+      font-weight: 500;
     }
     .btn-sm:hover { border-color: var(--accent); color: #60a5fa; }
+    .btn-new-user {
+      border-color: rgba(244, 63, 94, 0.5);
+      color: #fda4af;
+    }
+    .btn-new-user:hover {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: var(--pink);
+      color: #fff;
+    }
+    .btn-guide {
+      background: rgba(59, 130, 246, 0.18);
+      border-color: rgba(59, 130, 246, 0.5);
+      color: #93c5fd;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .btn-guide:hover {
+      background: var(--accent);
+      color: #fff;
+    }
     .btn-danger:hover { border-color: var(--pink); color: #fb7185; }
+    .banner {
+      display: none;
+      padding: 8px 20px;
+      background: rgba(16, 185, 129, 0.15);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+      font-size: 0.82rem;
+      font-weight: 600;
+      align-items: center;
+      justify-content: space-between;
+    }
     .messages {
       flex: 1;
       overflow-y: auto;
@@ -120,12 +164,11 @@
       gap: 14px;
     }
     .msg {
-      max-width: 82%;
+      max-width: 84%;
       padding: 12px 16px;
       border-radius: 12px;
-      line-height: 1.5;
-      font-size: 0.93rem;
-      white-space: pre-wrap;
+      line-height: 1.55;
+      font-size: 0.92rem;
     }
     .msg.user {
       align-self: flex-end;
@@ -144,18 +187,35 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       color: #60a5fa;
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+    /* Markdown formatted output inside chat bubbles */
+    .md-body p { margin-bottom: 8px; }
+    .md-body p:last-child { margin-bottom: 0; }
+    .md-body strong { color: #fff; font-weight: 700; }
+    .md-body em { font-style: italic; color: #e2e8f0; }
+    .md-body ul, .md-body ol {
+      margin: 6px 0 8px 20px;
+    }
+    .md-body li { margin-bottom: 4px; }
+    .md-body code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.84em;
+      background: rgba(15, 23, 42, 0.65);
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #93c5fd;
     }
     .tool-pill {
       display: inline-block;
       margin-top: 8px;
       margin-right: 6px;
       padding: 3px 8px;
-      font-size: 0.74rem;
+      font-size: 0.73rem;
       border-radius: 5px;
       background: rgba(245, 158, 11, 0.15);
       border: 1px solid rgba(245, 158, 11, 0.35);
@@ -172,7 +232,7 @@
     }
     .chip {
       white-space: nowrap;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       padding: 5px 10px;
       border-radius: 999px;
       background: var(--panel);
@@ -181,6 +241,7 @@
       cursor: pointer;
     }
     .chip:hover { color: var(--text); border-color: var(--accent); }
+    .chip-new { border-color: rgba(244, 63, 94, 0.4); color: #fda4af; }
     .composer {
       padding: 14px 20px;
       background: var(--panel);
@@ -221,7 +282,7 @@
       border-bottom: 1px solid var(--border);
     }
     .insp-title {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -236,7 +297,7 @@
       border: 1px solid var(--border);
       padding: 12px;
       border-radius: 8px;
-      font-size: 0.78rem;
+      font-size: 0.77rem;
       color: #e2e8f0;
       overflow-x: auto;
       max-height: 300px;
@@ -247,9 +308,9 @@
       color: var(--muted);
       text-align: center;
       margin: auto;
-      max-width: 440px;
-      line-height: 1.6;
-      font-size: 0.9rem;
+      max-width: 480px;
+      line-height: 1.65;
+      font-size: 0.88rem;
     }
   </style>
 </head>
@@ -257,9 +318,12 @@
   <header>
     <div class="brand">
       <span>🛣️ SostaApp — Production FastAPI Runner</span>
-      <span class="badge" id="healthBadge">Checking Firestore...</span>
+      <a href="/guide" class="badge" id="healthBadge" title="Click to read what this Firestore Runtime badge means in the Architecture Guide">
+        Checking Firestore Runtime...
+      </a>
     </div>
-    <div style="display:flex; gap:10px;">
+    <div style="display:flex; gap:8px; align-items:center;">
+      <a href="/guide" class="btn-sm btn-guide">📘 Architecture &amp; Features Guide</a>
       <a href="/docs" target="_blank" class="btn-sm" style="text-decoration:none;">📄 OpenAPI /docs</a>
       <a href="/health" target="_blank" class="btn-sm" style="text-decoration:none;">🩺 /health JSON</a>
     </div>
@@ -268,34 +332,49 @@
   <div class="layout">
     <div class="chat-col">
       <div class="toolbar">
+        <button class="btn-sm btn-new-user" onclick="startNewUserMode()" title="Start as an unregistered traveler (user_id='guest') to test Registratore & save_new_user">
+          🆕 New User (Register)
+        </button>
+        <button class="btn-sm" onclick="startReturningUserMode()" title="Switch to registered user usr_0a8f67">
+          👤 Returning User (usr_0a8f67)
+        </button>
         <label class="field">
           <span>user_id:</span>
-          <input type="text" id="userId" value="usr_0a8f67" />
+          <input type="text" id="userId" value="usr_0a8f67" title="Set to 'guest' for new users, or 'usr_xxxxxx' for registered users. Auto-updates when Registratore creates a new user!" />
         </label>
         <label class="field">
           <span>session_id:</span>
           <input type="text" id="sessionId" value="prod_trip_001" />
         </label>
-        <label class="toggle">
+        <label class="toggle" title="When checked, commits each turn to FirestoreMemoryService (sosta_memories collection) for cross-session recall">
           <input type="checkbox" id="persistMemory" checked />
-          <span>persist_memory (FirestoreMemoryService)</span>
+          <span>persist_memory</span>
         </label>
-        <button class="btn-sm" onclick="loadSession()">🔄 Sync Session</button>
-        <button class="btn-sm btn-danger" onclick="deleteSession()">🗑️ Delete Session</button>
+        <button class="btn-sm" onclick="loadSession()">🔄 Sync</button>
+        <button class="btn-sm btn-danger" onclick="deleteSession()">🗑️ Delete</button>
+      </div>
+
+      <div class="banner" id="idBanner">
+        <span id="idBannerText"></span>
+        <button class="btn-sm" onclick="document.getElementById('idBanner').style.display='none'">Dismiss</button>
       </div>
 
       <div class="messages" id="messages">
         <div class="empty-hint" id="emptyHint">
           <strong>Production ADK Runner Chat UI</strong><br/>
-          Messages sent here invoke <code>POST /chat</code> and persist every turn &amp; <code>state_delta</code> into Google Cloud Firestore (<code>adk-agent-dev-session-memory-fs</code>).
+          • Click <strong>🆕 New User (Register)</strong> in the toolbar to onboard as a brand-new traveler via <code>Registratore</code> (your <code>user_id</code> will automatically update from <code>guest</code> to your newly generated <code>usr_xxxxxx</code> ID).<br/>
+          • Or use <strong>👤 Returning User (usr_0a8f67)</strong> to test profile hydration, cross-session memory recall, and A2A trip optimization.<br/>
+          • Need details? Open the <a href="/guide" style="color:#60a5fa;">📘 Architecture &amp; Features Guide</a>.
         </div>
       </div>
 
       <div class="chips">
-        <div class="chip" onclick="fillPrompt('Ciao! Sono già registrata, il mio ID è usr_0a8f67.')">1️⃣ Login (usr_0a8f67)</div>
-        <div class="chip" onclick="fillPrompt('Let\'s speak in English! I am traveling with my dog Max to Bologna and I love Secchia Ovest.')">2️⃣ Share Trip &amp; Dog Max</div>
-        <div class="chip" onclick="fillPrompt('Do you remember from our previous conversation what my dog\'s name is and my favorite stop?')">3️⃣ Test Cross-Session Recall</div>
-        <div class="chip" onclick="fillPrompt('I am driving from Milan to Florence, can you suggest a highway stop with vegan food?')">4️⃣ Ask Suggeritore (A2A + MCP)</div>
+        <div class="chip chip-new" onclick="startNewUserAndFill('Hi! I am a new user and I would like to register.')">🆕 1a. New User: Start Registration</div>
+        <div class="chip chip-new" onclick="fillPrompt('My name is Marco Rossi, my email is marco.rossi@example.com, I prefer English, I am Vegan, and I drive an Electric vehicle.')">📝 1b. New User: Send Profile Details</div>
+        <div class="chip" onclick="fillPrompt('Ciao! Sono già registrata, il mio ID è usr_0a8f67.')">🔑 2. Login Returning User (usr_0a8f67)</div>
+        <div class="chip" onclick="fillPrompt('Let\'s speak in English! I am traveling with my dog Max to Bologna and I love Secchia Ovest.')">🐕 3. Share Trip &amp; Dog Max</div>
+        <div class="chip" onclick="fillPrompt('Do you remember from our previous conversation what my dog\'s name is and my favorite stop?')">🧠 4. Test Cross-Session Recall</div>
+        <div class="chip" onclick="fillPrompt('I am driving from Milan to Florence alone, can you suggest a highway stop with vegan food?')">🧭 5. Optimize Route (A2A + MCP + RAG)</div>
       </div>
 
       <form class="composer" onsubmit="sendMessage(event)">
@@ -323,14 +402,71 @@
   </div>
 
   <script>
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function formatInlineMarkdown(line) {
+      let out = escapeHtml(line);
+      // Inline code `code`
+      out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
+      // Bold **text**
+      out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      // Italic *text*
+      out = out.replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, '$1<em>$2</em>');
+      return out;
+    }
+
+    function renderMarkdown(text) {
+      if (!text) return '';
+      const lines = String(text).split('\n');
+      let html = '';
+      let inUl = false;
+      let inOl = false;
+
+      const closeLists = () => {
+        if (inUl) { html += '</ul>'; inUl = false; }
+        if (inOl) { html += '</ol>'; inOl = false; }
+      };
+
+      for (let rawLine of lines) {
+        const trimmed = rawLine.trim();
+        if (!trimmed) {
+          closeLists();
+          continue;
+        }
+        const ulMatch = trimmed.match(/^([*\-•])\s+(.*)$/);
+        const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+
+        if (ulMatch) {
+          if (inOl) { html += '</ol>'; inOl = false; }
+          if (!inUl) { html += '<ul>'; inUl = true; }
+          html += `<li>${formatInlineMarkdown(ulMatch[2])}</li>`;
+        } else if (olMatch) {
+          if (inUl) { html += '</ul>'; inUl = false; }
+          if (!inOl) { html += '<ol>'; inOl = true; }
+          html += `<li>${formatInlineMarkdown(olMatch[2])}</li>`;
+        } else {
+          closeLists();
+          html += `<p>${formatInlineMarkdown(trimmed)}</p>`;
+        }
+      }
+      closeLists();
+      return html;
+    }
+
     async function checkHealth() {
       try {
         const res = await fetch('/health');
         const data = await res.json();
         document.getElementById('healthBadge').textContent =
-          `${data.session_service} + ${data.memory_service} (${data.session_db})`;
+          `🟢 Runtime DB: ${data.session_service} + ${data.memory_service} (${data.session_db}) — What is this?`;
       } catch (e) {
-        document.getElementById('healthBadge').textContent = 'Offline';
+        document.getElementById('healthBadge').textContent = '🔴 Offline';
       }
     }
 
@@ -338,6 +474,30 @@
       const input = document.getElementById('msgInput');
       input.value = text;
       input.focus();
+    }
+
+    function startNewUserMode() {
+      const randomSuffix = Math.floor(100 + Math.random() * 900);
+      document.getElementById('userId').value = 'guest';
+      document.getElementById('sessionId').value = `new_user_session_${randomSuffix}`;
+      document.getElementById('messages').innerHTML =
+        '<div class="empty-hint" id="emptyHint">🆕 <strong>New User Onboarding Mode</strong><br/><code>user_id</code> is set to <code>guest</code>. Tell Gatekeeper you are a new user—once <code>Registratore</code> calls <code>save_new_user()</code>, your newly generated <code>usr_xxxxxx</code> ID will automatically appear in the toolbar!</div>';
+      document.getElementById('stateBox').textContent = '{}';
+      document.getElementById('toolsBox').textContent = '[]';
+      document.getElementById('eventCountBadge').textContent = '0 events';
+    }
+
+    function startNewUserAndFill(text) {
+      if (document.getElementById('userId').value.trim() !== 'guest') {
+        startNewUserMode();
+      }
+      fillPrompt(text);
+    }
+
+    function startReturningUserMode() {
+      document.getElementById('userId').value = 'usr_0a8f67';
+      document.getElementById('sessionId').value = 'prod_trip_001';
+      loadSession();
     }
 
     function appendBubble(role, author, text, toolCalls) {
@@ -353,7 +513,8 @@
         div.appendChild(hdr);
       }
       const body = document.createElement('div');
-      body.textContent = text;
+      body.className = 'md-body';
+      body.innerHTML = renderMarkdown(text);
       div.appendChild(body);
 
       if (toolCalls && toolCalls.length > 0) {
@@ -371,9 +532,9 @@
     }
 
     async function loadSession() {
-      const userId = document.getElementById('userId').value.trim();
+      const userId = document.getElementById('userId').value.trim() || 'guest';
       const sessionId = document.getElementById('sessionId').value.trim();
-      if (!userId || !sessionId) return;
+      if (!sessionId) return;
       try {
         const res = await fetch(`/sessions/${encodeURIComponent(userId)}/${encodeURIComponent(sessionId)}`);
         if (!res.ok) {
@@ -384,6 +545,9 @@
         const data = await res.json();
         document.getElementById('stateBox').textContent = JSON.stringify(data.state || {}, null, 2);
         document.getElementById('eventCountBadge').textContent = `${data.events_count || 0} events`;
+        if (data.state && data.state.verified_user_id) {
+          document.getElementById('userId').value = data.state.verified_user_id;
+        }
         if (data.messages && data.messages.length > 0) {
           const box = document.getElementById('messages');
           box.innerHTML = '';
@@ -395,9 +559,9 @@
     }
 
     async function deleteSession() {
-      const userId = document.getElementById('userId').value.trim();
+      const userId = document.getElementById('userId').value.trim() || 'guest';
       const sessionId = document.getElementById('sessionId').value.trim();
-      if (!userId || !sessionId) return;
+      if (!sessionId) return;
       await fetch(`/sessions/${encodeURIComponent(userId)}/${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
       document.getElementById('messages').innerHTML =
         '<div class="empty-hint" id="emptyHint">🗑️ Session deleted from Firestore. Send a message to start fresh!</div>';
@@ -412,7 +576,8 @@
       const text = input.value.trim();
       if (!text) return;
 
-      const userId = document.getElementById('userId').value.trim();
+      const userIdInput = document.getElementById('userId');
+      const prevUserId = userIdInput.value.trim() || 'guest';
       const sessionId = document.getElementById('sessionId').value.trim();
       const persistMemory = document.getElementById('persistMemory').checked;
 
@@ -428,7 +593,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            user_id: userId,
+            user_id: prevUserId,
             session_id: sessionId,
             message: text,
             persist_memory: persistMemory
@@ -439,6 +604,19 @@
         document.getElementById('stateBox').textContent = JSON.stringify(data.session_state || {}, null, 2);
         document.getElementById('toolsBox').textContent = JSON.stringify(data.tool_calls || [], null, 2);
         document.getElementById('authorBadge').textContent = data.author || '-';
+
+        // Check if a new user was registered or verified during this turn
+        const resolvedId = data.user_id || (data.session_state && data.session_state.verified_user_id);
+        if (resolvedId && resolvedId !== prevUserId) {
+          userIdInput.value = resolvedId;
+          userIdInput.classList.add('highlight-id');
+          setTimeout(() => userIdInput.classList.remove('highlight-id'), 4000);
+          const banner = document.getElementById('idBanner');
+          document.getElementById('idBannerText').textContent =
+            `🎉 Active User ID automatically updated from '${prevUserId}' to '${resolvedId}' (saved in Firestore)!`;
+          banner.style.display = 'flex';
+        }
+
         await loadSession();
       } catch (err) {
         appendBubble('model', 'Error', String(err), []);
