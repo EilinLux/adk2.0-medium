@@ -30,6 +30,7 @@ locals {
     "logging.googleapis.com",              # Cloud Logging
     "monitoring.googleapis.com",           # Cloud Monitoring
     "cloudtrace.googleapis.com",           # Cloud Trace
+    "dlp.googleapis.com",                  # Sensitive Data Protection (Cloud DLP)
   ]
 
   # Common labels for all resources

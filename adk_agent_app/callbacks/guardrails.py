@@ -35,6 +35,8 @@ from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.tool_context import ToolContext
 from google.genai import types
 
+from ..services.dlp_redaction_service import inspect_and_deidentify_text
+
 logger = logging.getLogger(__name__)
 
 # Patterns indicating a prompt-injection or system-override attempt
@@ -63,14 +65,50 @@ def _extract_latest_user_text(llm_request: LlmRequest) -> str:
     return ""
 
 
+def _deidentify_llm_request_in_place(
+    callback_context: CallbackContext,
+    llm_request: LlmRequest,
+) -> None:
+    """Inspects user message parts in `llm_request` via Google Cloud DLP and masks PII in-place."""
+    if not llm_request.contents:
+        return
+
+    for content in llm_request.contents:
+        if content.role != "user" or not content.parts:
+            continue
+        for part in content.parts:
+            raw_text = getattr(part, "text", None)
+            if not raw_text:
+                continue
+            dlp_result = inspect_and_deidentify_text(raw_text)
+            if dlp_result.was_redacted:
+                part.text = dlp_result.redacted_text
+                prev_count = int(callback_context.state.get("dlp:redaction_count", 0))
+                callback_context.state["dlp:redaction_count"] = (
+                    prev_count + dlp_result.findings_count
+                )
+                existing_types = set(
+                    callback_context.state.get("dlp:redacted_info_types", [])
+                )
+                existing_types.update(dlp_result.info_types_found)
+                callback_context.state["dlp:redacted_info_types"] = sorted(
+                    existing_types
+                )
+                callback_context.state["dlp:last_redacted_text"] = (
+                    dlp_result.redacted_text
+                )
+
+
 def before_model_guardrail(
     callback_context: CallbackContext,
     llm_request: LlmRequest,
 ) -> Optional[LlmResponse]:
     """Intercepts LLM requests before calling Gemini.
 
-    Returns an `LlmResponse` to short-circuit the model call if a prompt injection
-    attempt is detected; otherwise returns `None` to proceed normally.
+    1. Tracks request telemetry in session state.
+    2. Short-circuits prompt-injection attempts with a deterministic `LlmResponse`.
+    3. De-identifies sensitive traveler PII (Credit Cards, Phone Numbers, IBANs,
+       Italian Codice Fiscale, License Plates) in-place via Google Cloud DLP.
     """
     # 1. Update telemetry in session state
     req_count = int(callback_context.state.get("metrics:llm_requests_count", 0))
@@ -107,6 +145,9 @@ def before_model_guardrail(
                     ],
                 )
             )
+
+    # 3. Inspect and redact sensitive PII in-place using Google Cloud DLP before sending to Gemini
+    _deidentify_llm_request_in_place(callback_context, llm_request)
 
     return None
 
@@ -178,7 +219,8 @@ def before_tool_guardrail(
 ) -> Optional[dict[str, Any]]:
     """Intercepts tool execution before the Python function runs.
 
-    Validates `user_id` format and prevents cross-user profile modification.
+    1. Validates `user_id` format and prevents cross-user profile modification.
+    2. Scrubs sensitive PII from string arguments via Google Cloud DLP before DB writes.
     Returning a dict short-circuits the actual tool execution.
     """
     tool_name = tool.name
@@ -223,6 +265,32 @@ def before_tool_guardrail(
                     f"and cannot modify preferences for '{requested_id}'."
                 ),
             }
+
+    # 3. Cloud DLP PII Redaction on string arguments before tool execution / Firestore persistence
+    for key, val in list(args.items()):
+        if key in ("user_id", "agent_name", "email"):
+            continue
+        if isinstance(val, str):
+            dlp_res = inspect_and_deidentify_text(val)
+            if dlp_res.was_redacted:
+                args[key] = dlp_res.redacted_text
+                tool_context.state["dlp:last_redacted_tool_arg"] = f"{tool_name}.{key}"
+        elif isinstance(val, list):
+            new_list = []
+            changed = False
+            for item in val:
+                if isinstance(item, str):
+                    dlp_res = inspect_and_deidentify_text(item)
+                    if dlp_res.was_redacted:
+                        new_list.append(dlp_res.redacted_text)
+                        changed = True
+                    else:
+                        new_list.append(item)
+                else:
+                    new_list.append(item)
+            if changed:
+                args[key] = new_list
+                tool_context.state["dlp:last_redacted_tool_arg"] = f"{tool_name}.{key}"
 
     return None
 
