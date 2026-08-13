@@ -7,6 +7,38 @@ You can access the full series list and updates directly on Medium:
 
 The project demonstrates how to move away from fragile, notebook-bound AI prototypes and build production-grade, event-driven AI agents using **Google's Agent Developer Kit (ADK) 2.0** and agentic architecture best practices.
 
+
+---
+
+## 📑 Table of Contents
+
+1. [🛣️ What is SostaApp?](#-what-is-sostaapp)
+2. [🤖 Micro-Agent Directory (`07b-code-executor`)](#-micro-agent-directory-branch-07b-code-executor)
+3. [🚀 Repository Structure & Branching Strategy](#-repository-structure--branching-strategy)
+4. [🛠️ Core Agent Architecture & Medium Articles](#-core-agent-architecture--medium-articles)
+5. [📦 Installation & Setup](#-installation--setup)
+
+---
+
+## 🛣️ What is SostaApp?
+
+**SostaApp** is an intelligent highway stop-over (*sosta*) concierge built for travelers driving along the Italian highway network (*Autostrade*). Rather than relying on a single monolithic prompt, SostaApp is engineered as a **Digital Assembly Line** of specialized micro-agents that collaborate to:
+
+* **Authenticate & Onboard Travelers:** Verify returning users by `user_id` or onboard new travelers by capturing their preferred language, dietary/allergen restrictions, and vehicle fuel/charging type.
+* **Remember Context Across Trips:** Persist conversation sessions, long-term user profiles, and episodic trip memories in **Google Cloud Firestore** so drivers never have to repeat their vehicle specs or food allergies.
+* **Recommend Optimal Highway Stops (*Soste*):** Calculate highway routes, query service stations in **BigQuery** via **MCP**, inspect restaurant menus and official PDF allergen sheets via **Hybrid Vertex AI RAG**, compute exact EV charging and meal splits via **sandboxed Python execution**, and redact sensitive PII via **Google Cloud DLP**.
+
+---
+
+## 🤖 Micro-Agent Directory (Branch `07b-code-executor`)
+
+* **Gatekeeper, Registratore & Cameriere (`adk_agent_app`):** Main SostaApp multi-agent workflow with Firestore session/memory persistence and deterministic guardrail callbacks.
+* **Suggeritore (`adk_agent_app_suggeritore`):** Remote A2A microservice (`port=8001` locally / `adk-agent-dev-suggeritore-a2a` on Cloud Run). Orchestrates 4 specialist `AgentTool`s:
+  * **`RoutePlannerAgent`:** Highway route corridor calculation (`calculate_route`).
+  * **`SosteSearchAgent`:** BigQuery MCP SSE stop discovery (`port=8002`).
+  * **`MenuCheckerAgent`:** Hybrid Firestore Food KB + Vertex AI RAG menu and PDF allergen verification.
+  * **`TripCalculatorAgent` (`BuiltInCodeExecutor`):** Sandboxed Python code execution specialist computing exact EV charging (`kWh`, minutes, EUR) and per-passenger meal/trip cost splits.
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
@@ -49,14 +81,6 @@ To keep the codebase clean, isolated, and easy to follow, **each article in the 
 
 ---
 
-## 🤖 Micro-Agent Directory
-
-* **Gatekeeper:** Authentication guardrail and entry-point orchestrator. Validates user accounts and routes users to the appropriate flow.
-* **Registratore:** Onboarding specialist. Collects culinary preferences, dietary restrictions, and vehicle specifications for new users.
-* **Cameriere:** Session coordinator. Retrieves stored user profiles, recalls past episodic trip memories via `preload_memory`, gathers active trip context (companions, final destination), and delegates optimization over A2A (`RemoteA2aAgent`).
-* **Suggeritore (`adk_agent_app_suggeritore`):** Remote A2A microservice (`port=8001` locally / `adk-agent-dev-suggeritore-a2a` on Cloud Run). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE on `port=8002` locally / `adk-agent-dev-mcp-sse` on Cloud Run), `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG), and `TripCalculatorAgent` (via `BuiltInCodeExecutor`).
-
----
 
 ## 📦 Installation & Setup
 
