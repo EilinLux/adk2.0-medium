@@ -186,12 +186,23 @@ class FirestoreSessionService(BaseSessionService):
         if data is None:
             return None
 
-        if data.get("appName") != app_name or data.get("userId") != user_id:
+        stored_user_id = data.get("userId")
+        verified_user_id = (data.get("state") or {}).get("verified_user_id")
+        user_matches = (
+            stored_user_id == user_id
+            or stored_user_id == "guest"
+            or user_id == "guest"
+            or (verified_user_id and verified_user_id == user_id)
+        )
+        if data.get("appName") != app_name or not user_matches:
             logger.warning(
                 f"Session {session_id} found but app/user mismatch. "
-                f"Expected {app_name}/{user_id}, got {data.get('appName')}/{data.get('userId')}",
+                f"Expected {app_name}/{user_id}, got {data.get('appName')}/{stored_user_id}",
             )
             return None
+
+        # Ensure ADK Runner receives a Session matching the active turn's user_id
+        data["userId"] = user_id
 
         if data.get("storageVersion") == STORAGE_VERSION:
             event_payloads = await self._load_event_payloads(
@@ -251,10 +262,18 @@ class FirestoreSessionService(BaseSessionService):
             return
 
         data = doc.to_dict() or {}
-        if data.get("appName") != app_name or data.get("userId") != user_id:
+        stored_user_id = data.get("userId")
+        verified_user_id = (data.get("state") or {}).get("verified_user_id")
+        user_matches = (
+            stored_user_id == user_id
+            or stored_user_id == "guest"
+            or user_id == "guest"
+            or (verified_user_id and verified_user_id == user_id)
+        )
+        if data.get("appName") != app_name or not user_matches:
             logger.warning(
                 f"Unauthorized delete attempt for session {session_id}. "
-                f"Expected {app_name}/{user_id}, got {data.get('appName')}/{data.get('userId')}"
+                f"Expected {app_name}/{user_id}, got {data.get('appName')}/{stored_user_id}"
             )
             return
 
@@ -286,14 +305,19 @@ class FirestoreSessionService(BaseSessionService):
             k: v for k, v in session.state.items() if not str(k).startswith("temp:")
         }
 
+        update_doc: dict[str, Any] = {
+            "state": persistent_state,
+            "lastUpdateTime": session.last_update_time,
+            "storageVersion": STORAGE_VERSION,
+        }
+        # If the user just registered or authenticated during this turn, promote userId from 'guest'
+        verified_uid = persistent_state.get("verified_user_id")
+        if verified_uid and isinstance(verified_uid, str):
+            update_doc["userId"] = verified_uid
+
         await self._session_doc_ref(session.id).set(
-            _sanitize_for_firestore(
-                {
-                    "state": persistent_state,
-                    "lastUpdateTime": session.last_update_time,
-                    "storageVersion": STORAGE_VERSION,
-                },
-            ),
+            _sanitize_for_firestore(update_doc),
             merge=True,
         )
         return event
+
