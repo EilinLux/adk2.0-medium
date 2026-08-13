@@ -1,6 +1,12 @@
 # adk_agent_app/subagents/registratore_agent.py
 from google.adk.agents import Agent
 
+from ..callbacks import (
+    after_model_guardrail,
+    after_tool_guardrail,
+    before_model_guardrail,
+    before_tool_guardrail,
+)
 from ..tools.registratore_agent_tools import save_new_user_tool
 from ..schemas.user_schemas import RegistrationSummaryOutput
 
@@ -32,7 +38,11 @@ registratore_agent = Agent(
        Immediately after `save_new_user` succeeds, invoke `transfer_to_agent(agent_name='Cameriere')` in the same turn so Cameriere can greet the user and organize their trip.
     """,
     tools=[save_new_user_tool],
-    output_key="raw_registration_result"  # Saves output text/result to session state
+    output_key="raw_registration_result",  # Saves output text/result to session state
+    before_model_callback=before_model_guardrail,
+    after_model_callback=after_model_guardrail,
+    before_tool_callback=before_tool_guardrail,
+    after_tool_callback=after_tool_guardrail,
 )
 
 # 2. Downstream Formatter Agent (Applies output_schema strictly without tools)

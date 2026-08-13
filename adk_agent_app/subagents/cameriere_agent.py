@@ -8,6 +8,12 @@ from google.adk.agents.remote_a2a_agent import (
 )
 from google.adk.tools import preload_memory
 
+from ..callbacks import (
+    after_model_guardrail,
+    after_tool_guardrail,
+    before_model_guardrail,
+    before_tool_guardrail,
+)
 from ..tools.cameriere_agent_tools import (
     extract_user_profile_tool,
     update_dietary_preferences_tool,
@@ -83,4 +89,8 @@ cameriere_agent = Agent(
     """,
     tools=[extract_user_profile_tool, update_dietary_preferences_tool, preload_memory],
     sub_agents=[suggeritore_agent],
+    before_model_callback=before_model_guardrail,
+    after_model_callback=after_model_guardrail,
+    before_tool_callback=before_tool_guardrail,
+    after_tool_callback=after_tool_guardrail,
 )
