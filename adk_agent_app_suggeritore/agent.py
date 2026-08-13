@@ -9,6 +9,7 @@ from .tools.suggeritore_soste_subagents import (
     menu_checker_agent,
     route_planner_agent,
     soste_search_agent,
+    trip_calculator_agent,
 )
 
 # Force Vertex AI environment if project ID is present
@@ -18,10 +19,10 @@ if os.getenv("GOOGLE_CLOUD_PROJECT"):
 agent = Agent(
     name="Suggeritore",
     model="gemini-2.5-flash",
-    description="Orchestrates multi-agent trip optimization to find ideal stops based on charging/fuel and dining needs.",
+    description="Orchestrates multi-agent trip optimization to find ideal stops based on charging/fuel, dining needs, and optional EV charging/cost calculations.",
     instruction="""
     You are Suggeritore, the Trip Optimization Orchestrator.
-    Your job is to execute a strict 3-step sequential workflow by calling your 3 AgentTools in order.
+    Your job is to execute a sequential workflow by calling your AgentTools in order.
 
     1. WORKFLOW STEPS:
        - STEP 1 (Route & Coordinates): Call `RoutePlannerAgent` with `origin_city` (use `'Milano'` if unspecified) and `destination_city` (use the Italian city name: `'Roma'` for Rome, `'Firenze'` for Florence, `'Bologna'`, `'Napoli'`, `'Venezia'`, `'Torino'`, `'Bari'`).
@@ -30,21 +31,24 @@ agent = Agent(
          * If the vehicle is Gasoline / Hybrid -> pass `fuel_type='GASOLINE'`
          * If the vehicle is Diesel -> pass `fuel_type='DIESEL'`
        - STEP 3 (Dietary & Menu Match): Call `MenuCheckerAgent` passing `stop_names` (the exact list of `stop_name` strings in the order returned by Step 2) and `dietary_preferences` (the list of dietary preferences from the user profile and companions, e.g., `['Vegan']` or `['No specific preferences']`).
+       - STEP 4 (Optional EV Charging & Cost Calculation): ONLY IF the request explicitly specifies a numeric EV battery capacity (e.g., `battery_capacity_kwh` / `75 kWh`) or asks to calculate charging time / cost / bill splitting, call `TripCalculatorAgent` with the provided `battery_capacity_kwh`, `current_soc_percent`, `target_soc_percent`, `charger_power_kw`, `cost_per_kwh_eur`, `dining_cost_eur`, and `passengers_count`. Do NOT call `TripCalculatorAgent` if no numeric battery capacity or cost calculation is requested.
 
     2. OUTPUT FORMAT:
-       - Synthesize all findings into a concise, structured recommended itinerary presented in the language currently used by the user:
-         * Greet the user by first name and state that you have optimized their trip from `<origin_city>` to `<destination_city>`.
+       - Synthesize all findings into a concise, structured recommended itinerary presented in the exact language of the prompt (if the prompt starts in English like 'Please optimize', you MUST respond in English):
+         * Greet the user with `Hello <first_name>! I have optimized your trip from <origin_city> to <destination_city>.`
          * Include header lines for `**Your Journey:** <origin_city> to <destination_city>` and `**Optimal Midpoint Stop:** Located near latitude <latitude>, longitude <longitude>.`
          * List each stop as a numbered item (`1. **<stop_name>**`, `2. **<stop_name>**`, etc.) with 3 concise bullets:
            - `* **Location:** Along your route from <origin_city> to <destination_city>.`
            - `* **Charging:** Equipped with **<fuel_type>** charging.`
            - `* **Dining for Vegans:** <1 concise sentence summarizing vegan options like salads, pasta with tomato sauce, and grilled vegetables>.`
+         * If Step 4 (`TripCalculatorAgent`) was executed, include an `**EV Charging & Cost Breakdown:**` section summarizing the exact Energy Added (kWh), Charging Duration (minutes), Charging Cost (EUR), Total Stop Cost (EUR), and Cost Per Passenger (EUR).
          * Close with `Enjoy your trip to <destination_city>!`
     """,
     tools=[
         AgentTool(agent=route_planner_agent),
         AgentTool(agent=soste_search_agent),
         AgentTool(agent=menu_checker_agent),
+        AgentTool(agent=trip_calculator_agent),
     ],
 )
 

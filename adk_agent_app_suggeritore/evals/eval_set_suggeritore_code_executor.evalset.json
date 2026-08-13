@@ -1,0 +1,120 @@
+{
+  "eval_set_id": "eval_set_suggeritore_code_executor",
+  "name": "eval_set_suggeritore_code_executor",
+  "description": "Evaluation of Suggeritore's 4-step AgentTool trajectory (RoutePlannerAgent -> SosteSearchAgent -> MenuCheckerAgent -> TripCalculatorAgent) verifying sandboxed Python code execution via BuiltInCodeExecutor.",
+  "eval_cases": [
+    {
+      "eval_id": "suggeritore_milano_to_roma_vegan_ev_with_code_executor",
+      "conversation": [
+        {
+          "invocation_id": "e-7b000001-0001-4000-8000-000000000001",
+          "user_content": {
+            "parts": [
+              {
+                "text": "Please optimize a trip for Guest Name: Zelda Ailine Luconi, Vehicle: Electric (battery_capacity_kwh: 75.0, current_soc_percent: 20.0, target_soc_percent: 80.0, charger_power_kw: 150.0, cost_per_kwh_eur: 0.65), Primary Preferences: Vegan, Companions: 1 companion (passengers_count: 2, dining_cost_eur: 24.0), Origin: Milano, Destination: Rome. Also calculate the EV charging time and cost split."
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Hello Zelda! I have optimized your trip from Milano to Roma.\n\n**Your Journey:** Milano to Roma\n**Optimal Midpoint Stop:** Located near latitude 43.678, longitude 10.8506.\n\n1. **Badia al Pino Est**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Hosts restaurant services where you can find vegan options such as salads, pasta with tomato sauce, and grilled vegetables.\n\n2. **Cantagallo**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Offers adaptable vegan choices such as salads, pasta dishes, grilled vegetables, and plant-based milk for coffee.\n\n3. **Sillaro Ovest**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Service area restaurant with fresh produce, pasta, and vegetable options, including the verified vegan Fruit Bowl.\n\n4. **Secchia Ovest**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Provides verified vegan choices such as the Vegan Rainbow Salad and Espresso Coffee.\n\n**EV Charging & Cost Breakdown:**\n* **Energy Added:** 45.0 kWh (20% to 80% SoC on a 75.0 kWh battery)\n* **Charging Duration:** 18.0 minutes (at 150.0 kW DC fast charging)\n* **Charging Cost:** €29.25 (at €0.65/kWh)\n* **Total Stop Cost:** €53.25 (€29.25 charging + €24.00 dining)\n* **Cost Per Passenger:** €26.62 (split across 2 passengers)\n\nEnjoy your trip to Roma!"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "destination_city": "Roma",
+                          "origin_city": "Milano"
+                        },
+                        "name": "RoutePlannerAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "fuel_type": "ELECTRIC_FAST",
+                          "latitude": 43.678,
+                          "longitude": 10.8506
+                        },
+                        "name": "SosteSearchAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "dietary_preferences": [
+                            "Vegan"
+                          ],
+                          "stop_names": [
+                            "Badia al Pino Est",
+                            "Cantagallo",
+                            "Sillaro Ovest",
+                            "Secchia Ovest"
+                          ]
+                        },
+                        "name": "MenuCheckerAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "battery_capacity_kwh": 75,
+                          "charger_power_kw": 150,
+                          "cost_per_kwh_eur": 0.65,
+                          "current_soc_percent": 20,
+                          "dining_cost_eur": 24,
+                          "passengers_count": 2,
+                          "target_soc_percent": 80
+                        },
+                        "name": "TripCalculatorAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "adk_agent_app_suggeritore",
+        "user_id": "zelda_suggeritore_code_exec_eval_user"
+      }
+    }
+  ]
+}
