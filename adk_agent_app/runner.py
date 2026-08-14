@@ -92,6 +92,7 @@ async def execute_turn(
     Returns:
         Dict[str, Any]: Turn execution telemetry (`final_response`, `author`, `tool_calls`, `state`).
     """
+    user_id = (user_id or "").strip() or "guest"
     await ensure_session(runner=runner, user_id=user_id, session_id=session_id)
 
     user_msg = types.Content(
@@ -139,18 +140,26 @@ async def execute_turn(
         session_id=session_id,
     )
 
+    resolved_user_id = user_id
+    if updated_session and updated_session.state:
+        verified_uid = updated_session.state.get("verified_user_id")
+        if verified_uid and isinstance(verified_uid, str):
+            resolved_user_id = verified_uid
+            updated_session.user_id = verified_uid
+
     if save_to_memory and updated_session and runner.memory_service:
         await runner.memory_service.add_session_to_memory(updated_session)
         logger.info(
-            f"Session '{session_id}' committed to long-term MemoryService."
+            f"Session '{session_id}' committed to long-term MemoryService for user '{resolved_user_id}'."
         )
 
     return {
         "session_id": session_id,
-        "user_id": user_id,
+        "user_id": resolved_user_id,
         "author": final_author,
         "response": final_text,
         "tool_calls": tool_calls,
         "state_deltas": state_deltas,
         "session_state": updated_session.state if updated_session else {},
     }
+

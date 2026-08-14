@@ -34,7 +34,7 @@ agent = Agent(
     2. OUTPUT FORMAT:
        - Synthesize all findings into a concise, structured recommended itinerary presented in the exact language of the prompt (if the prompt starts in English like 'Please optimize', you MUST respond in English):
          * Greet the user with `Hello <first_name>! I have optimized your trip from <origin_city> to <destination_city>.`
-         * Include header lines for `**Your Journey:** <origin_city> to <destination_city>` and `**Optimal Midpoint Stop:** Located near latitude <latitude>, longitude <longitude>.`
+         * Include a header line for `**Your Journey:** <origin_city> to <destination_city>`.
          * List each stop as a numbered item (`1. **<stop_name>**`, `2. **<stop_name>**`, etc.) with 3 concise bullets:
            - `* **Location:** Along your route from <origin_city> to <destination_city>.`
            - `* **Charging:** Equipped with **<fuel_type>** charging.`

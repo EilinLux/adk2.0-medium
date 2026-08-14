@@ -10,6 +10,7 @@ from .config import FIRESTORE_SESSION_DB, PROJECT_ID
 from .runner import APP_NAME, create_sosta_runner, execute_turn
 
 FRONTEND_CHAT_HTML_PATH = Path(__file__).resolve().parent / "frontend" / "chat.html"
+FRONTEND_GUIDE_HTML_PATH = Path(__file__).resolve().parent / "frontend" / "guide.html"
 
 app = FastAPI(
     title="SostaApp Production Runner API",
@@ -23,8 +24,8 @@ sosta_runner = create_sosta_runner()
 
 class ChatRequest(BaseModel):
     user_id: str = Field(
-        ...,
-        description="Caller identifier (e.g., 'usr_0a8f67' or 'traveler_zelda').",
+        default="guest",
+        description="Caller identifier (e.g., 'guest' for new users, or 'usr_0a8f67' for registered users).",
     )
     session_id: str = Field(
         ...,
@@ -58,6 +59,13 @@ class ChatResponse(BaseModel):
 async def chat_ui() -> HTMLResponse:
     """Serves the interactive SostaApp Production Runner Chat UI from `adk_agent_app/frontend/chat.html`."""
     return HTMLResponse(content=FRONTEND_CHAT_HTML_PATH.read_text(encoding="utf-8"))
+
+
+@app.get("/guide", response_class=HTMLResponse, include_in_schema=False)
+async def guide_ui() -> HTMLResponse:
+    """Serves the SostaApp Architecture & Features Documentation page from `adk_agent_app/frontend/guide.html`."""
+    return HTMLResponse(content=FRONTEND_GUIDE_HTML_PATH.read_text(encoding="utf-8"))
+
 
 
 @app.get("/health")
