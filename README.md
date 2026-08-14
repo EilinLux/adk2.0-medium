@@ -35,6 +35,37 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Gatekeeper, Registratore & Cameriere (`adk_agent_app`):** Protected by ADK Guardrail Callbacks integrated with **Google Cloud Sensitive Data Protection (Cloud DLP)** (`dlp_redaction_service.py`) to mask `CREDIT_CARD_NUMBER`, `PHONE_NUMBER`, `ITALY_FISCAL_CODE`, `IBAN_CODE`, and custom regex `ITALIAN_LICENSE_PLATE` (`AB 123 CD`) in-place before prompts reach Gemini or Firestore.
 * **Suggeritore (`adk_agent_app_suggeritore`):** Remote A2A microservice (`port=8001` locally / `adk-agent-dev-suggeritore-a2a` on Cloud Run). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE on `port=8002` locally / `adk-agent-dev-mcp-sse` on Cloud Run), `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG), and `TripCalculatorAgent` (via `BuiltInCodeExecutor`).
 
+### 📐 Branch Architecture Diagram (`07c-dlp-pii-redaction`)
+
+> **🆕 Highlight:** Provisions **Google Cloud Sensitive Data Protection (Cloud DLP)** via Terraform (`dlp.tf`) and integrates `DlpRedactionService` into `before_model_guardrail` and `before_tool_guardrail` to mask credit cards, phone numbers, Codice Fiscale, IBANs, and `ITALIAN_LICENSE_PLATE` in-place before Gemini or Firestore ever sees raw PII.
+> *(🩷 Pink nodes = newly introduced in `07c-dlp-pii-redaction` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    U(["👤 Traveler Raw Input:\nCard 4532-... | Targa AB 123 CD\nCF RSSMRA85M01H501Z"]) --> BM
+
+    subgraph GuardrailsDLP["🛡️ Dual-Layer Cloud DLP Interception (🆕 07c)"]
+        BM["🆕 before_model_guardrail\n_deidentify_llm_request_in_place()"]:::newNode
+        BT["🆕 before_tool_guardrail\n_deidentify_tool_args_in_place()"]:::newNode
+        SVC["🆕 DlpRedactionService\n1. Local Regex Fast-Path (0ms)\n2. Cloud DLP deidentify_content RPC"]:::newNode
+    end
+
+    DLP_API[("☁️ Google Cloud DLP API (🆕 07c — dlp.tf)\nBuilt-in: CREDIT_CARD, PHONE, IBAN, ITALY_FISCAL_CODE\nCustom Regex: ITALIAN_LICENSE_PLATE")]:::newNode
+    LLM[("☁️ Gemini 2.5 Flash\nSees ONLY:\n[CREDIT_CARD_NUMBER]\n[ITALIAN_LICENSE_PLATE]")]:::agentNode
+    FS[("🔥 Cloud Firestore (sosta_users)\nStores ONLY Redacted Tokens\n(Zero Raw PII on Disk)")]:::dataNode
+
+    BM <--> SVC
+    BT <--> SVC
+    SVC <-->|"Inspect + Deidentify Template"| DLP_API
+    BM -->|"Scrubbed LlmRequest"| LLM
+    LLM -->|"Tool Call"| BT -->|"Scrubbed Tool Args"| FS
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
