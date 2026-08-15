@@ -177,8 +177,11 @@ initialize_terraform() {
         fi
     fi
 
-    print_info "Running terraform init..."
-    terraform init -upgrade
+    PROJECT=$(gcloud config get-value project)
+    print_info "Running terraform init (Project: $PROJECT, Bucket: terraform-state-${PROJECT})..."
+    terraform init -upgrade -reconfigure \
+        -backend-config="bucket=terraform-state-${PROJECT}" \
+        -backend-config="prefix=adk-agent/dev"
 
     print_success "Terraform initialized"
     cd ..

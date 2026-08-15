@@ -163,7 +163,7 @@ Create a `.env` file in the root directory and populate it with your GCP and dat
 # OPTION A: Vertex AI Configuration (Recommended for Google Cloud Production)
 # ============================================================================
 GOOGLE_GENAI_USE_VERTEXAI=1
-GOOGLE_CLOUD_PROJECT=adk-workshop-sosta-app-dev
+GOOGLE_CLOUD_PROJECT=your-project-id
 GOOGLE_CLOUD_LOCATION=europe-west1
 APP_NAME=sosta_app
 ADK_SUPPRESS_EXPERIMENTAL_FEATURE_WARNINGS=1
@@ -177,7 +177,7 @@ FIRESTORE_SESSION_DB=adk-agent-dev-session-memory-fs
 FIRESTORE_FOOD_KB_DB=adk-agent-dev-food-kb-fs
 BIGQUERY_DATASET=soste_app_dev
 BIGQUERY_TABLE=db_soste
-GCS_BUCKET=adk-agent-dev-product-specs
+GCS_BUCKET=adk-agent-dev-your-project-id-product-specs
 VERTEX_RAG_LOCATION=europe-west3
 VERTEX_RAG_CORPUS_DISPLAY_NAME=sosta-product-specs-corpus
 
