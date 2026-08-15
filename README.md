@@ -37,6 +37,41 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Cameriere:** Session coordinator. Retrieves (`extract_user_profile`) and updates (`update_user_profile`) stored user profiles in Cloud Firestore.
 * **Suggeritore *(Placeholder in `04a`)*:** Downstream stop-matching specialist (implemented in `05a`).
 
+### 📐 Branch Architecture Diagram (`04a-evaluating-with-adk`)
+
+> **🆕 Highlight:** Introduces ADK's Evaluation framework (`adk_agent_app/evals/`): `eval_config.json` (`tool_trajectory_avg_score: 1.0`, `response_match_score: 0.5`) and multi-turn `.evalset.json` suites (`eval_set_1_new_user` & `eval_set_2_existing_user`).
+> *(🩷 Pink nodes = newly introduced in `04a-evaluating-with-adk` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    subgraph EvalSuite["🧪 ADK Evaluation Suite (🆕 04a — adk_agent_app/evals/)"]
+        CFG["🆕 eval_config.json\ntool_trajectory_avg_score: 1.0\nresponse_match_score: 0.5"]:::newNode
+        ES1["🆕 eval_set_1_new_user.evalset.json\n(3-Turn Onboarding Trajectory)"]:::newNode
+        ES2["🆕 eval_set_2_existing_user.evalset.json\n(2-Turn Profile Update Trajectory)"]:::newNode
+    end
+
+    subgraph SostaApp["🤖 SostaApp Under Test"]
+        GK["Gatekeeper\nis_registered_user"]:::agentNode
+        REG["Registratore\nsave_new_user"]:::agentNode
+        CAM["Cameriere\nextract / update_user_profile"]:::agentNode
+    end
+
+    FS[("🔥 Cloud Firestore\nsosta_users")]:::dataNode
+    JUDGE["⚖️ ADK Evaluator\nTrajectory + ROUGE-1 Judge"]:::newNode
+
+    ES1 & ES2 -->|"Simulates User Turns"| GK
+    GK --> REG --> CAM
+    GK --> CAM
+    GK & REG & CAM <--> FS
+    GK & REG & CAM -->|"Actual Tool Calls & Text"| JUDGE
+    CFG --> JUDGE
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
