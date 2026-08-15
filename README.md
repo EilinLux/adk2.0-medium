@@ -34,6 +34,32 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 
 * **`root_agent` (`adk_agent_app/agent.py` & `adk_agent_app_yaml/root_agent.yaml`):** Foundational single-agent `LlmAgent` (`gemini-2.5-flash`) demonstrating declarative Python and YAML agent definitions before decomposing SostaApp into a multi-agent assembly line.
 
+### 📐 Branch Architecture Diagram (`01-first-agent`)
+
+> **🆕 Highlight:** Introduces the foundational `LlmAgent` (`root_agent`), declarative YAML config (`root_agent.yaml`), and `adk web` / `adk run` CLI entrypoints connected to Vertex AI (`gemini-2.5-flash`).
+> *(🩷 Pink nodes = newly introduced in `01-first-agent` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    U(["👤 Traveler (User)"])
+    subgraph Runtime["⚙️ ADK Local Runtime (🆕 01)"]
+        CLI["adk run / adk web\n(Dev UI :8000)"]:::newNode
+        PY["adk_agent_app/agent.py\nroot_agent (LlmAgent)"]:::newNode
+        YAML["adk_agent_app_yaml/\nroot_agent.yaml"]:::newNode
+    end
+    LLM[("☁️ Google Vertex AI\ngemini-2.5-flash")]:::protoNode
+
+    U <-->|"HTTP / CLI Chat"| CLI
+    CLI --> PY
+    CLI -.->|"Alternative Config"| YAML
+    PY <-->|"GOOGLE_GENAI_USE_VERTEXAI=1"| LLM
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
