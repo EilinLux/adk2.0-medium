@@ -7,7 +7,7 @@ load_dotenv()
 # ==========================================
 # CONFIGURATION
 # ==========================================
-PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "gai-community29oct-7501")
 DATABASE_ID = os.getenv("FIRESTORE_SESSION_DB", "adk-agent-dev-session-memory-fs")
 COLLECTION_NAME = "users"
 
