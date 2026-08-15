@@ -40,6 +40,38 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
   * **`SosteSearchAgent` (MCP Client):** Connects to our standalone **FastMCP BigQuery Server** (`mcp_bigquery_server/server.py`) over `stdio` or `SSE` (`port=8002`) via `McpToolset`.
   * **`MenuCheckerAgent`:** Filters station menus against traveler dietary restrictions (`check_restaurant_menus`).
 
+### 📐 Branch Architecture Diagram (`05b-from-tool-to-mcp`)
+
+> **🆕 Highlight:** Replaces `SosteSearchAgent`'s in-process BigQuery function with an **MCP Client (`McpToolset`)** connecting to our standalone **FastMCP BigQuery Server** (`mcp_bigquery_server/server.py`) over `stdio` or `HTTP SSE` (`port=8002`).
+> *(🩷 Pink nodes = newly introduced in `05b-from-tool-to-mcp` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    subgraph SostaApp["🤖 SostaApp Process"]
+        GK["Gatekeeper &\nRegistratore"]:::agentNode --> CAM["Cameriere"]:::agentNode
+        CAM --> SUG["Suggeritore"]:::agentNode
+        SUG --> RP["RoutePlannerAgent"]:::agentNode
+        SUG --> SS["🆕 SosteSearchAgent\nMcpToolset Client"]:::newNode
+        SUG --> MC["MenuCheckerAgent"]:::agentNode
+    end
+
+    subgraph MCPServer["🔌 Standalone FastMCP Server (🆕 05b — mcp_bigquery_server/)"]
+        FASTMCP["🆕 FastMCP('sosta-bigquery-mcp')\nTools:\n• query_soste_by_highway()\n• get_sosta_details_by_name()"]:::newNode
+    end
+
+    BQ[("📊 Google BigQuery\nsoste_app_dev.db_soste")]:::dataNode
+    FS[("🔥 Cloud Firestore\nsosta_users")]:::dataNode
+
+    GK & CAM <--> FS
+    SS <-->|"🆕 MCP Protocol\nstdio OR HTTP SSE (:8002)"| FASTMCP
+    FASTMCP <-->|"Parameterized SQL"| BQ
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
