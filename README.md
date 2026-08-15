@@ -37,6 +37,49 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Cameriere (`adk_agent_app`):** Session coordinator. Retrieves stored user profiles, gathers active trip context (companions, final destination), and delegates optimization over HTTP A2A (`RemoteA2aAgent`).
 * **Suggeritore (`adk_agent_app_suggeritore`):** Standalone **Remote A2A Microservice** (`port=8001`, exposed via `to_a2a()`). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE on `port=8002`), and `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG).
 
+### 📐 Branch Architecture Diagram (`05d-from-subagent-to-a2a-protocol`)
+
+> **🆕 Highlight:** Extracts `Suggeritore` into an independent **A2A Microservice** (`adk_agent_app_suggeritore` on `port=8001` via `to_a2a()`), consumed by `adk_agent_app` (`port=8000`) via `RemoteA2aAgent` over HTTP JSON-RPC + `/.well-known/agent-card.json`.
+> *(🩷 Pink nodes = newly introduced in `05d-from-subagent-to-a2a-protocol` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    U(["👤 Traveler"]) <-->|":8000"| GK
+
+    subgraph P1["📦 Process 1: Main SostaApp (adk_agent_app :8000)"]
+        GK["Gatekeeper"]:::agentNode --> REG["Registratore"]:::agentNode --> CAM["Cameriere"]:::agentNode
+        GK --> CAM
+        PROXY["🆕 RemoteA2aAgent Proxy\nagent_card='http://localhost:8001/\n.well-known/agent-card.json'"]:::newNode
+        CAM -->|"transfer_to_agent"| PROXY
+    end
+
+    subgraph P2["📦 Process 2: Suggeritore A2A Service (🆕 05d — :8001)"]
+        A2A_SRV["🆕 to_a2a(suggeritore_soste)\nFastAPI A2A Server (:8001)"]:::newNode
+        RP["1. RoutePlannerAgent"]:::agentNode
+        SS["2. SosteSearchAgent\n(MCP SSE Client)"]:::agentNode
+        MC["3. MenuCheckerAgent\n(Firestore + Vertex RAG)"]:::agentNode
+        A2A_SRV --> RP & SS & MC
+    end
+
+    subgraph P3["📦 Process 3: BigQuery MCP Server (:8002)"]
+        MCP_SSE["🆕 FastMCP SSE Server\nhttp://localhost:8002/sse"]:::newNode
+    end
+
+    FS_USERS[("🔥 Firestore\nsosta_users")]:::dataNode
+    BQ[("📊 BigQuery\ndb_soste")]:::dataNode
+    RAG[("🧠 Firestore Food KB\n+ Vertex AI RAG")]:::dataNode
+
+    GK & REG & CAM <--> FS_USERS
+    PROXY <-->|"🆕 A2A Protocol (HTTP JSON-RPC)"| A2A_SRV
+    SS <-->|"🆕 MCP over HTTP SSE (:8002)"| MCP_SSE <--> BQ
+    MC <--> RAG
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
