@@ -40,6 +40,41 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
   * **`SosteSearchAgent`:** Queries the BigQuery highway service station catalog (`query_soste_bigquery`).
   * **`MenuCheckerAgent`:** Filters station menus against traveler dietary restrictions (`check_restaurant_menus`).
 
+### 📐 Branch Architecture Diagram (`05a-tools-and-input-output-schemas`)
+
+> **🆕 Highlight:** Implements `Suggeritore` with 3 specialist `AgentTool`s (`RoutePlannerAgent`, `SosteSearchAgent` querying **BigQuery**, `MenuCheckerAgent`), plus the **2-Agent Split** (`Registratore` -> `RegistrationFormatterAgent`) to combine tools with `output_schema`.
+> *(🩷 Pink nodes = newly introduced in `05a-tools-and-input-output-schemas` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart TB
+    GK["Gatekeeper"]:::agentNode --> REG["Registratore\nsave_new_user()\noutput_key='raw_registration_result'"]:::agentNode
+    REG -->|"🆕 2-Agent Split (05a)"| FMT["🆕 RegistrationFormatterAgent\noutput_schema=RegistrationSummary\noutput_key='registration_summary'"]:::newNode
+    FMT --> CAM["Cameriere"]:::agentNode
+    GK --> CAM
+    CAM -->|"transfer_to_agent"| SUG
+
+    subgraph SuggeritoreBox["🧭 Suggeritore & Specialist AgentTools (🆕 05a)"]
+        SUG["🆕 Suggeritore\nStop-Over Coordinator"]:::newNode
+        RP["🆕 RoutePlannerAgent (AgentTool)\ncalculate_route()"]:::newNode
+        SS["🆕 SosteSearchAgent (AgentTool)\nquery_soste_bigquery()"]:::newNode
+        MC["🆕 MenuCheckerAgent (AgentTool)\ncheck_restaurant_menus()"]:::newNode
+        SUG -->|"1. Route"| RP
+        SUG -->|"2. Stations"| SS
+        SUG -->|"3. Menus"| MC
+    end
+
+    FS[("🔥 Cloud Firestore\nsosta_users")]:::dataNode
+    BQ[("📊 Google BigQuery (🆕 05a)\nsoste_app_dev.db_soste\n(Highway Service Stations)")]:::newNode
+
+    REG & CAM <--> FS
+    SS <-->|"google-cloud-bigquery"| BQ
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
