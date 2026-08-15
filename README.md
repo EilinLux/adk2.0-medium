@@ -37,6 +37,40 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Cameriere:** Session coordinator retrieving (`extract_user_profile`) and updating (`update_user_profile`) traveler preferences.
 * **Session State Test Agents (`tests/03a-session-state/`):** Progressive `gatekeeper_agent` and `recommendation_agent` harnesses demonstrating `output_key`, `output_schema`, `{variable}` instruction templating, and ADK's 4 state scopes (`session`, `user:`, `app:`, `temp:`).
 
+### 📐 Branch Architecture Diagram (`03a-session-state`)
+
+> **🆕 Highlight:** Introduces ADK's `Session.state` mechanics (`tests/03a-session-state`): `output_schema` + `output_key` automated extraction, `{variable}` / `{optional?}` prompt injection, and the 4 state persistence scopes (`unprefixed`, `temp:`, `user:`, `app:`).
+> *(🩷 Pink nodes = newly introduced in `03a-session-state` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    subgraph Turn1["1️⃣ Extraction & State Write (🆕 03a)"]
+        A1["gatekeeper_agent\noutput_schema=PreferenceData\noutput_key='user_information'"]:::newNode
+        T1["search_mock_restaurant_api()\nWrites temp:raw_api_payload"]:::toolNode
+    end
+
+    subgraph State["🧠 Session.state Dictionary & 4 Scopes (🆕 03a)"]
+        S_PLAIN["📄 Unprefixed (Session Scope)\nstate['user_information']"]:::newNode
+        S_TEMP["⚡ temp: (Ephemeral Scope)\ntemp:raw_api_payload (Purged post-turn)"]:::newNode
+        S_USER["👤 user: (User Scope)\nuser:user_preferred_language"]:::newNode
+        S_APP["🌐 app: (Global App Scope)\napp:enable_beta_recommendations"]:::newNode
+    end
+
+    subgraph Turn2["2️⃣ Dynamic Prompt Injection (🆕 03a)"]
+        A2["recommendation_agent\nInstruction Template:\n{user:user_preferred_language}\n{user_information?}"]:::newNode
+    end
+
+    A1 -->|"Validated JSON"| S_PLAIN
+    T1 -.->|"Single-Turn Scratchpad"| S_TEMP
+    S_PLAIN & S_USER & S_APP -->|"{variable} Injection"| A2
+    A2 --> T1
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
