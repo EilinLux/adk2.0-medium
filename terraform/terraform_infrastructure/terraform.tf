@@ -16,9 +16,6 @@ terraform {
     }
   }
 
-  # Uncomment this block once you've created a GCS bucket for remote state
-  backend "gcs" {
-    bucket = "terraform-state-adk-workshop-sosta-app-dev"
-    prefix = "adk-agent/dev"
-  }
+  # Remote backend using GCS (partial configuration: values supplied dynamically via -backend-config)
+  backend "gcs" {}
 }

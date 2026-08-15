@@ -1,207 +1,167 @@
-# Terraform Quick Start Guide
+# Terraform Infrastructure Guide
+
+This directory manages the provisioning of all Google Cloud Platform (GCP) resources required by the **ADK Multi-Agent System** using Terraform.
+
+---
+
+## Architecture Overview
+
+Terraform automates the deployment of the following resources:
+
+* **BigQuery**:
+  * Dataset: `soste_app_dev` (EU/europe-west1)
+  * Table: `db_soste` (Service station locations, fuel types, coordinates)
+  * Access controls for the application service account
+* **Cloud Firestore**:
+  * `adk-agent-dev-session-memory-fs`: Session history & memory
+  * `adk-agent-dev-food-kb-fs`: Autogrill menu & food knowledge base
+  * `adk-agent-dev-application-db-fs`: Application configuration & user state
+  * Composite indexes for queries
+* **Cloud Storage**:
+  * `gs://adk-agent-dev-${PROJECT_ID}-product-specs`: Stores official Autogrill product specification PDFs for RAG grounding
+* **IAM & Service Accounts**:
+  * `adk-agent-dev-sa`: Application identity for Cloud Run / agent execution
+* **GCP Services (APIs)**:
+  * Artifact Registry, Cloud Run, Cloud Build, BigQuery, Firestore, Vertex AI, Logging, Monitoring, Cloud Trace
+
+---
 
 ## Prerequisites
 
-- Terraform >= 1.5.0
-- Google Cloud SDK (`gcloud`)
-- GCP Account with billing enabled
-
-
-### GCP Account Setup
-
-1. **Create a GCP Project**
-   ```bash
-   gcloud projects create adk-workshop-sosta-app-dev 
-   gcloud config set project adk-workshop-sosta-app-dev
-   gcloud auth application-default login
-   gcloud auth application-default  set-quota-project adk-workshop-sosta-app-dev
-   ```
-
-2. **Enable Required APIs** (these will be enabled by Terraform, but you can pre-enable them)
-   ```bash
-   gcloud services enable compute.googleapis.com
-   gcloud services enable cloudresourcemanager.googleapis.com
-   gcloud services enable iam.googleapis.com
-   gcloud services enable cloudkms.googleapis.com
-   ```
-
-3. **Set Up Billing**
-   - Go to https://console.cloud.google.com/billing
-   - Create a billing account and link it to your project
-   - Set up budget alerts to monitor costs
-
-### Required Permissions
-
-Your user account needs these roles in the GCP project:
-- `Editor` (for development/staging) or
-- `Cloud Run Admin`
-- `BigQuery Admin`
-- `Datastore Admin`
-- `Cloud IAM Security Admin`
-- `Artifact Registry Administrator`
+1. **Terraform** >= 1.5.0 (`terraform version`)
+2. **Google Cloud SDK** (`gcloud version`)
+3. **Python package runner** (`uv` or `pip`)
+4. An active GCP account with billing enabled
 
 ---
 
-## Initial Setup
+## Step-by-Step Setup & Deployment
 
-### Step 1: Clone and Navigate to Terraform Directory
+### Step 1: Authenticate with Google Cloud
 
-```bash
-cd /path/to/adk2.0-medium
-cd terraform
-```
-
-### Step 2: Authenticate with GCP
+Authenticate both the `gcloud` CLI and **Application Default Credentials (ADC)** used by Terraform and the Python SDK:
 
 ```bash
-# Login to your Google Cloud account
-gcloud auth login
-
-# Set your default project
-gcloud config set project adk-workshop-sosta-app-dev
-
-# Verify authentication
-gcloud auth list
-gcloud config list
-```
-
-### Step 3: Create Service Account for Terraform (Recommended)
-
-For production deployments, create a dedicated service account for Terraform:
-
-```bash
-# Set project ID
-export PROJECT_ID="adk-workshop-sosta-app-dev"
-export YOUR_USER_EMAIL="zelda.luconi@datwave.ai"
-
-# Create service account
-gcloud iam service-accounts create terraform-admin \
-  --display-name="Terraform Admin"
-
-# Grant necessary roles
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:terraform-admin@${PROJECT_ID}.iam.gserviceaccount.com" \
-  --role="roles/editor"
-
-# Create and download key
-gcloud iam service-accounts add-iam-policy-binding \
-  terraform-admin@adk-workshop-sosta-app-dev.iam.gserviceaccount.com \
-  --member="user:$YOUR_USER_EMAIL" \
-  --role="roles/iam.serviceAccountTokenCreator" \
-  --project="adk-workshop-sosta-app-dev"
-```
-
-**Security Note**: Store `terraform-key.json` securely:
-```bash
-# Add to .gitignore
-echo "terraform-key.json" >> .gitignore
-
-# Restrict file permissions
-chmod 400 terraform-key.json
-
-# Consider using GCP Secret Manager or HashiCorp Vault in production
-```
-
-### Step 4: Initialize Terraform
-
-```bash
-# Navigate to terraform directory
-cd terraform_infrastructure
-
-# Initialize Terraform (download providers and modules)
-terraform init
-
-# Verify initialization
-ls -la .terraform/
-```
-
-You should see:
-```
-.terraform/
-├── providers/
-└── modules/
-```
-
----
-
-
-
-
-## 1. Authenticate
-
-```bash
-# Login to Google Cloud
-gcloud auth login
-```
-
-Run the script without arguments and select option 0 to execute all initialization steps sequentially:
-```bash
-Bash
-chmod +x setup.sh
-./setup.sh
-```
-```bash
-# Set your project
+# 1. Set your active project
 gcloud config set project YOUR_PROJECT_ID
+
+# 2. Authenticate CLI
+gcloud auth login
+
+# 3. Authenticate Application Default Credentials (ADC)
+gcloud auth application-default login
+
+# 4. Set quota project to prevent billing/quota errors
+gcloud auth application-default set-quota-project YOUR_PROJECT_ID
 ```
 
-## 2. Update Configuration
+> [!TIP]
+> If you are working in an Incognito / remote session or machine without a popup browser, append `--no-launch-browser` to the login commands.
 
-Edit `terraform/environments/dev.tfvars`:
+---
+
+### Step 2: Create Remote State Bucket & Enable APIs
+
+Create the GCS bucket used by Terraform to store remote state (matches the naming convention `terraform-state-${PROJECT_ID}`):
+
+```bash
+export PROJECT_ID=$(gcloud config get-value project)
+
+# Create state bucket in europe-west1
+gsutil mb -l europe-west1 -p $PROJECT_ID gs://terraform-state-${PROJECT_ID}
+```
+
+Pre-enable the foundational APIs:
+
+```bash
+gcloud services enable \
+  artifactregistry.googleapis.com \
+  run.googleapis.com \
+  cloudbuild.googleapis.com \
+  bigquery.googleapis.com \
+  firestore.googleapis.com \
+  aiplatform.googleapis.com \
+  logging.googleapis.com \
+  monitoring.googleapis.com \
+  cloudtrace.googleapis.com \
+  compute.googleapis.com \
+  cloudresourcemanager.googleapis.com \
+  iam.googleapis.com \
+  --project=$PROJECT_ID
+```
+
+---
+
+### Step 3: Configure Environment Variables
+
+Edit [`environments/dev.tfvars`](file:///Users/zelda.luconi/Medium/adk2.0-blackboard/adk2.0-medium/terraform/environments/dev.tfvars):
 
 ```hcl
 gcp_project = "YOUR_PROJECT_ID"
 gcp_region  = "europe-west1"
+environment = "dev"
 ```
 
-Update the Cloud Run image URL (or leave as-is for now):
+Also update your local [`.env`](file:///Users/zelda.luconi/Medium/adk2.0-blackboard/adk2.0-medium/.env) file in the root of `adk2.0-medium`:
 
-```hcl
-cloud_run_image_url = "europe-west1-docker.pkg.dev/YOUR_PROJECT_ID/adk-agent/adk-agent:latest"
+```bash
+GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID
+GCS_BUCKET=adk-agent-dev-YOUR_PROJECT_ID-product-specs
 ```
 
-## 3. Initialize Terraform
+---
 
+### Step 4: Initialize Terraform (Dynamic Partial Backend)
+
+This configuration uses Terraform's **Partial Configuration** pattern. The backend state bucket is dynamically bound from your active `gcloud` project, eliminating hardcoded project IDs in `.tf` files.
+
+#### Option A: Using the Makefile (Recommended)
+```bash
+make init ENV=dev
+```
+
+#### Option B: Using Terraform CLI directly
 ```bash
 cd terraform_infrastructure
-terraform init
+
+terraform init -reconfigure \
+  -backend-config="bucket=terraform-state-${PROJECT_ID}" \
+  -backend-config="prefix=adk-agent/dev"
 ```
 
-## 4. Plan Deployment
+---
 
+### Step 5: Plan and Deploy
+
+#### Option A: Using the Makefile
 ```bash
+# Preview changes
+make plan ENV=dev
+
+# Apply changes
+make apply ENV=dev
+```
+
+#### Option B: Using Terraform CLI directly
+```bash
+cd terraform_infrastructure
+
+# Plan
 terraform plan -var-file=../environments/dev.tfvars
-```
 
-Review the output to see what will be created.
-
-## 5. Deploy
-
-```bash
+# Apply
 terraform apply -var-file=../environments/dev.tfvars
 ```
 
-Type `yes` to confirm.
+---
 
-# Populate data sources 
-### Populate Data Sources
+### Step 6: Populate Database & Data Sources (Seeding)
 
-Before executing the seeding scripts locally, ensure your active GCP identity or service account possesses the necessary access rights. You can grant the required BigQuery permissions via the Google Cloud CLI:
-
-```bash
-# Get your active authenticated account
-gcloud auth list
-
-# Grant BigQuery Data Editor role
-gcloud projects add-iam-policy-binding adk-workshop-sosta-app-dev \
-    --member="user:YOUR_EMAIL@gmail.com" \
-    --role="roles/bigquery.dataEditor"
-
-```
-
-Once permissions are configured, run the database seeding scripts to populate your Firestore collections, BigQuery tables, and GCS bucket:
+Once Terraform provisions the infrastructure, seed the initial data into BigQuery, Firestore, and Cloud Storage:
 
 ```bash
+cd terraform_infrastructure
+
 uv run python seeding/firestore_app_db_seed.py
 uv run python seeding/firestore_food_kb_seed.py
 uv run python seeding/firestore_memory_seed.py
@@ -209,14 +169,29 @@ uv run python seeding/bq_seed.py
 uv run python seeding/upload_pdfs.py
 ```
 
-With the infrastructure provisioned via Terraform and the database seeded with initial knowledge, our agent tools now have real backend services to interact with.
+---
 
+## Makefile Reference
 
-# Add the remote back end
+The root [`Makefile`](file:///Users/zelda.luconi/Medium/adk2.0-blackboard/adk2.0-medium/terraform/Makefile) provides convenient shorthands for all common operations:
 
-Run 
+| Command | Description |
+| :--- | :--- |
+| `make init ENV=dev` | Initializes Terraform with dynamic backend bucket from active `gcloud` project. |
+| `make plan ENV=dev` | Generates execution plan against `environments/dev.tfvars`. |
+| `make apply ENV=dev` | Deploys all planned infrastructure changes. |
+| `make destroy ENV=dev` | Destroys provisioned infrastructure resources. |
+| `make validate` | Validates Terraform syntax and configuration. |
+| `make fmt` | Formats all `.tf` files recursively. |
+| `make clean` | Cleans `.terraform/` cache and plan files. |
 
-gcloud auth application-default login \
-  --impersonate-service-account=terraform-admin@adk-workshop-sosta-app-dev.iam.gserviceaccount.com
+---
 
-Choose setup.sh script again 
+## Important Architectural Notes
+
+1. **No Hardcoded State Buckets**:
+   In [`terraform_infrastructure/terraform.tf`](file:///Users/zelda.luconi/Medium/adk2.0-blackboard/adk2.0-medium/terraform/terraform_infrastructure/terraform.tf), `backend "gcs" {}` is defined empty. The bucket is supplied dynamically at `init` time via `-backend-config` so teams can easily switch projects without editing code.
+2. **Globally Unique Storage Buckets**:
+   In [`terraform_infrastructure/locals.tf`](file:///Users/zelda.luconi/Medium/adk2.0-blackboard/adk2.0-medium/terraform/terraform_infrastructure/locals.tf), GCS bucket names incorporate `${var.gcp_project}` (`adk-agent-dev-${var.gcp_project}-product-specs`) to prevent global namespace collisions (409 Conflict).
+3. **Sandboxed & Workshop Environments**:
+   In restricted lab environments (e.g. `@gcplab.me`), user accounts lack `resourcemanager.projects.setIamPolicy` permissions. Dedicated service account impersonation is disabled (`impersonate_service_account = ""`) and project-level IAM bindings in `iam.tf` are commented out, allowing the deployment to run smoothly using your authenticated user identity.

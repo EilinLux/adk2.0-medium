@@ -66,7 +66,7 @@ locals {
   }
   # Bucket configuration
   product_specs_bucket_config = {
-    name   = "${local.resource_prefix}-product-specs"
+    name   = "${local.resource_prefix}-${var.gcp_project}-product-specs"
     region = var.bucket_region
   }
   # Service Account naming
