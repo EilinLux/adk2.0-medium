@@ -40,6 +40,38 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
   * **`SosteSearchAgent` (MCP Client):** Queries BigQuery highway stops via our FastMCP server (`mcp_bigquery_server/server.py`).
   * **`MenuCheckerAgent` (Hybrid RAG Specialist):** Combines structured Firestore station menus (`adk-agent-dev-food-kb-fs`) with **Vertex AI RAG Engine** semantic retrieval (`VertexAiRagRetrieval`) over official PDF product allergen & nutrition sheets in GCS.
 
+### 📐 Branch Architecture Diagram (`05c-rag-and-knowledge-base`)
+
+> **🆕 Highlight:** Upgrades `MenuCheckerAgent` with **Hybrid Grounding**: structured Firestore menu queries (`adk-agent-dev-food-kb-fs`, `menus` collection) paired with **Vertex AI RAG Engine** (`VertexAiRagRetrieval`) over official PDF product allergen sheets in GCS.
+> *(🩷 Pink nodes = newly introduced in `05c-rag-and-knowledge-base` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    SUG["Suggeritore"]:::agentNode --> RP["1. RoutePlannerAgent"]:::agentNode
+    SUG --> SS["2. SosteSearchAgent\n(MCP Client)"]:::agentNode
+    SUG --> MC["🆕 3. MenuCheckerAgent\n(Hybrid Grounding Specialist)"]:::newNode
+
+    subgraph HybridKB["📚 Hybrid Culinary & Allergen Knowledge Base (🆕 05c)"]
+        T_MENU["🆕 check_restaurant_menus()\nStructured Menu & Price Lookup"]:::newNode
+        T_RAG["🆕 VertexAiRagRetrieval\n('retrieve_product_specs_rag')\nTop-K Vector Search"]:::newNode
+        FS_FOOD[("🔥 Cloud Firestore Food KB (🆕 05c)\nadk-agent-dev-food-kb-fs\nCollection: menus")]:::newNode
+        RAG_ENG[("🧠 Vertex AI RAG Corpus (🆕 05c)\nsosta-product-specs-corpus\n(text-embedding-005)")]:::newNode
+        GCS[("🪣 Cloud Storage Bucket (🆕 05c)\nadk-agent-dev-product-specs\nPDF Allergen & Nutrition Sheets")]:::newNode
+    end
+
+    BQ[("📊 BigQuery\n(via MCP :8002)")]:::dataNode
+
+    SS <--> BQ
+    MC -->|"Step 3a: Station Dishes"| T_MENU <--> FS_FOOD
+    MC -->|"Step 3b: Ingredient & Allergen Proof"| T_RAG <--> RAG_ENG
+    GCS -->|"Ingested & Chunked"| RAG_ENG
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
