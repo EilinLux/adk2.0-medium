@@ -36,6 +36,45 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Registratore:** Onboarding specialist. Collects preferred language, culinary/dietary preferences, and vehicle fuel type, persists new profiles to Cloud Firestore (`save_new_user`), and hands off to `Cameriere`.
 * **Cameriere:** Session coordinator. Hydrates `user:` state from Cloud Firestore (`extract_user_profile`), updates persistent preferences (`update_user_profile`), and personalizes responses via `{user:...}` state injection.
 
+### 📐 Branch Architecture Diagram (`03d-session-state-sostaapp`)
+
+> **🆕 Highlight:** Wires SostaApp (`adk_agent_app/`) to a real **Google Cloud Firestore Application DB** (`adk-agent-dev-application-db-fs`, `sosta_users` collection provisioned via Terraform) and synchronizes Firestore documents into `user:` session state via `ToolContext`.
+> *(🩷 Pink nodes = newly introduced in `03d-session-state-sostaapp` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart TB
+    U(["👤 Traveler"]) <-->|"adk web"| GK
+
+    subgraph SostaApp["🤖 SostaApp Multi-Agent System (03d)"]
+        GK["Gatekeeper\nChecks state['registered_user']"]:::agentNode
+        REG["Registratore\nCollects Profile & Saves"]:::agentNode
+        CAM["🆕 Cameriere\nDynamic Prompt Injection:\n{user:preferred_language?}\n{user:food_preferences?}\n{user:vehicle_fuel_type?}"]:::newNode
+    end
+
+    subgraph Tools["🔧 ToolContext State + Firestore Sync (🆕 03d)"]
+        T1["🆕 is_registered_user(user_id, tool_context)\nSets state['session_user_id'] & state['registered_user']"]:::newNode
+        T2["🆕 save_new_user(..., tool_context)\nWrites Firestore + Hydrates user:* state"]:::newNode
+        T3["🆕 extract_user_profile() & update_user_profile()\nSyncs Firestore <-> state['user:*']"]:::newNode
+    end
+
+    FS_APP[("🔥 Cloud Firestore App DB (🆕 03d)\nadk-agent-dev-application-db-fs\nCollection: sosta_users")]:::newNode
+    STATE[("🧠 Session.state\nsession_user_id | user:preferred_language\nuser:food_preferences | user:vehicle_fuel_type")]:::protoNode
+
+    GK -->|"New User"| REG -->|"Handoff"| CAM
+    GK -->|"Existing User"| CAM
+    GK --> T1
+    REG --> T2
+    CAM --> T3
+    T1 & T2 & T3 <-->|"google-cloud-firestore"| FS_APP
+    T1 & T2 & T3 <-->|"tool_context.state"| STATE
+    STATE -.->|"{user:*} Template"| CAM
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
