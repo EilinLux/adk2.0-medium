@@ -37,6 +37,41 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Cameriere:** Session coordinator retrieving (`extract_user_profile`) and updating (`update_user_profile`) traveler preferences.
 * **Session Service Test Agents (`tests/03b-session-service/`):** Multi-turn `gatekeeper_agent` and `recommendation_agent` harnesses comparing `InMemorySessionService`, SQLite `DatabaseSessionService`, and a custom `FirestoreSessionService` (`BaseSessionService`).
 
+### 📐 Branch Architecture Diagram (`03b-session-service`)
+
+> **🆕 Highlight:** Introduces `SessionService` persistence backends (`tests/03b-session-service`): comparing `InMemorySessionService`, SQLAlchemy `DatabaseSessionService` (`sqlite+aiosqlite`), and a custom `FirestoreSessionService` subclassing `BaseSessionService`.
+> *(🩷 Pink nodes = newly introduced in `03b-session-service` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart TB
+    subgraph Runtime["🤖 ADK Runner & Agents"]
+        R["Runner(agent, session_service)"]:::agentNode
+        EV["Event + EventActions(state_delta)\nappend_event()"]:::protoNode
+    end
+
+    subgraph Backends["🔌 Pluggable SessionService Backends (🆕 03b)"]
+        B1["🆕 1. InMemorySessionService\n(RAM Only — Lost on Restart)"]:::newNode
+        B2["🆕 2. DatabaseSessionService\n(SQLAlchemy Async Engine)"]:::newNode
+        B3["🆕 3. Custom FirestoreSessionService\n(Subclasses BaseSessionService)"]:::newNode
+    end
+
+    subgraph Storage["💾 Physical Storage Engines (🆕 03b)"]
+        RAM[(" Volatile RAM ")]:::dataNode
+        SQL[("🗄️ Local SQLite DB\nsosta_local_sessions.db")]:::newNode
+        FS[("🔥 Google Cloud Firestore\nsessions / user_states / app_states")]:::newNode
+    end
+
+    R -->|"Emits Turn Events"| EV
+    EV --> B1 --> RAM
+    EV --> B2 --> SQL
+    EV --> B3 --> FS
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
