@@ -37,6 +37,43 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Cameriere:** Session coordinator retrieving (`extract_user_profile`) and updating (`update_user_profile`) traveler preferences.
 * **Memory Service Test Agents (`tests/03c-memory-service/`):** Cross-session `memory_assistant` harnesses demonstrating `InMemoryMemoryService`, `PreloadMemoryTool`, `LoadMemoryTool`, and custom `FirestoreMemoryService` (`BaseMemoryService`).
 
+### 📐 Branch Architecture Diagram (`03c-memory-service`)
+
+> **🆕 Highlight:** Introduces `MemoryService` (`tests/03c-memory-service`) for cross-session semantic/keyword recall: `add_session_to_memory()`, `PreloadMemoryTool` (automatic every-turn injection), `LoadMemoryTool` (reactive tool call), and custom `FirestoreMemoryService` (`BaseMemoryService`).
+> *(🩷 Pink nodes = newly introduced in `03c-memory-service` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    subgraph S1["📅 Session 1 (Past Conversation)"]
+        T_PAST["User shares facts:\n'I drive a Tesla & have a dog Bruno'"]:::agentNode
+    end
+
+    subgraph MemSvc["🧠 ADK MemoryService Layer (🆕 03c)"]
+        ING["🆕 add_session_to_memory(session)"]:::newNode
+        M_INMEM["🆕 InMemoryMemoryService\n(Keyword Token Matching)"]:::newNode
+        M_FS["🆕 Custom FirestoreMemoryService\n(BaseMemoryService + search_memory)"]:::newNode
+    end
+
+    FS_MEM[("🔥 Cloud Firestore\nmemories Collection")]:::dataNode
+
+    subgraph S2["📅 Session 2 (New session_id — Days Later)"]
+        PRE["🆕 PreloadMemoryTool\n(Auto-Injects <PAST_CONVERSATIONS>)"]:::newNode
+        LOAD["🆕 LoadMemoryTool\n(Reactive On-Demand Search)"]:::newNode
+        AGENT["memory_assistant (LlmAgent)"]:::agentNode
+    end
+
+    T_PAST --> ING
+    ING --> M_INMEM
+    ING --> M_FS <--> FS_MEM
+    M_INMEM & M_FS -->|"search_memory(query)"| PRE & LOAD
+    PRE & LOAD --> AGENT
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
