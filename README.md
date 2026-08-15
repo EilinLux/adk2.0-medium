@@ -38,6 +38,37 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
   * **`extractor_agent`:** `LlmAgent` semantic parser enforcing `output_schema=UserExtraction`.
   * **`router`:** Deterministic Python routing node emitting `Event(route=...)` to `cameriere_agent` or `registratore_agent`.
 
+### 📐 Branch Architecture Diagram (`02c-graph-agent-workflow`)
+
+> **🆕 Highlight:** Introduces ADK `Workflow` DAG orchestration (`tests/02c-graph-agent-workflows`) combining `yield RequestInput` (human-in-the-loop pause), `extractor_agent` (`output_schema=UserExtraction`), and a deterministic Python `router` function (`Event(route=...)`).
+> *(🩷 Pink nodes = newly introduced in `02c-graph-agent-workflow` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    START(("START")) --> ASK
+
+    subgraph DAG["📐 Deterministic Graph Workflow (🆕 02c Hybrid Pipeline)"]
+        ASK["🆕 ask_user_for_id()\nyield RequestInput (HITL Pause)"]:::newNode
+        EXT["🆕 extractor_agent (LlmAgent)\noutput_schema=UserExtraction"]:::newNode
+        RTR{"🆕 router(ctx, data)\nDeterministic Python Node"}:::newNode
+        CAM["cameriere_agent\n(Existing User Flow)"]:::agentNode
+        REG["registratore_agent\n(New User Flow)"]:::agentNode
+    end
+
+    DB[("🗄️ Mock User DB\n(is_registered_user)")]:::dataNode
+
+    ASK -->|"Raw User Text\n'Hi, my ID is usr_12345'"| EXT
+    EXT -->|"Typed Pydantic Object\nUserExtraction(user_id)"| RTR
+    RTR <-->|"Verify ID"| DB
+    RTR -->|"Event(route='RUN_AGENT_CAMERIERE')"| CAM
+    RTR -->|"Event(route='RUN_AGENT_REGISTRATORE')"| REG
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
