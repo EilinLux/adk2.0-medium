@@ -44,7 +44,7 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 
 ```mermaid
 flowchart TB
-    U(["👤 Traveler"]) <-->|"HTTP /chat (:8080)"| RUNNER
+    U(["👤 Traveler"]) <-->|"HTTP /dev-ui/ & /run (:8000)"| RUNNER
 
     subgraph CustomRunner["⚙️ Custom Production Runner (🆕 06a — adk_agent_app/runner.py)"]
         RUNNER["🆕 FastAPI + ADK Runner\nrunner.run_async()"]:::newNode
@@ -220,23 +220,33 @@ USE_CUSTOM_RUNNER=true ./script_run_a2a_stack.sh
 ./script_run_a2a_stack.sh
 ```
 
-Once `USE_CUSTOM_RUNNER=true ./script_run_a2a_stack.sh` is running in Terminal 1, open a **second terminal** to interact with the production `Runner` via HTTP:
+Once `USE_CUSTOM_RUNNER=true ./script_run_a2a_stack.sh` is running in Terminal 1, open the interactive Web UI at [`http://127.0.0.1:8000/dev-ui/`](http://127.0.0.1:8000/dev-ui/) (and architecture guide at [`http://127.0.0.1:8000/dev-ui/guide`](http://127.0.0.1:8000/dev-ui/guide)), or open a **second terminal** to interact with the production `Runner` via the official **ADK Web REST API convention**:
 
 ```bash
 # 1. Check health & Firestore service wiring
 curl -s http://127.0.0.1:8000/health | python3 -m json.tool
 
-# 2. Send a conversation turn to POST /chat
-curl -s -X POST http://127.0.0.1:8000/chat \
+# 2. Send a conversation turn via ADK Web convention (POST /run)
+curl -s -X POST http://127.0.0.1:8000/run \
   -H "Content-Type: application/json" \
   -d '{
+    "app_name": "sosta_app",
     "user_id": "usr_0a8f67",
     "session_id": "prod_trip_001",
-    "message": "Ciao! Sono già registrata, il mio ID è usr_0a8f67.",
-    "persist_memory": true
+    "new_message": {
+      "role": "user",
+      "parts": [
+        {"text": "Ciao! Sono già registrata, il mio ID è usr_0a8f67."}
+      ]
+    }
   }' | python3 -m json.tool
 
-# 3. Inspect persisted session state & event count in Firestore
-curl -s http://127.0.0.1:8000/sessions/usr_0a8f67/prod_trip_001 | python3 -m json.tool
+# 3. Commit session to FirestoreMemoryService (PATCH /apps/{app_name}/users/{user_id}/memory)
+curl -s -X PATCH http://127.0.0.1:8000/apps/sosta_app/users/usr_0a8f67/memory \
+  -H "Content-Type: application/json" \
+  -d '{"session_id": "prod_trip_001"}' | python3 -m json.tool
+
+# 4. Inspect persisted session state & events in Firestore
+curl -s http://127.0.0.1:8000/apps/sosta_app/users/usr_0a8f67/sessions/prod_trip_001 | python3 -m json.tool
 ```
 

@@ -176,7 +176,8 @@
       <span>📘 SostaApp — Production Runner &amp; UI Documentation</span>
     </div>
     <div style="display:flex; gap:10px;">
-      <a href="/chat" class="btn">💬 Back to Chat UI</a>
+      <a href="/dev-ui/" class="btn">💬 Back to Web UI (<code>/dev-ui/</code>)</a>
+      <a href="/list-apps" target="_blank" class="btn btn-outline">📦 /list-apps</a>
       <a href="/docs" target="_blank" class="btn btn-outline">📄 OpenAPI Swagger</a>
       <a href="/health" target="_blank" class="btn btn-outline">🩺 /health JSON</a>
     </div>
@@ -185,14 +186,14 @@
   <div class="container">
     <h1>🛣️ SostaApp Production ADK Runner — Complete Feature Guide</h1>
     <p class="subtitle">
-      How the custom FastAPI <code>Runner</code>, <code>FirestoreSessionService</code>, <code>FirestoreMemoryService</code>, New/Returning User Workflows, and Distributed A2A + MCP + Vertex AI RAG Microservices work together.
+      How the custom FastAPI <code>Runner</code> (following the <strong>ADK Web / <code>ApiServer</code> endpoint convention</strong>), <code>FirestoreSessionService</code>, <code>FirestoreMemoryService</code>, New/Returning User Workflows, and Distributed A2A + MCP + Vertex AI RAG Microservices work together.
     </p>
 
     <h2>1. What Is the Green Badge at the Top of the Chat UI?</h2>
     <div class="callout">
       <strong><code>🟢 FirestoreSessionService + FirestoreMemoryService (adk-agent-dev-session-memory-fs)</code></strong>
       <p style="margin-top:6px; margin-bottom:0;">
-        When the Chat UI loads, it queries <code>GET /health</code> on the FastAPI server. This green badge confirms that you are <strong>not</strong> running on <code>adk web</code>'s volatile in-memory defaults (<code>InMemorySessionService</code>). Instead, the ADK <code>Runner</code> is actively wired to two custom production persistence services backed by your Google Cloud Firestore database <strong><code>adk-agent-dev-session-memory-fs</code></strong>:
+        When the Web UI (<code>/dev-ui/</code>) loads, it queries <code>GET /health</code> on the FastAPI server. This green badge confirms that you are <strong>not</strong> running on <code>adk web</code>'s volatile in-memory defaults (<code>InMemorySessionService</code>). Instead, the ADK <code>Runner</code> is actively wired to two custom production persistence services backed by your Google Cloud Firestore database <strong><code>adk-agent-dev-session-memory-fs</code></strong>:
       </p>
     </div>
     <ul>
@@ -245,7 +246,7 @@
           <li><code>Gatekeeper</code> transfers you to <strong><code>Registratore</code></strong>.</li>
           <li>Provide your name, email, language, dietary preferences, and vehicle type.</li>
           <li><code>Registratore</code> calls <code>save_new_user()</code>, which creates your permanent record in <code>adk-agent-dev-application-db-fs</code> and assigns a unique ID (e.g., <code>usr_a1b2c3</code>).</li>
-          <li><strong>Automatic ID Promotion:</strong> Both <code>FirestoreSessionService</code> and the Chat UI automatically promote your active <code>user_id</code> from <code>guest</code> to your newly assigned <code>usr_xxxxxx</code> ID!</li>
+          <li><strong>Automatic ID Promotion:</strong> Both <code>FirestoreSessionService</code> and the Web UI automatically promote your active <code>user_id</code> from <code>guest</code> to your newly assigned <code>usr_xxxxxx</code> ID!</li>
         </ol>
       </div>
 
@@ -283,10 +284,42 @@
       </div>
     </div>
 
-    <h2>5. Step-by-Step Interactive Walkthroughs in the Chat UI</h2>
+    <h2>5. Official ADK Web Convention REST Endpoints (Port <code>:8000</code>)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Method &amp; Route</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>GET /dev-ui/</code> (and <code>GET /</code>)</td>
+          <td>Interactive SostaApp Production Web UI (with <code>GET /dev-ui/guide</code> for this guide).</td>
+        </tr>
+        <tr>
+          <td><code>GET /health</code>, <code>GET /version</code>, <code>GET /list-apps</code></td>
+          <td>Liveness, Firestore runtime service binding check, ADK version, and app discovery.</td>
+        </tr>
+        <tr>
+          <td><code>POST /run</code> &amp; <code>POST /run_sse</code></td>
+          <td>Executes an agent turn using <code>RunAgentRequest</code> (<code>app_name</code>, <code>user_id</code>, <code>session_id</code>, <code>new_message</code>) returning a JSON list of <code>Event</code>s or an SSE stream.</td>
+        </tr>
+        <tr>
+          <td><code>GET|POST|PATCH|DELETE /apps/{app_name}/users/{user_id}/sessions/{session_id}</code></td>
+          <td>Creates, inspects, updates <code>state_delta</code>, or deletes a persisted session in <code>FirestoreSessionService</code>.</td>
+        </tr>
+        <tr>
+          <td><code>PATCH /apps/{app_name}/users/{user_id}/memory</code></td>
+          <td>Ingests all events from <code>{"session_id": "..."}</code> into <code>FirestoreMemoryService</code> for cross-session recall.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>6. Step-by-Step Interactive Walkthroughs in the Web UI (<code>/dev-ui/</code>)</h2>
     <h3>Walkthrough 1: Onboard a Brand-New User</h3>
     <ol>
-      <li>In the Chat UI toolbar, click <strong><code>🆕 New User (Register)</code></strong> (notice <code>user_id</code> becomes <code>guest</code>).</li>
+      <li>In the Web UI toolbar, click <strong><code>🆕 New User (Register)</code></strong> (notice <code>user_id</code> becomes <code>guest</code>).</li>
       <li>Click chip <strong><code>🆕 1a. New User: Start Registration</code></strong> and press <strong>Send</strong>.</li>
       <li>When <code>Registratore</code> asks for your details, click chip <strong><code>📝 1b. New User: Send Profile Details</code></strong> and press <strong>Send</strong>.</li>
       <li>Watch the right-hand inspector: <code>save_new_user</code> executes, your new <code>usr_xxxxxx</code> ID is generated, the toolbar <code>user_id</code> field automatically updates from <code>guest</code> to <code>usr_xxxxxx</code>, and control transfers to <code>Cameriere</code>!</li>
@@ -296,7 +329,7 @@
     <ol>
       <li>Click <strong><code>👤 Returning User (usr_0a8f67)</code></strong> and ensure <strong><code>persist_memory</code></strong> is checked.</li>
       <li>Log in with chip <strong><code>🔑 2. Login Returning User</code></strong>, then send chip <strong><code>🐕 3. Share Trip &amp; Dog Max</code></strong>.</li>
-      <li>Click <strong><code>🗑️ Delete Session</code></strong> (or type a brand-new <code>session_id</code> like <code>trip_november_002</code> in the toolbar) to prove the active session is gone.</li>
+      <li>Click <strong><code>🗑️ Delete</code></strong> (or type a brand-new <code>session_id</code> like <code>trip_november_002</code> in the toolbar) to prove the active session is gone.</li>
       <li>Log in again in the new session and send chip <strong><code>🧠 4. Test Cross-Session Recall</code></strong>. <code>Cameriere</code> recalls your dog <strong>Max</strong> and <strong>Secchia Ovest</strong> from <code>FirestoreMemoryService</code>!</li>
     </ol>
   </div>
