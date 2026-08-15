@@ -10,9 +10,9 @@ load_dotenv()
 # ==========================================
 # CONFIGURATION
 # ==========================================
-PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "gai-community29oct-7501")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
-BUCKET_NAME = os.getenv("GCS_BUCKET", f"adk-agent-{ENVIRONMENT}-product-specs")
+BUCKET_NAME = os.getenv("GCS_BUCKET", f"adk-agent-{ENVIRONMENT}-{PROJECT_ID}-product-specs")
 
 # Locate 'product_pdfs' folder inside the current 'seeding' directory
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -50,19 +50,14 @@ def upload_pdf_folder():
         print(f"⚠️ No PDF files found in '{LOCAL_PDF_DIR}'.")
         return
 
-    # Remove any legacy malformed blobs (e.g. product_specs//Users/...)
-    for blob in list(bucket.list_blobs(prefix=f"{DESTINATION_PREFIX}//")):
-        blob.delete()
-
     print(f"Uploading {len(pdf_paths)} file(s) using Transfer Manager...")
 
-    relative_filenames = [p.relative_to(LOCAL_PDF_DIR).as_posix() for p in pdf_paths]
     results = transfer_manager.upload_many_from_filenames(
         bucket=bucket,
-        filenames=relative_filenames,
+        filenames=[str(p) for p in pdf_paths],
         blob_name_prefix=f"{DESTINATION_PREFIX}/",
         source_directory=str(LOCAL_PDF_DIR),
-        max_workers=8,
+        max_workers=8
     )
 
     success_count = 0
