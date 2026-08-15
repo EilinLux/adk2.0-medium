@@ -16,7 +16,7 @@ variable "gcp_project" {
 variable "impersonate_service_account" {
   type        = string
   description = "Service Account email to impersonate during execution"
-  default     = "terraform-admin@adk-workshop-sosta-app-dev.iam.gserviceaccount.com"
+  default     = ""
 }
 
 variable "gcp_region" {

@@ -10,9 +10,9 @@ load_dotenv()
 # ==========================================
 # CONFIGURATION
 # ==========================================
-PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "gai-community29oct-7501")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
-BUCKET_NAME = os.getenv("GCS_BUCKET", f"adk-agent-{ENVIRONMENT}-product-specs")
+BUCKET_NAME = os.getenv("GCS_BUCKET", f"adk-agent-{ENVIRONMENT}-{PROJECT_ID}-product-specs")
 
 # Locate 'product_pdfs' folder inside the current 'seeding' directory
 SCRIPT_DIR = Path(__file__).resolve().parent
