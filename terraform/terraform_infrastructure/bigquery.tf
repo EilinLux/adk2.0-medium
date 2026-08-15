@@ -14,19 +14,11 @@ resource "google_bigquery_dataset" "soste_app_dev" {
   default_table_expiration_ms     = var.bigquery_table_expiration_days > 0 ? var.bigquery_table_expiration_days * 24 * 60 * 60 * 1000 : null
   default_partition_expiration_ms = null
 
+  # Allow deleting dataset and contents
+  delete_contents_on_destroy = true
+
   # Labels for resource management
   labels = local.common_labels
-
-  # Allow the service account to access this dataset
-  access {
-    role          = "OWNER"
-    user_by_email = google_service_account.adk_agent.email
-  }
-
-  access {
-    role          = "READER"
-    special_group = "projectReaders"
-  }
 
   depends_on = [google_project_service.required_apis]
 }
@@ -41,8 +33,9 @@ resource "google_bigquery_table" "db_soste" {
   table_id   = local.bigquery_config.table_id
   project    = var.gcp_project
 
-  friendly_name = "Service Stations Database"
-  description   = "Stores service station locations with fuel types and geographical coordinates"
+  friendly_name       = "Service Stations Database"
+  description         = "Stores service station locations with fuel types and geographical coordinates"
+  deletion_protection = false
 
   labels = merge(
     local.common_labels,

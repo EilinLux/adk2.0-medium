@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 PROJECT_ID = (
     os.getenv("GOOGLE_CLOUD_PROJECT")
     or os.getenv("GCP_PROJECT")
-    or "adk-workshop-sosta-app-dev"
+    or "gai-community29oct-7501"
 )
 ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
 
