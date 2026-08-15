@@ -37,6 +37,45 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Cameriere:** Session coordinator. Retrieves stored user profiles (`extract_user_profile`), updates preferences (`update_user_profile`), and assists registered travelers in their preferred language.
 * **Suggeritore *(Placeholder in `02b`)*:** Downstream highway stop-suggestion specialist (implemented starting in `05a`).
 
+### 📐 Branch Architecture Diagram (`02b-multi-agent-workflow`)
+
+> **🆕 Highlight:** Decomposes the monolith into `Gatekeeper`, `Registratore`, and `Cameriere` connected via LLM-driven `sub_agents` (`transfer_to_agent`), with scoped `FunctionTool`s reading/writing an in-memory mock DB (`config.db`).
+> *(🩷 Pink nodes = newly introduced in `02b-multi-agent-workflow` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart TB
+    U(["👤 Traveler"]) <-->|"adk web / adk run"| GK
+
+    subgraph MAS["🤖 SostaApp Multi-Agent Hierarchy (🆕 02b)"]
+        GK["🆕 Gatekeeper (root_agent)\nAuth & Routing Orchestrator"]:::newNode
+        REG["🆕 Registratore\nNew User Onboarding"]:::newNode
+        CAM["🆕 Cameriere\nPersonal Concierge"]:::newNode
+        SUG["🆕 Suggeritore\n(Placeholder Sub-Agent)"]:::newNode
+    end
+
+    subgraph Tools["🔧 Scoped FunctionTools (🆕 02b)"]
+        T_VER["is_registered_user()"]:::newNode
+        T_SAVE["save_new_user()"]:::newNode
+        T_EXT["extract_user_profile()\nupdate_user_profile()"]:::newNode
+    end
+
+    DB[("🗄️ In-Memory Mock DB\nadk_agent_app/config.py (db)")]:::dataNode
+
+    GK -->|"transfer_to_agent\n(New User)"| REG
+    GK -->|"transfer_to_agent\n(Existing User)"| CAM
+    REG -->|"transfer_to_agent\n(After Onboarding)"| CAM
+    CAM -.->|"Future Handoff"| SUG
+
+    GK --> T_VER --> DB
+    REG --> T_SAVE --> DB
+    CAM --> T_EXT --> DB
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
