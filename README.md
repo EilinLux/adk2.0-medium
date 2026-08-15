@@ -36,6 +36,38 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 * **Registratore:** Onboarding specialist with deterministic evaluation hashing (`ADK_EVAL_MODE=true`) in `save_new_user` and imperative handoff instructions to `Cameriere`.
 * **Cameriere:** Session coordinator retrieving (`extract_user_profile`) and updating (`update_user_profile`) user profiles in Cloud Firestore.
 
+### 📐 Branch Architecture Diagram (`04b-evaluating-with-adk-run`)
+
+> **🆕 Highlight:** Solves real-world evaluation determinism (`04b`): adds `ADK_EVAL_MODE=true` SHA-256 deterministic `user_id` generation in `save_new_user()`, imperative handoff prompts in `Registratore`, and timestamped CLI result logs (`adk_agent_app/evals/results/`).
+> *(🩷 Pink nodes = newly introduced in `04b-evaluating-with-adk-run` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+
+```mermaid
+flowchart LR
+    CLI["💻 Terminal CLI (🆕 04b)\nADK_EVAL_MODE=true\nuv run adk eval adk_agent_app ..."]:::newNode
+
+    subgraph Fixes["🛠️ Deterministic Eval Engineering (🆕 04b)"]
+        HASH["🆕 Deterministic ID Hash\nsha256(lang + fuel)[:6]\n-> usr_0a8f67"]:::newNode
+        IMP["🆕 Imperative Handoff Prompt\nImmediate transfer_to_agent(cameriere)\nwithout asking permission"]:::newNode
+    end
+
+    subgraph SostaApp["🤖 SostaApp Pipeline"]
+        GK["Gatekeeper"]:::agentNode --> REG["Registratore"]:::agentNode --> CAM["Cameriere"]:::agentNode
+    end
+
+    FS[("🔥 Cloud Firestore\nsosta_users")]:::dataNode
+    RES[("📊 Timestamped Eval Report (🆕 04b)\nadk_agent_app/evals/results/*.txt\n✅ 1.0 Trajectory Score")]:::newNode
+
+    CLI --> GK
+    REG --> HASH & IMP
+    HASH --> FS
+    CAM --> RES
+    classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
+    classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
+    classDef toolNode fill:#FFF8E6,stroke:#D97706,stroke-width:1.8px,color:#141414
+    classDef dataNode fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#141414
+    classDef protoNode fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#141414
+```
+
 ---
 
 ## 🚀 Repository Structure & Branching Strategy
