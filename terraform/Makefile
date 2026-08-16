@@ -3,6 +3,10 @@
 # Default environment
 ENV ?= dev
 
+# GCP Project ID and backend state bucket (derived from active gcloud config or shell env)
+PROJECT_ID ?= $(shell gcloud config get-value project 2>/dev/null)
+STATE_BUCKET ?= terraform-state-$(PROJECT_ID)
+
 # Terraform directory
 TF_DIR := terraform_infrastructure
 
@@ -31,8 +35,10 @@ help:
 	@echo ""
 
 init:
-	@echo "Initializing Terraform for $(ENV) environment..."
-	cd $(TF_DIR) && terraform init -upgrade
+	@echo "Initializing Terraform for $(ENV) environment (Project: $(PROJECT_ID), Bucket: $(STATE_BUCKET))..."
+	cd $(TF_DIR) && terraform init -upgrade -reconfigure \
+		-backend-config="bucket=$(STATE_BUCKET)" \
+		-backend-config="prefix=adk-agent/$(ENV)"
 
 plan:
 	@echo "Planning Terraform changes for $(ENV) environment..."
@@ -84,16 +90,15 @@ refresh:
 	@echo "Refreshing Terraform state for $(ENV) environment..."
 	cd $(TF_DIR) && terraform refresh -var-file=../environments/$(ENV).tfvars
 
-# Build and push linux/amd64 Docker image to Artifact Registry (from repository root ..)
+# Build and push Docker image to Artifact Registry
 docker-build:
-	@echo "Building linux/amd64 Docker image for ADK Agent Stack..."
-	docker build --platform linux/amd64 -t adk-agent:latest ..
+	@echo "Building Docker image for ADK Agent..."
+	docker build -t adk-agent:latest .
 
 docker-push: docker-build
-	@echo "Tagging and pushing Docker image to Artifact Registry..."
-	docker tag adk-agent:latest europe-west1-docker.pkg.dev/adk-workshop-sosta-app-dev/adk-agent/adk-agent:latest
-	docker push europe-west1-docker.pkg.dev/adk-workshop-sosta-app-dev/adk-agent/adk-agent:latest
-
+	@echo "Tagging and pushing Docker image..."
+	docker tag adk-agent:latest europe-west1-docker.pkg.dev/$(PROJECT_ID)/adk-agent/adk-agent:latest
+	docker push europe-west1-docker.pkg.dev/$(PROJECT_ID)/adk-agent/adk-agent:latest
 
 # Create GCS bucket for remote state
 setup-remote-state:

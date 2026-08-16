@@ -11,10 +11,10 @@ load_dotenv()
 # ==========================================
 # CONFIGURATION
 # ==========================================
-PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "gai-community29oct-7501")
 LOCATION = os.getenv("VERTEX_RAG_LOCATION", "europe-west3")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
-BUCKET_NAME = os.getenv("GCS_BUCKET", f"adk-agent-{ENVIRONMENT}-product-specs")
+BUCKET_NAME = os.getenv("GCS_BUCKET", f"adk-agent-{ENVIRONMENT}-{PROJECT_ID}-product-specs")
 GCS_PDF_URI = f"gs://{BUCKET_NAME}/product_specs/"
 CORPUS_DISPLAY_NAME = os.getenv(
     "VERTEX_RAG_CORPUS_DISPLAY_NAME", "sosta-product-specs-corpus"

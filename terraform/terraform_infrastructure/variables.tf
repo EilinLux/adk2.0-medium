@@ -15,7 +15,7 @@ variable "gcp_project" {
 
 variable "impersonate_service_account" {
   type        = string
-  description = "Service Account email to impersonate during execution (leave empty when ADC is already impersonating terraform-admin)"
+  description = "Service Account email to impersonate during execution"
   default     = ""
 }
 
