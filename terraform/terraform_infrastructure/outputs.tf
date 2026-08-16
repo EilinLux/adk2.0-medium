@@ -137,6 +137,9 @@ output "deployment_summary" {
     runner_service_url  = google_cloud_run_v2_service.adk_agent.uri
     suggeritore_a2a_url = google_cloud_run_v2_service.suggeritore_a2a.uri
     mcp_sse_url         = google_cloud_run_v2_service.mcp_sse.uri
+    load_balancer_ip    = google_compute_global_address.lb_ip.address
+    load_balancer_url   = "http://${google_compute_global_address.lb_ip.address}"
+    cloud_armor_policy  = google_compute_security_policy.sosta_armor.name
     service_account     = google_service_account.adk_agent.email
     bigquery_table      = "${google_bigquery_table.db_soste.project}.${google_bigquery_table.db_soste.dataset_id}.${google_bigquery_table.db_soste.table_id}"
     firestore_dbs = [
@@ -160,8 +163,34 @@ output "authentication_info" {
     service_account_id      = google_service_account.adk_agent.unique_id
     gcp_project             = var.gcp_project
     cloud_run_url           = google_cloud_run_v2_service.adk_agent.uri
+    load_balancer_ip        = google_compute_global_address.lb_ip.address
+    load_balancer_url       = "http://${google_compute_global_address.lb_ip.address}"
     requires_authentication = var.require_authentication
   }
+}
+
+# ==========================================
+# LOAD BALANCER & CLOUD ARMOR OUTPUTS
+# ==========================================
+
+output "load_balancer_ip" {
+  description = "External IPv4 address of the Application Load Balancer"
+  value       = google_compute_global_address.lb_ip.address
+}
+
+output "load_balancer_url" {
+  description = "HTTP entrypoint URL for the SostaApp runner via the External Load Balancer"
+  value       = "http://${google_compute_global_address.lb_ip.address}"
+}
+
+output "cloud_armor_policy_name" {
+  description = "Name of the Cloud Armor security policy attached to the load balancer backend"
+  value       = google_compute_security_policy.sosta_armor.name
+}
+
+output "cloud_armor_policy_id" {
+  description = "ID of the Cloud Armor security policy"
+  value       = google_compute_security_policy.sosta_armor.id
 }
 
 # ==========================================

@@ -240,3 +240,37 @@ variable "log_retention_days" {
     error_message = "Log retention days must be at least 1."
   }
 }
+
+# ==========================================
+# CLOUD ARMOR & LOAD BALANCER VARIABLES
+# ==========================================
+
+variable "cloud_armor_enforce_geo_fencing" {
+  description = "Whether to enforce geographic restriction rule in Cloud Armor WAF"
+  type        = bool
+  default     = false
+}
+
+variable "cloud_armor_allowed_regions" {
+  description = "List of ISO 3166-1 alpha-2 country codes allowed when geo-fencing is active"
+  type        = list(string)
+  default     = ["IT"]
+}
+
+variable "cloud_armor_rate_limit_count" {
+  description = "Number of requests allowed per interval before rate limiting kicks in (HTTP 429)"
+  type        = number
+  default     = 100
+}
+
+variable "cloud_armor_rate_limit_interval_sec" {
+  description = "Interval in seconds for the Cloud Armor rate limiting window"
+  type        = number
+  default     = 60
+}
+
+variable "lb_backend_timeout_sec" {
+  description = "Backend service timeout in seconds (must be generous for SSE generative agent streaming)"
+  type        = number
+  default     = 300
+}

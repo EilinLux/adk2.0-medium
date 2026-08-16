@@ -275,6 +275,19 @@ async def health_check() -> Dict[str, str]:
     }
 
 
+@app.get("/health/live")
+async def liveness_check() -> Dict[str, str]:
+    """Cloud Run liveness probe."""
+    return {"status": "alive"}
+
+
+@app.get("/health/ready")
+async def readiness_check() -> Dict[str, str]:
+    """Cloud Run startup / readiness probe."""
+    return {"status": "ready"}
+
+
+
 @app.get("/version")
 async def version_info() -> Dict[str, str]:
     """ADK runtime and Python version metadata (ADK Web convention)."""
