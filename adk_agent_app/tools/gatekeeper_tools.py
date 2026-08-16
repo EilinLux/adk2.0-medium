@@ -4,12 +4,26 @@ from typing import Any, Dict
 from google.adk.tools import FunctionTool, ToolContext
 from google.cloud import firestore
 
+from ..cache import cached
 from ..config import FIRESTORE_APP_DB, PROJECT_ID, logger
 
 
 def _get_firestore_client() -> firestore.Client:
     """Lazy initializer to prevent gRPC fork / event loop conflicts."""
     return firestore.Client(project=PROJECT_ID, database=FIRESTORE_APP_DB)
+
+
+@cached(ttl=600, prefix="firestore:user")
+def _fetch_user_document(user_id: str) -> Dict[str, Any]:
+    """Retrieves user document from Firestore, caching results in Redis/In-Memory for 10 minutes."""
+    db = _get_firestore_client()
+    user_ref = db.collection("users").document(user_id)
+    doc = user_ref.get()
+    if not doc.exists:
+        return {"exists": False}
+    data = doc.to_dict() or {}
+    data["exists"] = True
+    return data
 
 
 async def is_registered_user(user_id: str, tool_context: ToolContext) -> Dict[str, Any]:
@@ -26,11 +40,8 @@ async def is_registered_user(user_id: str, tool_context: ToolContext) -> Dict[st
             - message (str): A descriptive message explaining the result for the agent to communicate.
     """
     try:
-        db = _get_firestore_client()
-        user_ref = db.collection("users").document(user_id)
-        user_doc = user_ref.get()
-
-        if not user_doc.exists:
+        user_data = _fetch_user_document(user_id)
+        if not user_data.get("exists", False):
             return {
                 "status": "not_found",
                 "exists": False,
@@ -40,7 +51,6 @@ async def is_registered_user(user_id: str, tool_context: ToolContext) -> Dict[st
                 ),
             }
 
-        user_data = user_doc.to_dict() or {}
         vehicle = user_data.get("vehicle", {})
 
         # Hydrate active ADK Session Memory via ToolContext

@@ -30,6 +30,7 @@ locals {
     "logging.googleapis.com",              # Cloud Logging
     "monitoring.googleapis.com",           # Cloud Monitoring
     "cloudtrace.googleapis.com",           # Cloud Trace
+    "redis.googleapis.com",                # Memorystore for Redis
   ]
 
   # Common labels for all resources

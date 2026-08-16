@@ -7,6 +7,7 @@ from google.cloud import firestore
 import vertexai
 from vertexai.preview import rag
 
+from ..cache import cached
 from ..config import (
     FIRESTORE_FOOD_KB_DB,
     GCS_BUCKET,
@@ -154,6 +155,7 @@ def _resolve_rag_corpus_name() -> Optional[str]:
     return None
 
 
+@cached(ttl=1800, prefix="firestore:food_kb")
 def get_stop_food_inventory_and_reviews(stop_names: List[str]) -> Dict[str, Any]:
     """Retrieves the available food products, quantities, and customer reviews for highway stops from Firestore.
 
@@ -202,6 +204,7 @@ def get_stop_food_inventory_and_reviews(stop_names: List[str]) -> Dict[str, Any]
         }
 
 
+@cached(ttl=3600, prefix="vertex_rag:specs")
 def retrieve_product_specs_rag(query: str) -> Dict[str, Any]:
     """Queries the Vertex AI RAG Corpus of Autogrill Product Specification PDFs for ingredients, allergens, and nutrition.
 

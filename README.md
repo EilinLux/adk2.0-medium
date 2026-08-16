@@ -30,55 +30,65 @@ The project demonstrates how to move away from fragile, notebook-bound AI protot
 
 ---
 
-## 🤖 Micro-Agent Directory (Branch `06c-cloud-armor-load-balancer`)
+## 🤖 Micro-Agent Directory (Branch `07a-tool-caching-and-session-scaling`)
 
-* **Gatekeeper (`adk_agent_app`):** Authentication guardrail and entry-point orchestrator running on serverless **Cloud Run** (`adk-agent-dev-sosta-runner`), protected by the Cloud Armor WAF perimeter.
+* **Gatekeeper (`adk_agent_app`):** Authentication guardrail and entry-point orchestrator running on serverless **Cloud Run** (`adk-agent-dev-sosta-runner`), protected by Cloud Armor WAF and utilizing `@cached(ttl=600)` for user profile lookups.
 * **Registratore (`adk_agent_app`):** Onboarding specialist. Collects culinary preferences, dietary restrictions, and vehicle specifications for new users.
-* **Cameriere (`adk_agent_app`):** Session coordinator with `FirestoreSessionService`, `FirestoreMemoryService` (`preload_memory`), and IAM-authenticated A2A delegation (`CloudRunOIDCAuth`).
-* **Suggeritore (`adk_agent_app_suggeritore`):** Internal A2A microservice (`adk-agent-dev-suggeritore-a2a` on Cloud Run). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE `adk-agent-dev-mcp-sse`), and `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG).
+* **Cameriere (`adk_agent_app`):** Session coordinator with **high-volume `FirestoreSessionService` (v2 Subcollections)**, `FirestoreMemoryService` (`preload_memory`), and IAM-authenticated A2A delegation (`CloudRunOIDCAuth`).
+* **Suggeritore (`adk_agent_app_suggeritore`):** Internal A2A microservice (`adk-agent-dev-suggeritore-a2a` on Cloud Run). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (backed by `@cached(ttl=3600)` BigQuery MCP), and `MenuCheckerAgent` (backed by `@cached(ttl=1800)` Firestore Food KB + `@cached(ttl=3600)` Vertex AI RAG).
 
-### 📐 Branch Architecture Diagram (`06c-cloud-armor-load-balancer`)
+### 📐 Branch Architecture Diagram (`07a-tool-caching-and-session-scaling`)
 
-> **🆕 Highlight:** Perimeter security and high-availability ingress via **Google Cloud Armor WAF** and **External Application Load Balancer** with **Serverless NEG** (`cloud-armor.tf` & `load-balancer.tf`).
-> OWASP CRS v4.22 rules (SQLi, XSS, RFI, RCE, scanners), zero-day CVE canaries (Log4j, Spring4Shell), and adaptive IP rate limiting (HTTP 429) protect the entry point while preserving long-lived Server-Sent Events (SSE) streaming (`timeout_sec = 300`).
-> *(🩷 Pink nodes = newly introduced in `06c-cloud-armor-load-balancer` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
+> **🆕 Highlight:** Dual-Backend **Tool Caching** (`@cached` with Redis / Google Cloud Memorystore + In-Memory TTL fallback) and **Session Subcollection Scaling** (`STORAGE_VERSION = 2` in `FirestoreSessionService`).
+> Expensive BigQuery geospatial calculations, Firestore user profiles, and Vertex AI RAG corpus retrievals are cached with sub-millisecond retrieval times. Multi-turn conversation sessions bypass Firestore's hard 1MB single-document ceiling by isolating each turn event into `sosta_sessions/{session_id}/events/{event_id}`.
+> *(🩷 Pink nodes = newly introduced in `07a-tool-caching-and-session-scaling` | 💙 Blue = Agents | 💚 Green = Data Sources | 💜 Purple = Protocols/Runtime)*
 
 ```mermaid
 flowchart TD
     Client["🌐 Public Internet / Sosta Travelers"]
 
-    subgraph Perimeter["🛡️ Edge Perimeter & Security (🆕 06c)"]
-        FWD["🆕 Global Forwarding Rule\n(External IPv4 :80 / :443)"]:::newNode
-        PROXY["🆕 Target HTTP Proxy & URL Map\n(lb-url-map)"]:::newNode
-        ARMOR["🆕 Cloud Armor Security Policy (WAF)\n• OWASP CRS v4.22 (SQLi, XSS, RCE, RFI)\n• CVE Canaries (Log4j, Spring4Shell)\n• Adaptive Rate Limiting (HTTP 429)\n• Geo-Fencing (origin.region_code)"]:::newNode
-        BACKEND["🆕 Backend Service (EXTERNAL_MANAGED)\n• Security Policy Attachment\n• timeout_sec = 300 (SSE Streaming Safe)"]:::newNode
-        NEG["🆕 Regional Serverless NEG\n(Targets adk-agent-dev Cloud Run)"]:::newNode
+    subgraph Perimeter["🛡️ Edge Perimeter & Security (06c)"]
+        FWD["Global Forwarding Rule & Load Balancer\n(External IPv4 :80 / :443)"]
+        ARMOR["Cloud Armor Security Policy (WAF)\n(OWASP CRS v4.22 + Rate Limiting)"]
+        NEG["Serverless NEG\n(Targets adk-agent-dev Cloud Run)"]
     end
 
-    subgraph CloudRunMesh["☁️ Google Cloud Run Serverless Mesh (europe-west1)"]
-        CR_RUN["Service 1: sosta-runner (Public Entrypoint)\nSERVICE_ROLE=runner\n(Gatekeeper, Registratore, Cameriere)"]:::agentNode
-        CR_A2A["Service 2: suggeritore-a2a (Internal Only)\nSERVICE_ROLE=a2a\n(A2A Protocol + Dynamic AgentCard)"]:::agentNode
-        CR_MCP["Service 3: mcp-sse (Internal Only)\nSERVICE_ROLE=mcp\n(FastMCP BigQuery Server)"]:::agentNode
+    subgraph CloudRunMesh["☁️ Google Cloud Run Serverless Mesh"]
+        CR_RUN["Service 1: sosta-runner\n(Gatekeeper, Registratore, Cameriere)"]:::agentNode
+        CR_A2A["Service 2: suggeritore-a2a\n(A2A Protocol + Dynamic AgentCard)"]:::agentNode
+        CR_MCP["Service 3: mcp-sse\n(FastMCP BigQuery Server)"]:::agentNode
+    end
+
+    subgraph CachingLayer["⚡ Dual-Backend Tool Caching & Storage Scaling (🆕 07a)"]
+        CACHE["🆕 @cached Tool Decorator\n(Automatic Arg Normalization & TTL)"]:::newNode
+        REDIS[("🆕 Cloud Memorystore Redis / Local TTL\n(Sub-millisecond Tool Cache)")]:::newNode
+        V2_SUB[("🆕 Firestore Subcollections (v2)\nsosta_sessions/{id}/events/{ev_id}\n(Infinite Multi-Turn Scaling > 1MB)")]:::newNode
     end
 
     subgraph GCPData["🗄️ Managed GCP Data Plane"]
-        FS[("🔥 Cloud Firestore\n(3 Databases)")]:::dataNode
+        FS[("🔥 Cloud Firestore\n(Application DB)")]:::dataNode
         BQ[("📊 BigQuery\n(db_soste)")]:::dataNode
         RAG[("🧠 Vertex AI RAG\n+ GCS PDFs")]:::dataNode
     end
 
     Client --> FWD
-    FWD --> PROXY
-    PROXY --> BACKEND
-    ARMOR -.->|"Inspects & Shields"| BACKEND
-    BACKEND --> NEG
+    FWD --> ARMOR
+    ARMOR --> NEG
     NEG --> CR_RUN
 
-    CR_RUN <-->|"CloudRunOIDCAuth\n(IAM Bearer ID Token)"| CR_A2A
-    CR_A2A <-->|"CloudRunOIDCAuth\n(IAM Bearer ID Token)"| CR_MCP
-    CR_RUN <--> FS
-    CR_A2A <--> RAG
-    CR_MCP <--> BQ
+    CR_RUN <-->|"A2A Delegation\n(CloudRunOIDCAuth)"| CR_A2A
+    CR_A2A <-->|"MCP SSE Tool Execution\n(CloudRunOIDCAuth)"| CR_MCP
+
+    CR_RUN --> CACHE
+    CR_A2A --> CACHE
+    CR_MCP --> CACHE
+
+    CACHE <-->|"Cache Hit / Miss"| REDIS
+    CACHE -.->|"Cache Miss Fallback"| FS
+    CACHE -.->|"Cache Miss Fallback"| BQ
+    CACHE -.->|"Cache Miss Fallback"| RAG
+
+    CR_RUN <-->|"Save / Restore Sessions"| V2_SUB
 
     classDef newNode fill:#FFF0F5,stroke:#F73C6E,stroke-width:2.5px,color:#141414
     classDef agentNode fill:#E8ECFF,stroke:#3B49DF,stroke-width:2px,color:#141414
@@ -124,6 +134,7 @@ To keep the codebase clean, isolated, and easy to follow, **each article in the 
 | **#6a: [Production Runner, Firestore SessionService & MemoryService in SostaApp](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`06a-runner-session-and-memory`](https://github.com/EilinLux/adk2.0-medium/tree/06a-runner-session-and-memory) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/06a-runner-session-and-memory/adk_agent_app) & [`tests/06a-runner-session-and-memory`](https://github.com/EilinLux/adk2.0-medium/tree/06a-runner-session-and-memory/tests/06a-runner-session-and-memory)) | Replacing `adk web`'s ephemeral in-memory defaults with a custom production **ADK `Runner`** ([`adk_agent_app/runner.py`](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/runner.py)) and **FastAPI Server** ([`adk_agent_app/server.py`](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/server.py)) wired to the dedicated Firestore database (`adk-agent-dev-session-memory-fs`):<br>• [**`firestore_session_service.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/services/firestore_session_service.py): `FirestoreSessionService` persisting multi-turn event history and `state_delta` (`user:` / `app:` / session state) into the `sosta_sessions` collection.<br>• [**`firestore_memory_service.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/services/firestore_memory_service.py): `FirestoreMemoryService` persisting cross-session episodic memories into `sosta_memories` and automatically injecting `<PAST_CONVERSATIONS>` into `Cameriere` via ADK's `preload_memory` tool.<br>• [**1. `runner_test_1_event_loop_and_runconfig.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/tests/06a-runner-session-and-memory/runner_test_1_event_loop_and_runconfig.py): Deep-dive into `Runner.run_async()`, the ADK `Event` yield loop (`get_function_calls()`, `get_function_responses()`, `actions.state_delta`, `is_final_response()`), and `RunConfig(max_llm_calls=...)`.<br>• [**2. `runner_test_2_firestore_session_persistence.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/tests/06a-runner-session-and-memory/runner_test_2_firestore_session_persistence.py): Proves stateless process recovery—Process #1 authenticates `usr_0a8f67`, is destroyed, and Process #2 seamlessly resumes the exact same `session_id` from Firestore.<br>• [**3. `runner_test_3_cross_session_memory_in_runner.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/tests/06a-runner-session-and-memory/runner_test_3_cross_session_memory_in_runner.py): End-to-end verification of `FirestoreMemoryService` + `preload_memory` recalling episodic trip context across separate sessions (`trip_session_october` $\rightarrow$ `trip_session_november`). |
 | **#6b: [Containerizing & Deploying the 3-Service Agent Stack to Google Cloud Run](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`06b-cloud-deployment`](https://github.com/EilinLux/adk2.0-medium/tree/06b-cloud-deployment) <br> ([`Dockerfile`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/Dockerfile), [`terraform/terraform_infrastructure/cloud-run.tf`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/terraform/terraform_infrastructure/cloud-run.tf) & [`tests/06b-cloud-deployment`](https://github.com/EilinLux/adk2.0-medium/tree/06b-cloud-deployment/tests/06b-cloud-deployment)) | Packaging the entire multi-agent platform into a single role-dispatched Docker image ([`Dockerfile`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/Dockerfile) + [`docker-entrypoint.sh`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/docker-entrypoint.sh) with `SERVICE_ROLE=mcp\|a2a\|runner`) pushed to **Google Artifact Registry**, and deploying 3 independent **Google Cloud Run v2** services via **Terraform** ([`cloud-run.tf`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/terraform/terraform_infrastructure/cloud-run.tf)):<br>• **`adk-agent-dev-mcp-sse`** (`SERVICE_ROLE=mcp`): Serverless BigQuery MCP SSE Server.<br>• **`adk-agent-dev-suggeritore-a2a`** (`SERVICE_ROLE=a2a`): Remote A2A microservice with `CloudRunA2AMiddleware` dynamically resolving public `https://*.run.app/` URLs in `/.well-known/agent-card.json` and authenticating to MCP via Google OIDC identity tokens.<br>• **`adk-agent-dev`** (`SERVICE_ROLE=runner`): Stateless SostaApp FastAPI Production Runner backed by `FirestoreSessionService` and `FirestoreMemoryService`, calling `Suggeritore` over A2A with `CloudRunOIDCAuth`.<br>• [**`cloud_run_test_e2e.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/tests/06b-cloud-deployment/cloud_run_test_e2e.py): End-to-end verification of all 3 deployed Cloud Run services. |
 | **#6c: [Securing the Multi-Agent Cloud Run Stack with Cloud Armor WAF & External HTTPS Load Balancing](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`06c-cloud-armor-load-balancer`](https://github.com/EilinLux/adk2.0-medium/tree/06c-cloud-armor-load-balancer) <br> ([`cloud-armor.tf`](https://github.com/EilinLux/adk2.0-medium/blob/06c-cloud-armor-load-balancer/terraform/terraform_infrastructure/cloud-armor.tf), [`load-balancer.tf`](https://github.com/EilinLux/adk2.0-medium/blob/06c-cloud-armor-load-balancer/terraform/terraform_infrastructure/load-balancer.tf) & [`tests/06c-cloud-armor-load-balancer`](https://github.com/EilinLux/adk2.0-medium/tree/06c-cloud-armor-load-balancer/tests/06c-cloud-armor-load-balancer)) | Provisioning perimeter defenses and external ingress via **Google Cloud Armor** and **External Application Load Balancer** with **Serverless NEG**:<br>• [**`cloud-armor.tf`**](https://github.com/EilinLux/adk2.0-medium/blob/06c-cloud-armor-load-balancer/terraform/terraform_infrastructure/cloud-armor.tf): Cloud Armor Security Policy (`google_compute_security_policy.sosta_armor`) configured with OWASP CRS v4.22 preconfigured WAF rules (SQLi, XSS, RFI, RCE, Protocol Attack, Scanner Detection, Session Fixation), CVE canaries (`cve-canary`, `json-sqli-canary`), adaptive rate limiting (HTTP 429), and optional geo-fencing.<br>• [**`load-balancer.tf`**](https://github.com/EilinLux/adk2.0-medium/blob/06c-cloud-armor-load-balancer/terraform/terraform_infrastructure/load-balancer.tf): Global IPv4 address, Serverless Network Endpoint Group (`google_compute_region_network_endpoint_group.runner_neg`) targeting `adk_agent`, and `EXTERNAL_MANAGED` backend service with `timeout_sec = 300` for uninterrupted Server-Sent Events (SSE) generative streaming.<br>• [**1. `test_terraform_lb_armor.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06c-cloud-armor-load-balancer/tests/06c-cloud-armor-load-balancer/test_terraform_lb_armor.py): Validates Terraform syntax, provider locking, canonical formatting, and structural checks ensuring internal services (`mcp_sse`, `suggeritore_a2a`) remain unexposed.<br>• [**2. `test_armor_waf_e2e.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06c-cloud-armor-load-balancer/tests/06c-cloud-armor-load-balancer/test_armor_waf_e2e.py): End-to-end WAF attack vector intercept testing, rate limiting throttle threshold verification, and reverse proxy header preservation. |
+| **#7a: [Tool Caching & High-Volume Session Scaling: Overcoming Firestore 1MB Limits with Subcollections & Redis](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`07a-tool-caching-and-session-scaling`](https://github.com/EilinLux/adk2.0-medium/tree/07a-tool-caching-and-session-scaling) <br> ([`adk_agent_app/cache.py`](https://github.com/EilinLux/adk2.0-medium/blob/07a-tool-caching-and-session-scaling/adk_agent_app/cache.py), [`firestore_session_service.py`](https://github.com/EilinLux/adk2.0-medium/blob/07a-tool-caching-and-session-scaling/adk_agent_app/services/firestore_session_service.py) & [`tests/07a-tool-caching-and-session-scaling`](https://github.com/EilinLux/adk2.0-medium/tree/07a-tool-caching-and-session-scaling/tests/07a-tool-caching-and-session-scaling)) | Dual-backend tool caching and subcollection storage architecture:<br>• [**`cache.py`**](https://github.com/EilinLux/adk2.0-medium/blob/07a-tool-caching-and-session-scaling/adk_agent_app/cache.py): `@cached` decorator with Redis + in-memory TTL fallback, automatic argument normalization, and metrics.<br>• [**`redis.tf`**](https://github.com/EilinLux/adk2.0-medium/blob/07a-tool-caching-and-session-scaling/terraform/terraform_infrastructure/redis.tf): Optional Google Cloud Memorystore for Redis instance.<br>• [**`firestore_session_service.py`**](https://github.com/EilinLux/adk2.0-medium/blob/07a-tool-caching-and-session-scaling/adk_agent_app/services/firestore_session_service.py): `STORAGE_VERSION = 2` isolating individual turns into `events/{event_id}` subcollections to prevent 1MB document limit exceptions.<br>• [**1. `test_cache_decorator.py`**](https://github.com/EilinLux/adk2.0-medium/blob/07a-tool-caching-and-session-scaling/tests/07a-tool-caching-and-session-scaling/test_cache_decorator.py): Unit tests for `@cached` hit/miss, TTL expiration, argument normalization, and Redis fallback.<br>• [**2. `test_session_scaling_v2.py`**](https://github.com/EilinLux/adk2.0-medium/blob/07a-tool-caching-and-session-scaling/tests/07a-tool-caching-and-session-scaling/test_session_scaling_v2.py): 1.2MB multi-turn simulation proving Firestore 1MB document limit bypass and legacy v1 compatibility.<br>• [**3. `test_terraform_redis.py`**](https://github.com/EilinLux/adk2.0-medium/blob/07a-tool-caching-and-session-scaling/tests/07a-tool-caching-and-session-scaling/test_terraform_redis.py): Validates Memorystore Redis configuration and outputs. |
 
 ---
 
@@ -151,10 +162,10 @@ To follow along with a specific Medium article, create and switch to a local bra
 git checkout -b <branch-name> origin/<branch-name>
 ```
 
-Example for this article (`06c-cloud-armor-load-balancer`):
+Example for this article (`07a-tool-caching-and-session-scaling`):
 
 ```bash
-git checkout -b 06c-cloud-armor-load-balancer origin/06c-cloud-armor-load-balancer
+git checkout -b 07a-tool-caching-and-session-scaling origin/07a-tool-caching-and-session-scaling
 ```
 
 2. **Install dependencies:**
@@ -190,34 +201,32 @@ VERTEX_RAG_LOCATION=europe-west3
 VERTEX_RAG_CORPUS_DISPLAY_NAME=sosta-product-specs-corpus
 
 # ============================================================================
+# Caching Configuration (Optional Redis / Cloud Memorystore)
+# If REDIS_HOST is omitted, @cached automatically uses thread-safe In-Memory TTL
+# ============================================================================
+# REDIS_HOST=10.0.0.5
+# REDIS_PORT=6379
+
+# ============================================================================
 # OPTION B: Google AI Studio Configuration (Alternative via API Key)
 # ============================================================================
 # GOOGLE_GENAI_USE_VERTEXAI=0
 # GOOGLE_API_KEY=your_gemini_api_key_here
 ```
 
-4. **Validate & Test Cloud Armor WAF and Load Balancer:**
+4. **Validate & Test Tool Caching and Session Scaling:**
 
 ```bash
-# 1. Validate Terraform Infrastructure-as-Code for Cloud Armor & Load Balancer
+# 1. Validate Terraform Infrastructure-as-Code for Cloud Memorystore Redis
 cd terraform/terraform_infrastructure
 terraform fmt -check
 terraform validate
 
-# 2. Run the Cloud Armor and Load Balancer automated test suite
+# 2. Run the complete Tool Caching and Session Scaling automated test suite
 cd ../..
-uv run pytest tests/06c-cloud-armor-load-balancer/ -v
+uv run pytest tests/07a-tool-caching-and-session-scaling/ -v
 
-# 3. Test Live Load Balancer & Cloud Armor WAF (after terraform apply)
-LB_IP=$(terraform -chdir=terraform/terraform_infrastructure output -raw load_balancer_ip)
-
-# A. Normal legitimate traffic (HTTP 200)
-curl -i "http://${LB_IP}/health"
-
-# B. Malicious SQL Injection attempt (Cloud Armor intercepts with HTTP 403 Forbidden)
-curl -i "http://${LB_IP}/health?id=1%27%20OR%20%271%27=%271"
-
-# C. Inspect intercepted attacks in Google Cloud Console Logs Explorer:
-# resource.type="http_load_balancer" AND jsonPayload.enforcedSecurityPolicy.name="adk-agent-dev-armor"
+# 3. Inspect cache stats in Python
+uv run python -c "from adk_agent_app.cache import get_cache_stats; print('Cache Stats:', get_cache_stats())"
 ```
 

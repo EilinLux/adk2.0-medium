@@ -221,3 +221,17 @@ output "product_specs_bucket_url" {
   description = "The gs:// URI of the product specification bucket."
   value       = "gs://${google_storage_bucket.product_specs_bucket.name}"
 }
+
+# ==========================================
+# MEMORYSTORE REDIS OUTPUTS
+# ==========================================
+
+output "redis_host" {
+  description = "IP address of the Cloud Memorystore Redis instance (empty if disabled)"
+  value       = var.enable_memorystore_redis && length(google_redis_instance.cache) > 0 ? google_redis_instance.cache[0].host : ""
+}
+
+output "redis_port" {
+  description = "Port number of the Cloud Memorystore Redis instance (empty if disabled)"
+  value       = var.enable_memorystore_redis && length(google_redis_instance.cache) > 0 ? google_redis_instance.cache[0].port : 0
+}

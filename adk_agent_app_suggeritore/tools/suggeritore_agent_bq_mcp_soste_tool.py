@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 from google.cloud import bigquery
 from mcp.server.mcpserver import MCPServer
 
+from ..cache import cached
+
 load_dotenv()  # Load root .env file
 load_dotenv(Path(__file__).parent.parent / ".env")  # Also load adk_agent_app_suggeritore/.env
 
@@ -47,6 +49,85 @@ try:
 except Exception as e:
     logger.error(f"Failed to initialize BigQuery client: {e}")
     bq_client = None
+
+
+@cached(ttl=3600, prefix="bigquery:soste")
+def _execute_cached_soste_query(
+    lat_float: float,
+    lon_float: float,
+    fuel_type: Optional[str] = None,
+    radius_meters: int = 150000,
+    limit: int = 5,
+) -> list:
+    """Executes the BigQuery geospatial search and caches the result for 1 hour."""
+    where_clauses = [
+        f"ST_DWITHIN(coordinates, ST_GEOGPOINT({lon_float}, {lat_float}), {int(radius_meters)})"
+    ]
+
+    if fuel_type:
+        clean_fuel = str(fuel_type).strip().upper()
+        fuel_mapping = {
+            "ELECTRIC": "ELECTRIC_FAST",
+            "EV": "ELECTRIC_FAST",
+            "PETROL": "GASOLINE",
+            "BENZINA": "GASOLINE",
+            "GASOLIO": "DIESEL",
+            "METANO": "CNG",
+            "GPL": "LPG",
+        }
+        mapped_fuel = fuel_mapping.get(clean_fuel, clean_fuel)
+        where_clauses.append(f"'{mapped_fuel}' IN UNNEST(fuel_types)")
+
+    where_str = " AND ".join(where_clauses)
+    query = f"""
+        SELECT 
+            stop_name,
+            fuel_types,
+            services,
+            phone,
+            ST_Y(coordinates) AS latitude,
+            ST_X(coordinates) AS longitude,
+            ROUND(ST_DISTANCE(coordinates, ST_GEOGPOINT({lon_float}, {lat_float}))) AS distance_meters
+        FROM 
+            `{FULL_TABLE_PATH}`
+        WHERE 
+            {where_str}
+        ORDER BY 
+            distance_meters ASC
+        LIMIT {limit};
+    """
+    logger.info("EXECUTING PRIMARY BIGQUERY SQL (CACHE MISS):")
+    logger.info(query)
+
+    query_job = bq_client.query(query)
+    results = [dict(row) for row in query_job.result()]
+
+    if not results and fuel_type:
+        logger.warning(
+            "Primary query returned 0 rows. Attempting FALLBACK QUERY (ignoring fuel_type filter)..."
+        )
+        fallback_query = f"""
+            SELECT 
+                stop_name,
+                fuel_types,
+                services,
+                phone,
+                ST_Y(coordinates) AS latitude,
+                ST_X(coordinates) AS longitude,
+                ROUND(ST_DISTANCE(coordinates, ST_GEOGPOINT({lon_float}, {lat_float}))) AS distance_meters
+            FROM 
+                `{FULL_TABLE_PATH}`
+            WHERE 
+                ST_DWITHIN(coordinates, ST_GEOGPOINT({lon_float}, {lat_float}), {int(radius_meters)})
+            ORDER BY 
+                distance_meters ASC
+            LIMIT {limit};
+        """
+        fallback_job = bq_client.query(fallback_query)
+        results = [dict(row) for row in fallback_job.result()]
+
+    return results
+
 
 
 # 2. Expose the function using the @mcp.tool() decorator
@@ -102,91 +183,13 @@ def find_soste_by_fuel_and_location(
         lat_float = float(latitude)
         lon_float = float(longitude)
 
-        # Base clause
-        where_clauses = [
-            f"ST_DWITHIN(coordinates, ST_GEOGPOINT({lon_float}, {lat_float}), {int(radius_meters)})"
-        ]
-
-        # Fuel filtering
-        if fuel_type and isinstance(fuel_type, str) and fuel_type.strip():
-            clean_fuel = fuel_type.upper().strip()
-            # Map common LLM string variants to BigQuery enum strings
-            fuel_mapping = {
-                "GASOLINE": "GASOLINE",
-                "BENZINA": "GASOLINE",
-                "PETROL": "GASOLINE",
-                "DIESEL": "DIESEL",
-                "GASOLIO": "DIESEL",
-                "LPG": "LPG",
-                "GPL": "LPG",
-                "METHANE": "METHANE",
-                "METANO": "METHANE",
-                "ELECTRIC": "ELECTRIC_FAST",
-                "EV": "ELECTRIC_FAST",
-                "ELECTRIC_FAST": "ELECTRIC_FAST",
-                "ELECTRIC_ULTRAFAST": "ELECTRIC_ULTRAFAST",
-                "ELECTRIC_STANDARD": "ELECTRIC_STANDARD",
-            }
-            mapped_fuel = fuel_mapping.get(clean_fuel, clean_fuel)
-            logger.info(f"  -> Mapped fuel_type '{fuel_type}' to '{mapped_fuel}'")
-            where_clauses.append(f"'{mapped_fuel}' IN UNNEST(fuel_types)")
-
-        where_str = " AND ".join(where_clauses)
-
-        query = f"""
-            SELECT 
-                stop_name,
-                fuel_types,
-                services,
-                phone,
-                ST_Y(coordinates) AS latitude,
-                ST_X(coordinates) AS longitude,
-                ROUND(ST_DISTANCE(coordinates, ST_GEOGPOINT({lon_float}, {lat_float}))) AS distance_meters
-            FROM 
-                `{FULL_TABLE_PATH}`
-            WHERE 
-                {where_str}
-            ORDER BY 
-                distance_meters ASC
-            LIMIT {limit};
-        """
-
-        logger.info("EXECUTING PRIMARY BIGQUERY SQL:")
-        logger.info(query)
-
-        query_job = bq_client.query(query)
-        results = [dict(row) for row in query_job.result()]
-
-        logger.info(f"PRIMARY QUERY EXECUTED SUCCESSFULLY. Rows returned: {len(results)}")
-
-        # FALLBACK: If primary query returned 0 rows and fuel_type was used, retry without fuel_type
-        if not results and fuel_type:
-            logger.warning(
-                "Primary query returned 0 rows. Attempting FALLBACK QUERY (ignoring fuel_type filter)..."
-            )
-            fallback_query = f"""
-                SELECT 
-                    stop_name,
-                    fuel_types,
-                    services,
-                    phone,
-                    ST_Y(coordinates) AS latitude,
-                    ST_X(coordinates) AS longitude,
-                    ROUND(ST_DISTANCE(coordinates, ST_GEOGPOINT({lon_float}, {lat_float}))) AS distance_meters
-                FROM 
-                    `{FULL_TABLE_PATH}`
-                WHERE 
-                    ST_DWITHIN(coordinates, ST_GEOGPOINT({lon_float}, {lat_float}), {int(radius_meters)})
-                ORDER BY 
-                    distance_meters ASC
-                LIMIT {limit};
-            """
-            logger.info("EXECUTING FALLBACK BIGQUERY SQL:")
-            logger.info(fallback_query)
-
-            fallback_job = bq_client.query(fallback_query)
-            results = [dict(row) for row in fallback_job.result()]
-            logger.info(f"FALLBACK QUERY EXECUTED. Rows returned: {len(results)}")
+        results = _execute_cached_soste_query(
+            lat_float=lat_float,
+            lon_float=lon_float,
+            fuel_type=fuel_type,
+            radius_meters=radius_meters,
+            limit=limit,
+        )
 
         # Log found results
         for idx, row in enumerate(results, 1):
@@ -196,6 +199,7 @@ def find_soste_by_fuel_and_location(
 
         logger.info("=" * 60)
         return json.dumps(results, ensure_ascii=False)
+
 
     except Exception as e:
         logger.error(f"EXCEPTION IN SOSTE_TOOLS: {str(e)}", exc_info=True)

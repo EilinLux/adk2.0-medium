@@ -29,8 +29,10 @@ dependencies = [
     "pytest-tornasync",
     "pytest-trio",
     "twisted",
-    "mcp"
+    "mcp",
+    "redis>=5.0.0"
 ]
+
 
 [project.urls]
 "Homepage" = "https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9"

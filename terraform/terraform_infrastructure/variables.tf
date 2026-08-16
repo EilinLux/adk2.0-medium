@@ -274,3 +274,33 @@ variable "lb_backend_timeout_sec" {
   type        = number
   default     = 300
 }
+
+# ==========================================
+# MEMORYSTORE REDIS VARIABLES (OPTIONAL)
+# ==========================================
+
+variable "enable_memorystore_redis" {
+  description = "Whether to provision Google Cloud Memorystore for Redis for distributed tool caching"
+  type        = bool
+  default     = false
+}
+
+variable "redis_tier" {
+  description = "The service tier of the Redis instance (BASIC or STANDARD_HA)"
+  type        = string
+  default     = "BASIC"
+  validation {
+    condition     = contains(["BASIC", "STANDARD_HA"], var.redis_tier)
+    error_message = "Redis tier must be BASIC or STANDARD_HA."
+  }
+}
+
+variable "redis_memory_size_gb" {
+  description = "Redis memory size in GiB"
+  type        = number
+  default     = 1
+  validation {
+    condition     = var.redis_memory_size_gb >= 1
+    error_message = "Redis memory size must be at least 1 GiB."
+  }
+}
