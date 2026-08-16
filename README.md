@@ -207,4 +207,17 @@ terraform validate
 # 2. Run the Cloud Armor and Load Balancer automated test suite
 cd ../..
 uv run pytest tests/06c-cloud-armor-load-balancer/ -v
+
+# 3. Test Live Load Balancer & Cloud Armor WAF (after terraform apply)
+LB_IP=$(terraform -chdir=terraform/terraform_infrastructure output -raw load_balancer_ip)
+
+# A. Normal legitimate traffic (HTTP 200)
+curl -i "http://${LB_IP}/health"
+
+# B. Malicious SQL Injection attempt (Cloud Armor intercepts with HTTP 403 Forbidden)
+curl -i "http://${LB_IP}/health?id=1%27%20OR%20%271%27=%271"
+
+# C. Inspect intercepted attacks in Google Cloud Console Logs Explorer:
+# resource.type="http_load_balancer" AND jsonPayload.enforcedSecurityPolicy.name="adk-agent-dev-armor"
 ```
+
