@@ -1,708 +1,480 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SostaApp — Production ADK Runner Chat</title>
-  <style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>SostaApp — Your highway stop planner</title>
+<style>
+  :root {
+    --bg: #f2f6f3;
+    --surface: #ffffff;
+    --ink: #12261d;
+    --muted: #5d7167;
+    --line: #d9e3dd;
+    --green: #0a6c4b;
+    --green-dark: #07523a;
+    --signal: #f5c400;
+    --danger: #b3261e;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0f172a;
-      --panel: #1e293b;
-      --panel-2: #0b1120;
-      --border: #334155;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --pink: #f43f5e;
-      --green: #10b981;
-      --amber: #f59e0b;
+      --bg: #0d1713;
+      --surface: #15231c;
+      --ink: #eaf3ee;
+      --muted: #93a99d;
+      --line: #264033;
+      --green: #2fb585;
+      --green-dark: #52cc9f;
+      --danger: #ff8a80;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      padding: 12px 24px;
-      background: var(--panel-2);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      font-size: 1.02rem;
-    }
-    .badge {
-      font-size: 0.74rem;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .badge:hover {
-      background: rgba(16, 185, 129, 0.25);
-    }
-    .layout {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 410px;
-      min-height: 0;
-    }
-    .chat-col {
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid var(--border);
-      min-height: 0;
-    }
-    .toolbar {
-      padding: 10px 20px;
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-    }
-    .field {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .field input[type="text"] {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 5px 9px;
-      border-radius: 6px;
-      font-size: 0.82rem;
-      width: 135px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      transition: 0.2s;
-    }
-    .field input.highlight-id {
-      border-color: var(--green);
-      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.35);
-      color: #34d399;
-    }
-    .toggle {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--text);
-      cursor: pointer;
-      user-select: none;
-    }
-    .btn-sm {
-      background: var(--panel-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 6px 11px;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: 0.15s;
-      font-weight: 500;
-    }
-    .btn-sm:hover { border-color: var(--accent); color: #60a5fa; }
-    .btn-new-user {
-      border-color: rgba(244, 63, 94, 0.5);
-      color: #fda4af;
-    }
-    .btn-new-user:hover {
-      background: rgba(244, 63, 94, 0.15);
-      border-color: var(--pink);
-      color: #fff;
-    }
-    .btn-guide {
-      background: rgba(59, 130, 246, 0.18);
-      border-color: rgba(59, 130, 246, 0.5);
-      color: #93c5fd;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .btn-guide:hover {
-      background: var(--accent);
-      color: #fff;
-    }
-    .btn-danger:hover { border-color: var(--pink); color: #fb7185; }
-    .banner {
-      display: none;
-      padding: 8px 20px;
-      background: rgba(16, 185, 129, 0.15);
-      border-bottom: 1px solid rgba(16, 185, 129, 0.35);
-      color: #6ee7b7;
-      font-size: 0.82rem;
-      font-weight: 600;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .msg {
-      max-width: 84%;
-      padding: 12px 16px;
-      border-radius: 12px;
-      line-height: 1.55;
-      font-size: 0.92rem;
-    }
-    .msg.user {
-      align-self: flex-end;
-      background: var(--accent);
-      color: white;
-      border-bottom-right-radius: 3px;
-    }
-    .msg.agent {
-      align-self: flex-start;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-bottom-left-radius: 3px;
-    }
-    .msg-header {
-      font-size: 0.74rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 6px;
-      color: #60a5fa;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    /* Markdown formatted output inside chat bubbles */
-    .md-body p { margin-bottom: 8px; }
-    .md-body p:last-child { margin-bottom: 0; }
-    .md-body strong { color: #fff; font-weight: 700; }
-    .md-body em { font-style: italic; color: #e2e8f0; }
-    .md-body ul, .md-body ol {
-      margin: 6px 0 8px 20px;
-    }
-    .md-body li { margin-bottom: 4px; }
-    .md-body code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.84em;
-      background: rgba(15, 23, 42, 0.65);
-      padding: 2px 5px;
-      border-radius: 4px;
-      color: #93c5fd;
-    }
-    .tool-pill {
-      display: inline-block;
-      margin-top: 8px;
-      margin-right: 6px;
-      padding: 3px 8px;
-      font-size: 0.73rem;
-      border-radius: 5px;
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      color: #fbbf24;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
-    .chips {
-      padding: 8px 20px;
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      border-top: 1px solid var(--border);
-      background: rgba(30, 41, 59, 0.5);
-    }
-    .chip {
-      white-space: nowrap;
-      font-size: 0.76rem;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      cursor: pointer;
-    }
-    .chip:hover { color: var(--text); border-color: var(--accent); }
-    .chip-new { border-color: rgba(244, 63, 94, 0.4); color: #fda4af; }
-    .composer {
-      padding: 14px 20px;
-      background: var(--panel);
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 10px;
-    }
-    .composer input {
-      flex: 1;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 11px 14px;
-      border-radius: 8px;
-      font-size: 0.93rem;
-      outline: none;
-    }
-    .composer input:focus { border-color: var(--accent); }
-    .btn-send {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 0 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-send:hover { background: var(--accent-hover); }
-    .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
-    .inspector {
-      background: var(--panel-2);
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-    .insp-section {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--border);
-    }
-    .insp-title {
-      font-size: 0.76rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    pre {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.77rem;
-      color: #e2e8f0;
-      overflow-x: auto;
-      max-height: 300px;
-      overflow-y: auto;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
-    .empty-hint {
-      color: var(--muted);
-      text-align: center;
-      margin: auto;
-      max-width: 480px;
-      line-height: 1.65;
-      font-size: 0.88rem;
-    }
-  </style>
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    line-height: 1.5;
+  }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+
+  /* Header: styled like a motorway sign */
+  header {
+    background: #0a6c4b;
+    color: #fff;
+    padding: 10px 20px;
+    padding-top: calc(10px + env(safe-area-inset-top, 0px));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 4px solid var(--signal);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.15rem; }
+  .brand-mark {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: #fff; color: #0a6c4b;
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 1.2rem;
+  }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .user-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.3);
+    color: #fff;
+    padding: 6px 12px; border-radius: 999px;
+    font-size: .88rem; cursor: pointer;
+  }
+  .user-chip:hover { background: rgba(255,255,255,.24); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--signal); }
+  .dot.in { background: #6df0b5; }
+  .btn-ghost {
+    background: transparent; color: #fff;
+    border: 1px solid rgba(255,255,255,.45);
+    padding: 6px 12px; border-radius: 999px;
+    font-size: .88rem; cursor: pointer;
+    text-decoration: none;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,.18); }
+
+  /* Main */
+  main { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; }
+  .thread {
+    flex: 1; width: 100%; max-width: 760px;
+    overflow-y: auto; padding: 24px 16px 8px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  .welcome { margin: auto 0; padding: 12px 0 24px; }
+  .welcome h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1.2; margin-bottom: 8px; }
+  .welcome p { color: var(--muted); max-width: 52ch; margin-bottom: 22px; }
+  .starters { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+  .starter {
+    text-align: left; background: var(--surface);
+    border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 14px 16px; cursor: pointer;
+  }
+  .starter:hover { border-color: var(--green); }
+  .starter b { display: block; margin-bottom: 2px; }
+  .starter span { color: var(--muted); font-size: .86rem; }
+
+  .msg { max-width: 86%; padding: 11px 15px; border-radius: var(--radius); font-size: .97rem; }
+  .msg.user { align-self: flex-end; background: var(--green); color: #fff; border-bottom-right-radius: 4px; }
+  @media (prefers-color-scheme: dark) { .msg.user { color: #06241a; } }
+  .msg.bot { align-self: flex-start; background: var(--surface); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .msg.error { border-color: var(--danger); color: var(--danger); }
+  .md p { margin-bottom: 8px; }
+  .md p:last-child { margin-bottom: 0; }
+  .md ul, .md ol { margin: 4px 0 8px 20px; }
+  .md li { margin-bottom: 3px; }
+  .md code { background: rgba(127,127,127,.18); padding: 1px 5px; border-radius: 4px; font-size: .9em; }
+  .tools { margin-top: 8px; display: none; }
+  body.dev .tools { display: block; }
+  .tool-pill {
+    display: inline-block; margin: 0 6px 4px 0; padding: 2px 8px; font-size: .74rem;
+    border: 1px solid var(--line); border-radius: 6px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace;
+  }
+
+  .typing { display: inline-flex; gap: 5px; padding: 4px 0; }
+  .typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: bounce 1.2s infinite ease-in-out; }
+  .typing i:nth-child(2) { animation-delay: .15s; }
+  .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounce { 0%, 80%, 100% { opacity: .3; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-4px); } }
+  @media (prefers-reduced-motion: reduce) { .typing i { animation: none; opacity: .7; } }
+
+  .toast {
+    align-self: center; background: var(--surface); border: 1px solid var(--green);
+    color: var(--green-dark); padding: 8px 14px; border-radius: 999px; font-size: .86rem; font-weight: 600;
+  }
+
+  /* Composer */
+  .composer-wrap {
+    width: 100%; max-width: 760px;
+    padding: 10px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  }
+  .quick { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; }
+  .quick button {
+    white-space: nowrap; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 999px; padding: 6px 12px; font-size: .84rem; cursor: pointer; color: var(--muted);
+  }
+  .quick button:hover { border-color: var(--green); color: var(--ink); }
+  .composer {
+    display: flex; gap: 8px; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 6px 6px 18px;
+  }
+  .composer:focus-within { border-color: var(--green); }
+  .composer input { flex: 1; border: none; background: transparent; outline: none; min-width: 0; }
+  .send {
+    background: var(--green); color: #fff; border: none; border-radius: 999px;
+    padding: 9px 20px; font-weight: 600; cursor: pointer;
+  }
+  @media (prefers-color-scheme: dark) { .send { color: #06241a; } }
+  .send:hover { background: var(--green-dark); }
+  .send:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* Dialog */
+  dialog {
+    margin: auto; border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); color: var(--ink); padding: 22px; width: min(420px, 92vw);
+  }
+  dialog::backdrop { background: rgba(0,0,0,.45); }
+  dialog h2 { font-size: 1.15rem; margin-bottom: 6px; }
+  dialog p { color: var(--muted); font-size: .9rem; margin-bottom: 14px; }
+  dialog input[type=text] {
+    width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); margin-bottom: 14px;
+  }
+  .row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+  .btn { border: 1px solid var(--line); background: transparent; padding: 8px 14px; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn.primary { background: var(--green); border-color: var(--green); color: #fff; font-weight: 600; }
+  @media (prefers-color-scheme: dark) { .btn.primary { color: #06241a; } }
+  .menu-list { display: grid; gap: 8px; margin-bottom: 14px; }
+  .menu-list .btn { text-align: left; }
+
+  /* Developer drawer (hidden unless turned on) */
+  .dev-panel {
+    display: none; border-top: 1px solid var(--line); background: var(--surface);
+    width: 100%; max-height: 32vh; overflow: auto; padding: 10px 16px; font-size: .78rem;
+  }
+  body.dev .dev-panel { display: block; }
+  .dev-panel h3 { font-size: .82rem; margin: 6px 0 4px; color: var(--muted); }
+  .dev-panel pre { font-family: ui-monospace, Menlo, monospace; white-space: pre-wrap; word-break: break-word; }
+</style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <span>🛣️ SostaApp — Production FastAPI Runner (<code>/dev-ui/</code>)</span>
-      <a href="/dev-ui/guide" class="badge" id="healthBadge" title="Click to read what this Firestore Runtime badge means in the Architecture Guide">
-        Checking Firestore Runtime...
-      </a>
-    </div>
-    <div style="display:flex; gap:8px; align-items:center;">
-      <a href="/dev-ui/guide" class="btn-sm btn-guide">📘 Architecture &amp; Features Guide</a>
-      <a href="/list-apps" target="_blank" class="btn-sm" style="text-decoration:none;">📦 /list-apps</a>
-      <a href="/docs" target="_blank" class="btn-sm" style="text-decoration:none;">📄 OpenAPI /docs</a>
-      <a href="/health" target="_blank" class="btn-sm" style="text-decoration:none;">🩺 /health JSON</a>
-    </div>
-  </header>
+<header>
+  <div class="brand"><span class="brand-mark" aria-hidden="true">P</span><span>SostaApp</span></div>
+  <div class="header-actions">
+    <a class="btn-ghost" href="/dev-ui/guide">Guide</a>
+    <button class="btn-ghost" id="newChatBtn">New chat</button>
+    <button class="user-chip" id="userChip" aria-haspopup="dialog"><span class="dot" id="userDot"></span><span id="userLabel">Guest</span></button>
+  </div>
+</header>
 
-  <div class="layout">
-    <div class="chat-col">
-      <div class="toolbar">
-        <button class="btn-sm btn-new-user" onclick="startNewUserMode()" title="Start as an unregistered traveler (user_id='guest') to test Registratore & save_new_user">
-          🆕 New User (Register)
-        </button>
-        <button class="btn-sm" onclick="startReturningUserMode()" title="Switch to registered user usr_0a8f67">
-          👤 Returning User (usr_0a8f67)
-        </button>
-        <label class="field">
-          <span>user_id:</span>
-          <input type="text" id="userId" value="usr_0a8f67" title="Set to 'guest' for new users, or 'usr_xxxxxx' for registered users. Auto-updates when Registratore creates a new user!" />
-        </label>
-        <label class="field">
-          <span>session_id:</span>
-          <input type="text" id="sessionId" value="prod_trip_001" />
-        </label>
-        <label class="toggle" title="When checked, calls PATCH /apps/sosta_app/users/{user_id}/memory after each turn to commit the session to FirestoreMemoryService">
-          <input type="checkbox" id="persistMemory" checked />
-          <span>persist_memory</span>
-        </label>
-        <button class="btn-sm" onclick="loadSession()">🔄 Sync</button>
-        <button class="btn-sm btn-danger" onclick="deleteSession()">🗑️ Delete</button>
+<main>
+  <div class="thread" id="thread" aria-live="polite">
+    <section class="welcome" id="welcome">
+      <h1>Where are you headed today?</h1>
+      <p>Tell me your route and what you need. I will find the right highway stops for your food, fuel or charging, and any four-legged passengers.</p>
+      <div class="starters">
+        <button class="starter" data-prompt="I am driving from Milan to Florence. Can you suggest a good highway stop?"><b>Plan a stop on my route</b><span>Milan to Florence, for example</span></button>
+        <button class="starter" data-prompt="I am vegan. Where can I find vegan food at a highway stop?"><b>Find food that suits me</b><span>Vegan, vegetarian and more</span></button>
+        <button class="starter" data-prompt="I am traveling with my dog. Which stops are good for a walk and a break?"><b>Travel with my dog</b><span>Dog-friendly places to stretch</span></button>
+        <button class="starter" data-prompt="Hi! I am new here and would like to create a profile."><b>Create my profile</b><span>Save your tastes and your car</span></button>
       </div>
-
-      <div class="banner" id="idBanner">
-        <span id="idBannerText"></span>
-        <button class="btn-sm" onclick="document.getElementById('idBanner').style.display='none'">Dismiss</button>
-      </div>
-
-      <div class="messages" id="messages">
-        <div class="empty-hint" id="emptyHint">
-          <strong>Production ADK Runner Web UI (<code>/dev-ui/</code>)</strong><br/>
-          • Click <strong>🆕 New User (Register)</strong> in the toolbar to onboard as a brand-new traveler via <code>Registratore</code> (your <code>user_id</code> will automatically update from <code>guest</code> to your newly generated <code>usr_xxxxxx</code> ID).<br/>
-          • Or use <strong>👤 Returning User (usr_0a8f67)</strong> to test profile hydration, cross-session memory recall, and A2A trip optimization.<br/>
-          • Need details? Open the <a href="/dev-ui/guide" style="color:#60a5fa;">📘 Architecture &amp; Features Guide</a>.
-        </div>
-      </div>
-
-      <div class="chips">
-        <div class="chip chip-new" onclick="startNewUserAndFill('Hi! I am a new user and I would like to register.')">🆕 1a. New User: Start Registration</div>
-        <div class="chip chip-new" onclick="fillPrompt('My name is Marco Rossi, my email is marco.rossi@example.com, I prefer English, I am Vegan, and I drive an Electric vehicle.')">📝 1b. New User: Send Profile Details</div>
-        <div class="chip" onclick="fillPrompt('Ciao! Sono già registrata, il mio ID è usr_0a8f67.')">🔑 2. Login Returning User (usr_0a8f67)</div>
-        <div class="chip" onclick="fillPrompt('Let\'s speak in English! I am traveling with my dog Max to Bologna and I love Secchia Ovest.')">🐕 3. Share Trip &amp; Dog Max</div>
-        <div class="chip" onclick="fillPrompt('Do you remember from our previous conversation what my dog\'s name is and my favorite stop?')">🧠 4. Test Cross-Session Recall</div>
-        <div class="chip" onclick="fillPrompt('I am driving from Milan to Florence alone, can you suggest a highway stop with vegan food?')">🧭 5. Optimize Route (A2A + MCP + RAG)</div>
-      </div>
-
-      <form class="composer" onsubmit="sendMessage(event)">
-        <input type="text" id="msgInput" placeholder="Type a message to SostaApp (POST /run -> Gatekeeper -> Registratore / Cameriere -> Suggeritore)..." autocomplete="off" />
-        <button type="submit" class="btn-send" id="sendBtn">Send</button>
-      </form>
-    </div>
-
-    <div class="inspector">
-      <div class="insp-section">
-        <div class="insp-title">
-          <span>🔥 Firestore Session State</span>
-          <span id="eventCountBadge" style="color:#34d399;">0 events</span>
-        </div>
-        <pre id="stateBox">{}</pre>
-      </div>
-      <div class="insp-section" style="flex:1; min-height:0; display:flex; flex-direction:column;">
-        <div class="insp-title">
-          <span>🔧 Last Turn Tool Calls</span>
-          <span id="authorBadge" style="color:#60a5fa;">-</span>
-        </div>
-        <pre id="toolsBox" style="flex:1; max-height:none;">[]</pre>
-      </div>
-    </div>
+    </section>
   </div>
 
-  <script>
-    const APP_NAME = 'sosta_app';
+  <div class="composer-wrap">
+    <div class="quick" id="quick">
+      <button data-prompt="Where is the nearest charging station on my route?">Charging stops</button>
+      <button data-prompt="Do you remember my favorite stop and my dog's name?">What do you remember about me?</button>
+      <button data-prompt="Can you suggest a quiet stop for a longer break?">A quiet place to rest</button>
+    </div>
+    <form class="composer" id="composer">
+      <input type="text" id="msgInput" placeholder="Ask about your route, food or a stop…" autocomplete="off" aria-label="Your message" />
+      <button type="submit" class="send" id="sendBtn">Send</button>
+    </form>
+  </div>
 
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+  <div class="dev-panel" id="devPanel">
+    <h3 id="devHealth">Service status</h3>
+    <h3>Session state</h3><pre id="stateBox">{}</pre>
+    <h3>Last turn tool calls</h3><pre id="toolsBox">[]</pre>
+  </div>
+</main>
+
+<dialog id="accountDialog">
+  <h2 id="dlgTitle">Your account</h2>
+  <p id="dlgText"></p>
+  <div id="signInBlock">
+    <input type="text" id="idInput" placeholder="Your ID, for example usr_0a8f67" aria-label="Your ID" autocomplete="off" />
+  </div>
+  <div class="menu-list">
+    <button class="btn" id="signOutBtn">Sign out and continue as guest</button>
+    <button class="btn" id="devToggleBtn">Show developer details</button>
+    <a class="btn" href="/dev-ui/guide">Architecture &amp; features guide</a>
+  </div>
+  <div class="row">
+    <button class="btn" id="dlgCancel">Close</button>
+    <button class="btn primary" id="dlgSave">Sign in</button>
+  </div>
+</dialog>
+
+<script>
+const APP_NAME = 'sosta_app';
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+const newSessionId = () => 'chat_' + Date.now().toString(36) + Math.floor(Math.random() * 1000);
+
+let userId = store.get('sosta_user', 'guest');
+let sessionId = store.get('sosta_session', '') || newSessionId();
+store.set('sosta_session', sessionId);
+if (new URLSearchParams(location.search).get('debug') === '1') document.body.classList.add('dev');
+
+/* ---------- Rendering ---------- */
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function inline(l) {
+  let o = esc(l);
+  o = o.replace(/`([^`]+)`/g, '<code>$1</code>');
+  o = o.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  return o.replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, '$1<em>$2</em>');
+}
+function markdown(text) {
+  let html = '', ul = false, ol = false;
+  const close = () => { if (ul) html += '</ul>'; if (ol) html += '</ol>'; ul = ol = false; };
+  for (const raw of String(text || '').split('\n')) {
+    const t = raw.trim();
+    if (!t) { close(); continue; }
+    const u = t.match(/^([*\-•])\s+(.*)$/), o = t.match(/^(\d+)\.\s+(.*)$/);
+    if (u) { if (ol) { html += '</ol>'; ol = false; } if (!ul) { html += '<ul>'; ul = true; } html += '<li>' + inline(u[2]) + '</li>'; }
+    else if (o) { if (ul) { html += '</ul>'; ul = false; } if (!ol) { html += '<ol>'; ol = true; } html += '<li>' + inline(o[2]) + '</li>'; }
+    else { close(); html += '<p>' + inline(t) + '</p>'; }
+  }
+  close();
+  return html;
+}
+function scrollDown() { const t = $('thread'); t.scrollTop = t.scrollHeight; }
+function hideWelcome() { const w = $('welcome'); if (w) w.style.display = 'none'; }
+function showWelcome() { const w = $('welcome'); if (w) w.style.display = ''; }
+
+function addMessage(role, text, tools, extraClass) {
+  hideWelcome();
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'user' ? 'user' : 'bot') + (extraClass ? ' ' + extraClass : '');
+  const body = document.createElement('div');
+  body.className = 'md';
+  body.innerHTML = markdown(text);
+  div.appendChild(body);
+  if (tools && tools.length) {
+    const box = document.createElement('div');
+    box.className = 'tools';
+    tools.forEach(tc => { const p = document.createElement('span'); p.className = 'tool-pill'; p.textContent = tc.author + ': ' + tc.name + '()'; box.appendChild(p); });
+    div.appendChild(box);
+  }
+  $('thread').appendChild(div);
+  scrollDown();
+  return div;
+}
+function addToast(text) {
+  const d = document.createElement('div');
+  d.className = 'toast';
+  d.textContent = text;
+  $('thread').appendChild(d);
+  scrollDown();
+}
+function addTyping() {
+  const d = document.createElement('div');
+  d.className = 'msg bot';
+  d.setAttribute('aria-label', 'SostaApp is typing');
+  d.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>';
+  $('thread').appendChild(d);
+  scrollDown();
+  return d;
+}
+
+function refreshUser() {
+  const signedIn = userId !== 'guest';
+  $('userLabel').textContent = signedIn ? 'Signed in · ' + userId : 'Guest · Sign in';
+  $('userDot').className = 'dot' + (signedIn ? ' in' : '');
+}
+
+/* ---------- Session ---------- */
+function eventsToMessages(events) {
+  const out = []; let pending = [];
+  for (const ev of (events || [])) {
+    const parts = (ev.content && ev.content.parts) || [];
+    for (const p of parts) {
+      const fc = p.functionCall || p.function_call;
+      if (fc) pending.push({ author: ev.author || 'agent', name: fc.name });
     }
-
-    function formatInlineMarkdown(line) {
-      let out = escapeHtml(line);
-      out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
-      out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      out = out.replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, '$1<em>$2</em>');
-      return out;
+    const texts = parts.filter(p => p.text).map(p => p.text);
+    if (texts.length) {
+      const isUser = ev.author === 'user';
+      const cleaned = isUser ? texts.join('\n').replace(/^\[Signed-in User ID:\s*[^\]]+\]\s*/i, '') : texts.join('\n');
+      out.push({ role: isUser ? 'user' : 'bot', text: cleaned, tools: isUser ? [] : pending });
+      if (!isUser) pending = [];
     }
+  }
+  return out;
+}
+async function loadSession() {
+  try {
+    const res = await fetch(`/apps/${APP_NAME}/users/${encodeURIComponent(userId)}/sessions/${encodeURIComponent(sessionId)}`);
+    if (!res.ok) { $('stateBox').textContent = '{}'; return; }
+    const s = await res.json();
+    $('stateBox').textContent = JSON.stringify(s.state || {}, null, 2);
+    if (s.state && s.state.verified_user_id && s.state.verified_user_id !== userId) {
+      setUser(s.state.verified_user_id);
+    }
+    const msgs = eventsToMessages(s.events);
+    if (msgs.length) {
+      document.querySelectorAll('#thread .msg, #thread .toast').forEach(n => n.remove());
+      msgs.forEach(m => addMessage(m.role, m.text, m.tools));
+    }
+  } catch (e) { console.error(e); }
+}
+function startNewChat() {
+  sessionId = newSessionId();
+  store.set('sosta_session', sessionId);
+  document.querySelectorAll('#thread .msg, #thread .toast').forEach(n => n.remove());
+  $('stateBox').textContent = '{}';
+  $('toolsBox').textContent = '[]';
+  showWelcome();
+  $('msgInput').focus();
+}
+function setUser(id) {
+  userId = id || 'guest';
+  userId === 'guest' ? store.del('sosta_user') : store.set('sosta_user', userId);
+  refreshUser();
+}
 
-    function renderMarkdown(text) {
-      if (!text) return '';
-      const lines = String(text).split('\n');
-      let html = '';
-      let inUl = false;
-      let inOl = false;
-
-      const closeLists = () => {
-        if (inUl) { html += '</ul>'; inUl = false; }
-        if (inOl) { html += '</ol>'; inOl = false; }
-      };
-
-      for (let rawLine of lines) {
-        const trimmed = rawLine.trim();
-        if (!trimmed) {
-          closeLists();
-          continue;
-        }
-        const ulMatch = trimmed.match(/^([*\-•])\s+(.*)$/);
-        const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
-
-        if (ulMatch) {
-          if (inOl) { html += '</ol>'; inOl = false; }
-          if (!inUl) { html += '<ul>'; inUl = true; }
-          html += `<li>${formatInlineMarkdown(ulMatch[2])}</li>`;
-        } else if (olMatch) {
-          if (inUl) { html += '</ul>'; inUl = false; }
-          if (!inOl) { html += '<ol>'; inOl = true; }
-          html += `<li>${formatInlineMarkdown(olMatch[2])}</li>`;
-        } else {
-          closeLists();
-          html += `<p>${formatInlineMarkdown(trimmed)}</p>`;
-        }
+/* ---------- Sending ---------- */
+async function send(text) {
+  text = (text || '').trim();
+  if (!text) return;
+  const prevUser = userId;
+  $('msgInput').value = '';
+  addMessage('user', text);
+  const btn = $('sendBtn'); btn.disabled = true;
+  const typing = addTyping();
+  try {
+    const res = await fetch('/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        app_name: APP_NAME, user_id: prevUser, session_id: sessionId,
+        new_message: { role: 'user', parts: [{ text }] }, streaming: false
+      })
+    });
+    if (!res.ok) throw new Error('Server returned ' + res.status);
+    const events = await res.json();
+    let tools = [], reply = '', detected = null;
+    for (const ev of (Array.isArray(events) ? events : [])) {
+      const delta = (ev.actions && (ev.actions.stateDelta || ev.actions.state_delta)) || {};
+      if (delta.verified_user_id) detected = delta.verified_user_id;
+      const parts = (ev.content && ev.content.parts) || [];
+      for (const p of parts) {
+        const fc = p.functionCall || p.function_call;
+        if (fc) tools.push({ author: ev.author || 'agent', name: fc.name, args: fc.args || {} });
       }
-      closeLists();
-      return html;
+      const texts = parts.filter(p => p.text).map(p => p.text);
+      if (texts.length && ev.author !== 'user') reply = texts.join('\n');
     }
+    typing.remove();
+    addMessage('bot', reply || 'I did not get a reply. Please try again.', tools);
+    $('toolsBox').textContent = JSON.stringify(tools, null, 2);
 
-    async function checkHealth() {
-      try {
-        const res = await fetch('/health');
-        const data = await res.json();
-        document.getElementById('healthBadge').textContent =
-          `🟢 Runtime DB: ${data.session_service} + ${data.memory_service} (${data.session_db}) — What is this?`;
-      } catch (e) {
-        document.getElementById('healthBadge').textContent = '🔴 Offline';
-      }
+    if (detected && detected !== prevUser) {
+      setUser(detected);
+      addToast("You're signed in as " + detected + ". Your preferences are saved to this account.");
     }
+    // Save this conversation to long-term memory so the assistant remembers you next time
+    fetch(`/apps/${APP_NAME}/users/${encodeURIComponent(userId)}/memory`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId })
+    }).catch(() => {});
+    const st = await fetch(`/apps/${APP_NAME}/users/${encodeURIComponent(userId)}/sessions/${encodeURIComponent(sessionId)}`);
+    if (st.ok) $('stateBox').textContent = JSON.stringify((await st.json()).state || {}, null, 2);
+  } catch (err) {
+    typing.remove();
+    addMessage('bot', 'Something went wrong and your message was not sent. Check your connection and try again.', null, 'error');
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    $('msgInput').focus();
+  }
+}
 
-    function fillPrompt(text) {
-      const input = document.getElementById('msgInput');
-      input.value = text;
-      input.focus();
-    }
+/* ---------- Events ---------- */
+$('composer').addEventListener('submit', (e) => { e.preventDefault(); send($('msgInput').value); });
+document.querySelectorAll('[data-prompt]').forEach(b => b.addEventListener('click', () => send(b.dataset.prompt)));
+$('newChatBtn').addEventListener('click', startNewChat);
 
-    function startNewUserMode() {
-      const randomSuffix = Math.floor(100 + Math.random() * 900);
-      document.getElementById('userId').value = 'guest';
-      document.getElementById('sessionId').value = `new_user_session_${randomSuffix}`;
-      document.getElementById('messages').innerHTML =
-        '<div class="empty-hint" id="emptyHint">🆕 <strong>New User Onboarding Mode</strong><br/><code>user_id</code> is set to <code>guest</code>. Tell Gatekeeper you are a new user—once <code>Registratore</code> calls <code>save_new_user()</code>, your newly generated <code>usr_xxxxxx</code> ID will automatically appear in the toolbar!</div>';
-      document.getElementById('stateBox').textContent = '{}';
-      document.getElementById('toolsBox').textContent = '[]';
-      document.getElementById('eventCountBadge').textContent = '0 events';
-    }
+const dlg = $('accountDialog');
+function openAccount() {
+  const signedIn = userId !== 'guest';
+  $('dlgTitle').textContent = signedIn ? 'Your account' : 'Sign in';
+  $('dlgText').textContent = signedIn
+    ? 'You are signed in as ' + userId + '. Your preferences and past trips are remembered.'
+    : 'Enter your ID to bring back your profile and past trips. New here? Close this and choose “Create my profile”.';
+  $('signInBlock').style.display = signedIn ? 'none' : '';
+  $('dlgSave').style.display = signedIn ? 'none' : '';
+  $('signOutBtn').style.display = signedIn ? '' : 'none';
+  $('devToggleBtn').textContent = document.body.classList.contains('dev') ? 'Hide developer details' : 'Show developer details';
+  dlg.showModal();
+}
+$('userChip').addEventListener('click', openAccount);
+$('dlgCancel').addEventListener('click', () => dlg.close());
+$('dlgSave').addEventListener('click', () => {
+  const id = $('idInput').value.trim();
+  if (!id) { $('idInput').focus(); return; }
+  setUser(id); dlg.close(); startNewChat();
+  addToast('Welcome back! I have loaded your profile.');
+});
+$('signOutBtn').addEventListener('click', () => { setUser('guest'); dlg.close(); startNewChat(); });
+$('devToggleBtn').addEventListener('click', () => { document.body.classList.toggle('dev'); dlg.close(); });
 
-    function startNewUserAndFill(text) {
-      if (document.getElementById('userId').value.trim() !== 'guest') {
-        startNewUserMode();
-      }
-      fillPrompt(text);
-    }
+async function checkHealth() {
+  try {
+    const d = await (await fetch('/health')).json();
+    $('devHealth').textContent = `Service status: online (${d.session_service} + ${d.memory_service} · ${d.session_db})`;
+  } catch (e) { $('devHealth').textContent = 'Service status: offline'; }
+}
 
-    function startReturningUserMode() {
-      document.getElementById('userId').value = 'usr_0a8f67';
-      document.getElementById('sessionId').value = 'prod_trip_001';
-      loadSession();
-    }
-
-    function appendBubble(role, author, text, toolCalls) {
-      const hint = document.getElementById('emptyHint');
-      if (hint) hint.style.display = 'none';
-      const box = document.getElementById('messages');
-      const div = document.createElement('div');
-      div.className = 'msg ' + (role === 'user' ? 'user' : 'agent');
-      if (role !== 'user') {
-        const hdr = document.createElement('div');
-        hdr.className = 'msg-header';
-        hdr.textContent = '🤖 ' + (author || 'Agent');
-        div.appendChild(hdr);
-      }
-      const body = document.createElement('div');
-      body.className = 'md-body';
-      body.innerHTML = renderMarkdown(text);
-      div.appendChild(body);
-
-      if (toolCalls && toolCalls.length > 0) {
-        const toolsDiv = document.createElement('div');
-        toolCalls.forEach(tc => {
-          const pill = document.createElement('span');
-          pill.className = 'tool-pill';
-          pill.textContent = `🔧 ${tc.author}: ${tc.name}()`;
-          toolsDiv.appendChild(pill);
-        });
-        div.appendChild(toolsDiv);
-      }
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function parseEventsToMessages(events) {
-      const messages = [];
-      let pendingToolCalls = [];
-      for (const ev of (events || [])) {
-        const parts = (ev.content && ev.content.parts) ? ev.content.parts : [];
-        for (const p of parts) {
-          const fc = p.functionCall || p.function_call;
-          if (fc) {
-            pendingToolCalls.push({
-              author: ev.author || 'agent',
-              name: fc.name,
-              args: fc.args || {}
-            });
-          }
-        }
-        const texts = parts.filter(p => p.text).map(p => p.text);
-        if (texts.length > 0) {
-          const isUser = ev.author === 'user';
-          messages.push({
-            role: isUser ? 'user' : 'model',
-            author: ev.author || 'agent',
-            text: texts.join('\n'),
-            toolCalls: isUser ? [] : pendingToolCalls
-          });
-          if (!isUser) pendingToolCalls = [];
-        }
-      }
-      return messages;
-    }
-
-    async function loadSession() {
-      const userId = document.getElementById('userId').value.trim() || 'guest';
-      const sessionId = document.getElementById('sessionId').value.trim();
-      if (!sessionId) return;
-      try {
-        const res = await fetch(`/apps/${APP_NAME}/users/${encodeURIComponent(userId)}/sessions/${encodeURIComponent(sessionId)}`);
-        if (!res.ok) {
-          document.getElementById('stateBox').textContent = '// Session not created yet in Firestore';
-          document.getElementById('eventCountBadge').textContent = '0 events';
-          return;
-        }
-        const session = await res.json();
-        const events = session.events || [];
-        document.getElementById('stateBox').textContent = JSON.stringify(session.state || {}, null, 2);
-        document.getElementById('eventCountBadge').textContent = `${events.length} events`;
-        if (session.state && session.state.verified_user_id) {
-          document.getElementById('userId').value = session.state.verified_user_id;
-        }
-        const parsedMessages = parseEventsToMessages(events);
-        if (parsedMessages.length > 0) {
-          const box = document.getElementById('messages');
-          box.innerHTML = '';
-          parsedMessages.forEach(m => appendBubble(m.role, m.author, m.text, m.toolCalls));
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    async function deleteSession() {
-      const userId = document.getElementById('userId').value.trim() || 'guest';
-      const sessionId = document.getElementById('sessionId').value.trim();
-      if (!sessionId) return;
-      await fetch(`/apps/${APP_NAME}/users/${encodeURIComponent(userId)}/sessions/${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
-      document.getElementById('messages').innerHTML =
-        '<div class="empty-hint" id="emptyHint">🗑️ Session deleted from Firestore via <code>DELETE /apps/sosta_app/users/{user_id}/sessions/{session_id}</code>. Send a message to start fresh!</div>';
-      document.getElementById('stateBox').textContent = '{}';
-      document.getElementById('toolsBox').textContent = '[]';
-      document.getElementById('eventCountBadge').textContent = '0 events';
-    }
-
-    async function sendMessage(ev) {
-      ev.preventDefault();
-      const input = document.getElementById('msgInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const userIdInput = document.getElementById('userId');
-      const prevUserId = userIdInput.value.trim() || 'guest';
-      const sessionId = document.getElementById('sessionId').value.trim();
-      const persistMemory = document.getElementById('persistMemory').checked;
-
-      input.value = '';
-      appendBubble('user', 'User', text, []);
-
-      const btn = document.getElementById('sendBtn');
-      btn.disabled = true;
-      btn.textContent = 'Thinking...';
-
-      try {
-        // 1. Run agent turn via official ADK Web endpoint POST /run
-        const res = await fetch('/run', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            app_name: APP_NAME,
-            user_id: prevUserId,
-            session_id: sessionId,
-            new_message: {
-              role: 'user',
-              parts: [{ text: text }]
-            },
-            streaming: false
-          })
-        });
-        const events = await res.json();
-
-        let turnToolCalls = [];
-        let finalAuthor = 'Agent';
-        let finalText = '';
-        let detectedUserId = null;
-
-        for (const event of (Array.isArray(events) ? events : [])) {
-          const delta = (event.actions && (event.actions.stateDelta || event.actions.state_delta)) || {};
-          if (delta.verified_user_id) {
-            detectedUserId = delta.verified_user_id;
-          }
-          const parts = (event.content && event.content.parts) ? event.content.parts : [];
-          for (const p of parts) {
-            const fc = p.functionCall || p.function_call;
-            if (fc) {
-              turnToolCalls.push({
-                author: event.author || 'agent',
-                name: fc.name,
-                args: fc.args || {}
-              });
-            }
-          }
-          const texts = parts.filter(p => p.text).map(p => p.text);
-          if (texts.length > 0 && event.author !== 'user') {
-            finalAuthor = event.author || 'Agent';
-            finalText = texts.join('\n');
-          }
-        }
-
-        appendBubble('model', finalAuthor, finalText || '(No text response)', turnToolCalls);
-        document.getElementById('toolsBox').textContent = JSON.stringify(turnToolCalls, null, 2);
-        document.getElementById('authorBadge').textContent = finalAuthor;
-
-        // 2. Check if a new user was registered or verified during this turn
-        const activeUserId = detectedUserId || prevUserId;
-        if (activeUserId !== prevUserId) {
-          userIdInput.value = activeUserId;
-          userIdInput.classList.add('highlight-id');
-          setTimeout(() => userIdInput.classList.remove('highlight-id'), 4000);
-          const banner = document.getElementById('idBanner');
-          document.getElementById('idBannerText').textContent =
-            `🎉 Active User ID automatically updated from '${prevUserId}' to '${activeUserId}' (saved in Firestore)!`;
-          banner.style.display = 'flex';
-        }
-
-        // 3. If persist_memory is enabled, call ADK Web's PATCH /apps/{app_name}/users/{user_id}/memory
-        if (persistMemory) {
-          await fetch(`/apps/${APP_NAME}/users/${encodeURIComponent(activeUserId)}/memory`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ session_id: sessionId })
-          });
-        }
-
-        // 4. Refresh persisted Session State from GET /apps/{app_name}/users/{user_id}/sessions/{session_id}
-        await loadSession();
-      } catch (err) {
-        appendBubble('model', 'Error', String(err), []);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Send';
-      }
-    }
-
-    checkHealth();
-    loadSession();
-  </script>
+refreshUser();
+checkHealth();
+loadSession();
+</script>
 </body>
 </html>

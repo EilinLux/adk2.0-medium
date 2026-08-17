@@ -2,71 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SostaApp — Architecture & Features Documentation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SostaApp — Architecture &amp; Features Guide</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --panel: #1e293b;
-      --panel-2: #0b1120;
-      --border: #334155;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #3b82f6;
-      --green: #10b981;
-      --pink: #f43f5e;
-      --amber: #f59e0b;
-      --purple: #a855f7;
+      --bg: #f2f6f3;
+      --surface: #ffffff;
+      --ink: #12261d;
+      --muted: #5d7167;
+      --line: #d9e3dd;
+      --green: #0a6c4b;
+      --green-dark: #07523a;
+      --signal: #f5c400;
+      --danger: #b3261e;
+      --radius: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1713;
+        --surface: #15231c;
+        --ink: #eaf3ee;
+        --muted: #93a99d;
+        --line: #264033;
+        --green: #2fb585;
+        --green-dark: #52cc9f;
+        --danger: #ff8a80;
+      }
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
-      color: var(--text);
+      color: var(--ink);
       line-height: 1.65;
     }
     header {
       position: sticky;
       top: 0;
       z-index: 20;
-      padding: 14px 28px;
-      background: rgba(11, 17, 32, 0.92);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
+      background: #0a6c4b;
+      color: #fff;
+      padding: 10px 20px;
+      padding-top: calc(10px + env(safe-area-inset-top, 0px));
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-    .brand {
-      font-weight: 700;
-      font-size: 1.05rem;
-      display: flex;
-      align-items: center;
       gap: 12px;
+      border-bottom: 4px solid var(--signal);
     }
-    .btn {
-      background: var(--accent);
-      color: white;
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.15rem; }
+    .brand-mark {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: #fff; color: #0a6c4b;
+      display: grid; place-items: center;
+      font-weight: 800; font-size: 1.2rem;
+    }
+    .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btn-ghost {
+      background: transparent; color: #fff;
+      border: 1px solid rgba(255,255,255,.45);
+      padding: 6px 12px; border-radius: 999px;
+      font-size: .88rem; cursor: pointer;
       text-decoration: none;
-      padding: 7px 14px;
-      border-radius: 7px;
-      font-size: 0.84rem;
-      font-weight: 600;
     }
-    .btn-outline {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      color: var(--text);
+    .btn-ghost:hover { background: rgba(255,255,255,.18); }
+    .btn-primary {
+      background: var(--signal); color: #12261d;
+      border: none; padding: 6px 14px; border-radius: 999px;
+      font-size: .88rem; font-weight: 700; cursor: pointer;
+      text-decoration: none;
     }
     .container {
-      max-width: 1080px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 36px 24px 80px;
+      padding: 36px 20px 80px;
     }
     h1 {
-      font-size: 2rem;
+      font-size: clamp(1.7rem, 4vw, 2.25rem);
+      line-height: 1.2;
       margin-bottom: 10px;
-      letter-spacing: -0.02em;
     }
     .subtitle {
       color: var(--muted);
@@ -74,28 +88,27 @@
       margin-bottom: 32px;
     }
     h2 {
-      font-size: 1.32rem;
-      margin: 36px 0 14px;
+      font-size: 1.28rem;
+      margin: 34px 0 12px;
       padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-      color: #60a5fa;
+      border-bottom: 1px solid var(--line);
+      color: var(--green);
     }
     h3 {
-      font-size: 1.04rem;
-      margin: 18px 0 8px;
-      color: #e2e8f0;
+      font-size: 1.02rem;
+      margin: 14px 0 6px;
     }
-    p { margin-bottom: 12px; color: #cbd5e1; }
+    p { margin-bottom: 12px; }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 16px;
-      margin: 16px 0;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin: 14px 0;
     }
     .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
       padding: 18px 20px;
     }
     .card-badge {
@@ -106,51 +119,34 @@
       padding: 3px 9px;
       border-radius: 999px;
       margin-bottom: 8px;
+      border: 1px solid var(--green);
+      color: var(--green);
     }
-    .b-green { background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
-    .b-blue { background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35); }
-    .b-pink { background: rgba(244, 63, 94, 0.16); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.35); }
-    .b-amber { background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
-    .b-purple { background: rgba(168, 85, 247, 0.16); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); }
     code {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.84em;
-      background: var(--panel-2);
+      font-size: 0.86em;
+      background: rgba(127, 127, 127, 0.16);
       padding: 2px 6px;
       border-radius: 4px;
-      border: 1px solid var(--border);
-      color: #f8fafc;
-    }
-    pre {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px;
-      overflow-x: auto;
-      font-size: 0.82rem;
-      color: #e2e8f0;
-      margin: 10px 0 16px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin: 14px 0 22px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
       overflow: hidden;
       font-size: 0.9rem;
     }
     th, td {
       padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--line);
       text-align: left;
       vertical-align: top;
     }
     th {
-      background: var(--panel-2);
-      color: #93c5fd;
+      color: var(--green);
       font-weight: 700;
       font-size: 0.8rem;
       text-transform: uppercase;
@@ -158,14 +154,14 @@
     }
     ul, ol {
       margin: 8px 0 14px 22px;
-      color: #cbd5e1;
     }
     li { margin-bottom: 6px; }
     .callout {
-      background: rgba(16, 185, 129, 0.08);
+      background: var(--surface);
+      border: 1px solid var(--line);
       border-left: 4px solid var(--green);
       padding: 14px 18px;
-      border-radius: 6px;
+      border-radius: 8px;
       margin: 16px 0;
     }
   </style>
@@ -173,32 +169,33 @@
 <body>
   <header>
     <div class="brand">
-      <span>📘 SostaApp — Production Runner &amp; UI Documentation</span>
+      <span class="brand-mark" aria-hidden="true">P</span>
+      <span>SostaApp — Architecture &amp; Features Guide</span>
     </div>
-    <div style="display:flex; gap:10px;">
-      <a href="/dev-ui/" class="btn">💬 Back to Web UI (<code>/dev-ui/</code>)</a>
-      <a href="/list-apps" target="_blank" class="btn btn-outline">📦 /list-apps</a>
-      <a href="/docs" target="_blank" class="btn btn-outline">📄 OpenAPI Swagger</a>
-      <a href="/health" target="_blank" class="btn btn-outline">🩺 /health JSON</a>
+    <div class="header-actions">
+      <a href="/dev-ui/" class="btn-primary">← Back to Chat</a>
+      <a href="/list-apps" target="_blank" class="btn-ghost">/list-apps</a>
+      <a href="/docs" target="_blank" class="btn-ghost">OpenAPI /docs</a>
+      <a href="/health" target="_blank" class="btn-ghost">/health</a>
     </div>
   </header>
 
   <div class="container">
-    <h1>🛣️ SostaApp Production ADK Runner — Complete Feature Guide</h1>
+    <h1>SostaApp Production Runner &amp; Web UI Guide</h1>
     <p class="subtitle">
-      How the custom FastAPI <code>Runner</code> (following the <strong>ADK Web / <code>ApiServer</code> endpoint convention</strong>), <code>FirestoreSessionService</code>, <code>FirestoreMemoryService</code>, New/Returning User Workflows, and Distributed A2A + MCP + Vertex AI RAG Microservices work together.
+      How the motorway stop planner UI (<code>/dev-ui/</code>), ADK Web REST convention (<code>/run</code>, <code>/apps/sosta_app/users/{user_id}/sessions</code>, <code>/memory</code>), <code>FirestoreSessionService</code>, <code>FirestoreMemoryService</code>, and distributed A2A + MCP + Vertex AI RAG microservices work together.
     </p>
 
-    <h2>1. What Is the Green Badge at the Top of the Chat UI?</h2>
+    <h2>1. Developer Details &amp; Firestore Runtime Service Status</h2>
     <div class="callout">
-      <strong><code>🟢 FirestoreSessionService + FirestoreMemoryService (adk-agent-dev-session-memory-fs)</code></strong>
+      <strong><code>Service status: online (FirestoreSessionService + FirestoreMemoryService · adk-agent-dev-session-memory-fs)</code></strong>
       <p style="margin-top:6px; margin-bottom:0;">
-        When the Web UI (<code>/dev-ui/</code>) loads, it queries <code>GET /health</code> on the FastAPI server. This green badge confirms that you are <strong>not</strong> running on <code>adk web</code>'s volatile in-memory defaults (<code>InMemorySessionService</code>). Instead, the ADK <code>Runner</code> is actively wired to two custom production persistence services backed by your Google Cloud Firestore database <strong><code>adk-agent-dev-session-memory-fs</code></strong>:
+        Click the top-right <strong><code>Guest · Sign in</code></strong> (or <strong><code>Signed in · usr_0a8f67</code></strong>) chip and choose <strong>Show developer details</strong> (or open <code>/dev-ui/?debug=1</code>). This reveals tool-call badges under each reply plus a live bottom inspector drawer showing the Firestore runtime health, active <code>session.state</code>, and last-turn tool calls.
       </p>
     </div>
     <ul>
       <li><strong><code>FirestoreSessionService</code> (Collection: <code>sosta_sessions</code>):</strong> Persists every turn's <code>Event</code> history, active sub-agent delegation (<code>Gatekeeper</code> &rarr; <code>Registratore</code> / <code>Cameriere</code>), and <code>session.state</code> dictionary so container restarts or browser refreshes never lose your conversation.</li>
-      <li><strong><code>FirestoreMemoryService</code> (Collection: <code>sosta_memories</code>):</strong> Archives completed trip conversations across sessions. When a returning user starts a brand-new <code>session_id</code> weeks later, <code>Cameriere</code>'s built-in <code>preload_memory</code> tool automatically queries <code>sosta_memories</code> and injects <code>&lt;PAST_CONVERSATIONS&gt;</code> into the system prompt.</li>
+      <li><strong><code>FirestoreMemoryService</code> (Collection: <code>sosta_memories</code>):</strong> Automatically archives each turn via <code>PATCH /apps/sosta_app/users/{user_id}/memory</code>. When a returning user starts a new chat later, <code>Cameriere</code>'s built-in <code>preload_memory</code> tool queries <code>sosta_memories</code> and injects <code>&lt;PAST_CONVERSATIONS&gt;</code> into the system prompt.</li>
     </ul>
 
     <h2>2. SostaApp's 3-Database Cloud Firestore Architecture</h2>
@@ -233,58 +230,38 @@
       </tbody>
     </table>
 
-    <h2>3. Supporting Both Returning Users &amp; New User Registration</h2>
+    <h2>3. Supporting Both New Travelers &amp; Returning Users</h2>
     <div class="grid">
       <div class="card">
-        <span class="card-badge b-pink">🆕 Flow A: New User Registration</span>
-        <h3>Starting as an Unregistered Traveler</h3>
+        <span class="card-badge">🆕 New User Onboarding</span>
+        <h3>Creating a Profile as a Guest</h3>
         <p>
-          Click <strong><code>🆕 New User (Register)</code></strong> in the top toolbar. This sets <code>user_id = "guest"</code> and creates a fresh <code>session_id</code>.
+          When you open <code>/dev-ui/</code> as <strong><code>Guest</code></strong> and click the <strong>Create my profile</strong> starter card:
         </p>
         <ol>
-          <li>Tell <code>Gatekeeper</code> you are a new user.</li>
           <li><code>Gatekeeper</code> transfers you to <strong><code>Registratore</code></strong>.</li>
-          <li>Provide your name, email, language, dietary preferences, and vehicle type.</li>
-          <li><code>Registratore</code> calls <code>save_new_user()</code>, which creates your permanent record in <code>adk-agent-dev-application-db-fs</code> and assigns a unique ID (e.g., <code>usr_a1b2c3</code>).</li>
-          <li><strong>Automatic ID Promotion:</strong> Both <code>FirestoreSessionService</code> and the Web UI automatically promote your active <code>user_id</code> from <code>guest</code> to your newly assigned <code>usr_xxxxxx</code> ID!</li>
+          <li>Share your name, email, preferred language, dietary preferences, and vehicle type.</li>
+          <li><code>Registratore</code> calls <code>save_new_user()</code>, writing your profile to <code>adk-agent-dev-application-db-fs</code> and generating a unique ID (e.g., <code>usr_a1b2c3</code>).</li>
+          <li><strong>Automatic Sign-In Promotion:</strong> The UI detects <code>verified_user_id</code> in the event stream's <code>state_delta</code> and automatically signs you in as <code>usr_xxxxxx</code> in the top-right chip!</li>
         </ol>
       </div>
 
       <div class="card">
-        <span class="card-badge b-blue">👤 Flow B: Returning Registered User</span>
-        <h3>Logging in with an Existing ID (e.g. <code>usr_0a8f67</code>)</h3>
+        <span class="card-badge">👤 Returning Traveler</span>
+        <h3>Signing In with an Existing ID (e.g. <code>usr_0a8f67</code>)</h3>
         <p>
-          Click <strong><code>👤 Returning User (usr_0a8f67)</code></strong> in the toolbar (or type your <code>usr_xxxxxx</code> ID in chat).
+          Click <strong><code>Guest · Sign in</code></strong> in the top-right header and enter <code>usr_0a8f67</code> (or mention your ID directly in chat):
         </p>
         <ol>
           <li><code>Gatekeeper</code> calls <code>is_registered_user(user_id="usr_0a8f67")</code>.</li>
           <li>Your profile is verified in Firestore and hydrated into <code>session.state["user:*"]</code>.</li>
-          <li><code>Gatekeeper</code> transfers control to <strong><code>Cameriere</code></strong>, which calls <code>extract_user_profile</code> and automatically loads any past trip memories via <code>preload_memory</code>.</li>
-          <li>Once you share your origin/destination, <code>Cameriere</code> delegates over <strong>A2A HTTP JSON-RPC</strong> to <strong><code>Suggeritore</code></strong> on port <code>8001</code>.</li>
+          <li><code>Gatekeeper</code> transfers control to <strong><code>Cameriere</code></strong>, which calls <code>extract_user_profile</code> and loads your past trip memories via <code>preload_memory</code>.</li>
+          <li>When you ask for a stop on your route, <code>Cameriere</code> delegates over <strong>A2A HTTP JSON-RPC</strong> to <strong><code>Suggeritore</code></strong> on port <code>8001</code>.</li>
         </ol>
       </div>
     </div>
 
-    <h2>4. Distributed 3-Service Stack (Ports 8000, 8001, 8002)</h2>
-    <div class="grid">
-      <div class="card">
-        <span class="card-badge b-green">Port :8000 — FastAPI Runner</span>
-        <h3>Main SostaApp Orchestrator</h3>
-        <p>Hosts <code>Gatekeeper</code>, <code>Registratore</code>, and <code>Cameriere</code> inside our custom FastAPI + ADK <code>Runner</code> backed by <code>FirestoreSessionService</code> and <code>FirestoreMemoryService</code>.</p>
-      </div>
-      <div class="card">
-        <span class="card-badge b-purple">Port :8001 — Remote A2A Server</span>
-        <h3><code>Suggeritore</code> Microservice</h3>
-        <p>Exposed via <code>to_a2a(agent, port=8001)</code> and consumed via <code>RemoteA2aAgent</code>. Orchestrates <code>RoutePlannerAgent</code>, <code>SosteSearchAgent</code>, and <code>MenuCheckerAgent</code>.</p>
-      </div>
-      <div class="card">
-        <span class="card-badge b-amber">Port :8002 — FastMCP SSE Server</span>
-        <h3>BigQuery Geospatial MCP</h3>
-        <p>Standalone Model Context Protocol server querying <code>soste_app_dev.db_soste</code> in Google BigQuery over HTTP SSE (<code>/sse</code>).</p>
-      </div>
-    </div>
-
-    <h2>5. Official ADK Web Convention REST Endpoints (Port <code>:8000</code>)</h2>
+    <h2>4. Official ADK Web Convention REST Endpoints (Port <code>:8000</code>)</h2>
     <table>
       <thead>
         <tr>
@@ -295,7 +272,7 @@
       <tbody>
         <tr>
           <td><code>GET /dev-ui/</code> (and <code>GET /</code>)</td>
-          <td>Interactive SostaApp Production Web UI (with <code>GET /dev-ui/guide</code> for this guide).</td>
+          <td>Interactive SostaApp motorway stop planner UI (with <code>GET /dev-ui/guide</code> for this guide).</td>
         </tr>
         <tr>
           <td><code>GET /health</code>, <code>GET /version</code>, <code>GET /list-apps</code></td>
@@ -315,23 +292,6 @@
         </tr>
       </tbody>
     </table>
-
-    <h2>6. Step-by-Step Interactive Walkthroughs in the Web UI (<code>/dev-ui/</code>)</h2>
-    <h3>Walkthrough 1: Onboard a Brand-New User</h3>
-    <ol>
-      <li>In the Web UI toolbar, click <strong><code>🆕 New User (Register)</code></strong> (notice <code>user_id</code> becomes <code>guest</code>).</li>
-      <li>Click chip <strong><code>🆕 1a. New User: Start Registration</code></strong> and press <strong>Send</strong>.</li>
-      <li>When <code>Registratore</code> asks for your details, click chip <strong><code>📝 1b. New User: Send Profile Details</code></strong> and press <strong>Send</strong>.</li>
-      <li>Watch the right-hand inspector: <code>save_new_user</code> executes, your new <code>usr_xxxxxx</code> ID is generated, the toolbar <code>user_id</code> field automatically updates from <code>guest</code> to <code>usr_xxxxxx</code>, and control transfers to <code>Cameriere</code>!</li>
-    </ol>
-
-    <h3>Walkthrough 2: Test Cross-Session Long-Term Memory Recall</h3>
-    <ol>
-      <li>Click <strong><code>👤 Returning User (usr_0a8f67)</code></strong> and ensure <strong><code>persist_memory</code></strong> is checked.</li>
-      <li>Log in with chip <strong><code>🔑 2. Login Returning User</code></strong>, then send chip <strong><code>🐕 3. Share Trip &amp; Dog Max</code></strong>.</li>
-      <li>Click <strong><code>🗑️ Delete</code></strong> (or type a brand-new <code>session_id</code> like <code>trip_november_002</code> in the toolbar) to prove the active session is gone.</li>
-      <li>Log in again in the new session and send chip <strong><code>🧠 4. Test Cross-Session Recall</code></strong>. <code>Cameriere</code> recalls your dog <strong>Max</strong> and <strong>Secchia Ovest</strong> from <code>FirestoreMemoryService</code>!</li>
-    </ol>
   </div>
 </body>
 </html>
