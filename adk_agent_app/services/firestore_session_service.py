@@ -170,6 +170,10 @@ class FirestoreSessionService(BaseSessionService):
         session_payload["lastUpdateTime"] = session.last_update_time
         session_payload["storageVersion"] = STORAGE_VERSION
 
+        existing_events = await self._events_collection_ref(session_id).get()
+        for ev_doc in existing_events:
+            await ev_doc.reference.delete()
+
         await self._session_doc_ref(session_id).set(
             _sanitize_for_firestore(session_payload),
         )
