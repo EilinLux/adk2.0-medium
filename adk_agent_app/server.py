@@ -164,6 +164,32 @@ async def _ensure_session(app_name: str, user_id: str, session_id: str) -> Sessi
     return session
 
 
+def _inject_signed_in_user_hint(
+    content: types.Content, user_id: str, session: Session
+) -> types.Content:
+    """If the user signed in via the UI dialog (user_id != 'guest') and is starting
+    a brand-new session without repeating their ID in the message text, prepend a
+    context tag so Gatekeeper can immediately verify `is_registered_user(user_id)`."""
+    if (
+        not user_id
+        or user_id == "guest"
+        or (session.events and len(session.events) > 0)
+        or (session.state and session.state.get("verified_user_id"))
+        or not content.parts
+    ):
+        return content
+
+    first_text = getattr(content.parts[0], "text", None)
+    if first_text and user_id not in first_text:
+        new_parts = list(content.parts)
+        new_parts[0] = types.Part.from_text(
+            text=f"[Signed-in User ID: {user_id}] {first_text}"
+        )
+        return types.Content(role=content.role or "user", parts=new_parts)
+    return content
+
+
+
 async def _promote_registered_user_session_if_needed(
     app_name: str, original_user_id: str, session_id: str
 ) -> Optional[Session]:
@@ -453,11 +479,12 @@ async def run_agent(req: RunAgentRequest) -> List[Event]:
     """Executes one conversational turn and returns the list of ADK Events (ADK Web convention)."""
     resolved_app = _resolve_app_name(req.app_name)
     content = _extract_content(req)
-    await _ensure_session(
+    session = await _ensure_session(
         app_name=resolved_app,
         user_id=req.user_id,
         session_id=req.session_id,
     )
+    content = _inject_signed_in_user_hint(content, req.user_id, session)
 
     events: List[Event] = []
     async for event in sosta_runner.run_async(
@@ -483,11 +510,12 @@ async def run_agent_sse(req: RunAgentRequest) -> StreamingResponse:
     """Executes one conversational turn and streams ADK Events over SSE (ADK Web convention)."""
     resolved_app = _resolve_app_name(req.app_name)
     content = _extract_content(req)
-    await _ensure_session(
+    session = await _ensure_session(
         app_name=resolved_app,
         user_id=req.user_id,
         session_id=req.session_id,
     )
+    content = _inject_signed_in_user_hint(content, req.user_id, session)
 
     async def event_generator() -> AsyncIterator[str]:
         try:
