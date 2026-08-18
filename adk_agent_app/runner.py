@@ -14,6 +14,7 @@ from .config import FIRESTORE_SESSION_DB, PROJECT_ID, logger
 from .services import FirestoreSessionService, create_memory_service
 
 APP_NAME = os.getenv("APP_NAME", "sosta_app")
+DEFAULT_RUN_CONFIG = RunConfig(max_llm_calls=15)
 
 
 def create_sosta_runner(
