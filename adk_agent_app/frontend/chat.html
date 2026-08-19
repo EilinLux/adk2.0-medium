@@ -317,13 +317,14 @@
 <body>
   <header>
     <div class="brand">
-      <span>🛣️ SostaApp — Production FastAPI Runner</span>
-      <a href="/guide" class="badge" id="healthBadge" title="Click to read what this Firestore Runtime badge means in the Architecture Guide">
+      <span>🛣️ SostaApp — Production FastAPI Runner (<code>/dev-ui/</code>)</span>
+      <a href="/dev-ui/guide" class="badge" id="healthBadge" title="Click to read what this Firestore Runtime badge means in the Architecture Guide">
         Checking Firestore Runtime...
       </a>
     </div>
     <div style="display:flex; gap:8px; align-items:center;">
-      <a href="/guide" class="btn-sm btn-guide">📘 Architecture &amp; Features Guide</a>
+      <a href="/dev-ui/guide" class="btn-sm btn-guide">📘 Architecture &amp; Features Guide</a>
+      <a href="/list-apps" target="_blank" class="btn-sm" style="text-decoration:none;">📦 /list-apps</a>
       <a href="/docs" target="_blank" class="btn-sm" style="text-decoration:none;">📄 OpenAPI /docs</a>
       <a href="/health" target="_blank" class="btn-sm" style="text-decoration:none;">🩺 /health JSON</a>
     </div>
@@ -346,7 +347,7 @@
           <span>session_id:</span>
           <input type="text" id="sessionId" value="prod_trip_001" />
         </label>
-        <label class="toggle" title="When checked, commits each turn to FirestoreMemoryService (sosta_memories collection) for cross-session recall">
+        <label class="toggle" title="When checked, calls PATCH /apps/sosta_app/users/{user_id}/memory after each turn to commit the session to FirestoreMemoryService">
           <input type="checkbox" id="persistMemory" checked />
           <span>persist_memory</span>
         </label>
@@ -361,10 +362,10 @@
 
       <div class="messages" id="messages">
         <div class="empty-hint" id="emptyHint">
-          <strong>Production ADK Runner Chat UI</strong><br/>
+          <strong>Production ADK Runner Web UI (<code>/dev-ui/</code>)</strong><br/>
           • Click <strong>🆕 New User (Register)</strong> in the toolbar to onboard as a brand-new traveler via <code>Registratore</code> (your <code>user_id</code> will automatically update from <code>guest</code> to your newly generated <code>usr_xxxxxx</code> ID).<br/>
           • Or use <strong>👤 Returning User (usr_0a8f67)</strong> to test profile hydration, cross-session memory recall, and A2A trip optimization.<br/>
-          • Need details? Open the <a href="/guide" style="color:#60a5fa;">📘 Architecture &amp; Features Guide</a>.
+          • Need details? Open the <a href="/dev-ui/guide" style="color:#60a5fa;">📘 Architecture &amp; Features Guide</a>.
         </div>
       </div>
 
@@ -378,7 +379,7 @@
       </div>
 
       <form class="composer" onsubmit="sendMessage(event)">
-        <input type="text" id="msgInput" placeholder="Type a message to SostaApp (Gatekeeper -> Registratore / Cameriere -> Suggeritore)..." autocomplete="off" />
+        <input type="text" id="msgInput" placeholder="Type a message to SostaApp (POST /run -> Gatekeeper -> Registratore / Cameriere -> Suggeritore)..." autocomplete="off" />
         <button type="submit" class="btn-send" id="sendBtn">Send</button>
       </form>
     </div>
@@ -402,6 +403,8 @@
   </div>
 
   <script>
+    const APP_NAME = 'sosta_app';
+
     function escapeHtml(str) {
       return String(str)
         .replace(/&/g, '&amp;')
@@ -412,11 +415,8 @@
 
     function formatInlineMarkdown(line) {
       let out = escapeHtml(line);
-      // Inline code `code`
       out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
-      // Bold **text**
       out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      // Italic *text*
       out = out.replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, '$1<em>$2</em>');
       return out;
     }
@@ -531,27 +531,59 @@
       box.scrollTop = box.scrollHeight;
     }
 
+    function parseEventsToMessages(events) {
+      const messages = [];
+      let pendingToolCalls = [];
+      for (const ev of (events || [])) {
+        const parts = (ev.content && ev.content.parts) ? ev.content.parts : [];
+        for (const p of parts) {
+          const fc = p.functionCall || p.function_call;
+          if (fc) {
+            pendingToolCalls.push({
+              author: ev.author || 'agent',
+              name: fc.name,
+              args: fc.args || {}
+            });
+          }
+        }
+        const texts = parts.filter(p => p.text).map(p => p.text);
+        if (texts.length > 0) {
+          const isUser = ev.author === 'user';
+          messages.push({
+            role: isUser ? 'user' : 'model',
+            author: ev.author || 'agent',
+            text: texts.join('\n'),
+            toolCalls: isUser ? [] : pendingToolCalls
+          });
+          if (!isUser) pendingToolCalls = [];
+        }
+      }
+      return messages;
+    }
+
     async function loadSession() {
       const userId = document.getElementById('userId').value.trim() || 'guest';
       const sessionId = document.getElementById('sessionId').value.trim();
       if (!sessionId) return;
       try {
-        const res = await fetch(`/sessions/${encodeURIComponent(userId)}/${encodeURIComponent(sessionId)}`);
+        const res = await fetch(`/apps/${APP_NAME}/users/${encodeURIComponent(userId)}/sessions/${encodeURIComponent(sessionId)}`);
         if (!res.ok) {
           document.getElementById('stateBox').textContent = '// Session not created yet in Firestore';
           document.getElementById('eventCountBadge').textContent = '0 events';
           return;
         }
-        const data = await res.json();
-        document.getElementById('stateBox').textContent = JSON.stringify(data.state || {}, null, 2);
-        document.getElementById('eventCountBadge').textContent = `${data.events_count || 0} events`;
-        if (data.state && data.state.verified_user_id) {
-          document.getElementById('userId').value = data.state.verified_user_id;
+        const session = await res.json();
+        const events = session.events || [];
+        document.getElementById('stateBox').textContent = JSON.stringify(session.state || {}, null, 2);
+        document.getElementById('eventCountBadge').textContent = `${events.length} events`;
+        if (session.state && session.state.verified_user_id) {
+          document.getElementById('userId').value = session.state.verified_user_id;
         }
-        if (data.messages && data.messages.length > 0) {
+        const parsedMessages = parseEventsToMessages(events);
+        if (parsedMessages.length > 0) {
           const box = document.getElementById('messages');
           box.innerHTML = '';
-          data.messages.forEach(m => appendBubble(m.role, m.author, m.text, []));
+          parsedMessages.forEach(m => appendBubble(m.role, m.author, m.text, m.toolCalls));
         }
       } catch (e) {
         console.error(e);
@@ -562,9 +594,9 @@
       const userId = document.getElementById('userId').value.trim() || 'guest';
       const sessionId = document.getElementById('sessionId').value.trim();
       if (!sessionId) return;
-      await fetch(`/sessions/${encodeURIComponent(userId)}/${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
+      await fetch(`/apps/${APP_NAME}/users/${encodeURIComponent(userId)}/sessions/${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
       document.getElementById('messages').innerHTML =
-        '<div class="empty-hint" id="emptyHint">🗑️ Session deleted from Firestore. Send a message to start fresh!</div>';
+        '<div class="empty-hint" id="emptyHint">🗑️ Session deleted from Firestore via <code>DELETE /apps/sosta_app/users/{user_id}/sessions/{session_id}</code>. Send a message to start fresh!</div>';
       document.getElementById('stateBox').textContent = '{}';
       document.getElementById('toolsBox').textContent = '[]';
       document.getElementById('eventCountBadge').textContent = '0 events';
@@ -589,34 +621,77 @@
       btn.textContent = 'Thinking...';
 
       try {
-        const res = await fetch('/chat', {
+        // 1. Run agent turn via official ADK Web endpoint POST /run
+        const res = await fetch('/run', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            app_name: APP_NAME,
             user_id: prevUserId,
             session_id: sessionId,
-            message: text,
-            persist_memory: persistMemory
+            new_message: {
+              role: 'user',
+              parts: [{ text: text }]
+            },
+            streaming: false
           })
         });
-        const data = await res.json();
-        appendBubble('model', data.author, data.response || '(No text response)', data.tool_calls || []);
-        document.getElementById('stateBox').textContent = JSON.stringify(data.session_state || {}, null, 2);
-        document.getElementById('toolsBox').textContent = JSON.stringify(data.tool_calls || [], null, 2);
-        document.getElementById('authorBadge').textContent = data.author || '-';
+        const events = await res.json();
 
-        // Check if a new user was registered or verified during this turn
-        const resolvedId = data.user_id || (data.session_state && data.session_state.verified_user_id);
-        if (resolvedId && resolvedId !== prevUserId) {
-          userIdInput.value = resolvedId;
+        let turnToolCalls = [];
+        let finalAuthor = 'Agent';
+        let finalText = '';
+        let detectedUserId = null;
+
+        for (const event of (Array.isArray(events) ? events : [])) {
+          const delta = (event.actions && (event.actions.stateDelta || event.actions.state_delta)) || {};
+          if (delta.verified_user_id) {
+            detectedUserId = delta.verified_user_id;
+          }
+          const parts = (event.content && event.content.parts) ? event.content.parts : [];
+          for (const p of parts) {
+            const fc = p.functionCall || p.function_call;
+            if (fc) {
+              turnToolCalls.push({
+                author: event.author || 'agent',
+                name: fc.name,
+                args: fc.args || {}
+              });
+            }
+          }
+          const texts = parts.filter(p => p.text).map(p => p.text);
+          if (texts.length > 0 && event.author !== 'user') {
+            finalAuthor = event.author || 'Agent';
+            finalText = texts.join('\n');
+          }
+        }
+
+        appendBubble('model', finalAuthor, finalText || '(No text response)', turnToolCalls);
+        document.getElementById('toolsBox').textContent = JSON.stringify(turnToolCalls, null, 2);
+        document.getElementById('authorBadge').textContent = finalAuthor;
+
+        // 2. Check if a new user was registered or verified during this turn
+        const activeUserId = detectedUserId || prevUserId;
+        if (activeUserId !== prevUserId) {
+          userIdInput.value = activeUserId;
           userIdInput.classList.add('highlight-id');
           setTimeout(() => userIdInput.classList.remove('highlight-id'), 4000);
           const banner = document.getElementById('idBanner');
           document.getElementById('idBannerText').textContent =
-            `🎉 Active User ID automatically updated from '${prevUserId}' to '${resolvedId}' (saved in Firestore)!`;
+            `🎉 Active User ID automatically updated from '${prevUserId}' to '${activeUserId}' (saved in Firestore)!`;
           banner.style.display = 'flex';
         }
 
+        // 3. If persist_memory is enabled, call ADK Web's PATCH /apps/{app_name}/users/{user_id}/memory
+        if (persistMemory) {
+          await fetch(`/apps/${APP_NAME}/users/${encodeURIComponent(activeUserId)}/memory`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: sessionId })
+          });
+        }
+
+        // 4. Refresh persisted Session State from GET /apps/{app_name}/users/{user_id}/sessions/{session_id}
         await loadSession();
       } catch (err) {
         appendBubble('model', 'Error', String(err), []);
