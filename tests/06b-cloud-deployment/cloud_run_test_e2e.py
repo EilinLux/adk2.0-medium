@@ -168,48 +168,72 @@ def run_data_plane_verification(
         assert r_runner.json()["memory_service"] == "FirestoreMemoryService"
 
         # 4. Execute Turn 1 on Runner (Gatekeeper -> Cameriere login for usr_0a8f67)
+        app_name = "adk_agent_app"
         user_id = "usr_0a8f67"
-        session_id = "cloud_run_e2e_session_06b"
+        session_id = f"cloud_run_e2e_session_06b_{int(time.time())}"
         print(
-            f"\n[4/5] Executing Turn 1 via POST {runner_url}/chat (session_id={session_id})..."
+            f"\n[4/5] Creating session & executing Turn 1 via POST {runner_url}/run (session_id={session_id})..."
         )
-        chat_payload = {
-            "user_id": user_id,
-            "session_id": session_id,
-            "message": "Hi! I am already registered, my user ID is usr_0a8f67.",
-            "save_to_memory": True,
-        }
-        r_chat = client.post(
-            f"{runner_url}/chat",
+        client.post(
+            f"{runner_url}/apps/{app_name}/users/{user_id}/sessions/{session_id}",
             headers=headers,
-            json=chat_payload,
+            json={"state": {}},
         )
-        r_chat.raise_for_status()
-        chat_data = r_chat.json()
-        print(f"  -> Active Agent (author): {chat_data['author']}")
-        print(
-            f"  -> Tool Calls Executed  : {[tc['name'] for tc in chat_data['tool_calls']]}"
+        run_payload = {
+            "appName": app_name,
+            "userId": user_id,
+            "sessionId": session_id,
+            "newMessage": {
+                "role": "user",
+                "parts": [
+                    {
+                        "text": "Hi! I am already registered, my user ID is usr_0a8f67."
+                    }
+                ],
+            },
+        }
+        r_run = client.post(
+            f"{runner_url}/run",
+            headers=headers,
+            json=run_payload,
         )
-        print(
-            f"  -> Hydrated User State  : {json.dumps(chat_data['session_state'], ensure_ascii=False)}"
-        )
-        print(f"  -> Agent Response       : {chat_data['response']}")
-        assert chat_data["author"] == "Cameriere"
+        r_run.raise_for_status()
+        events = r_run.json()
+        authors = [e.get("author") for e in events if e.get("author")]
+        tool_calls = [
+            part["functionCall"]["name"]
+            for e in events
+            for part in (e.get("content") or {}).get("parts", [])
+            if "functionCall" in part
+        ]
+        final_text = ""
+        for e in reversed(events):
+            for part in (e.get("content") or {}).get("parts", []):
+                if part.get("text"):
+                    final_text = part["text"]
+                    break
+            if final_text:
+                break
+        print(f"  -> Active Agent (author): {authors[-1] if authors else 'unknown'}")
+        print(f"  -> Tool Calls Executed  : {tool_calls}")
+        print(f"  -> Agent Response       : {final_text}")
+        assert "Cameriere" in authors
 
-        # 5. Inspect Session in Firestore via GET /sessions/{user_id}/{session_id}
+        # 5. Inspect Session in Firestore via GET /apps/{app_name}/users/{user_id}/sessions/{session_id}
         print(
-            f"\n[5/5] Verifying Firestore Session Persistence via GET /sessions/{user_id}/{session_id}..."
+            f"\n[5/5] Verifying Firestore Session Persistence via GET /apps/{app_name}/users/{user_id}/sessions/{session_id}..."
         )
         r_sess = client.get(
-            f"{runner_url}/sessions/{user_id}/{session_id}",
+            f"{runner_url}/apps/{app_name}/users/{user_id}/sessions/{session_id}",
             headers=headers,
         )
         r_sess.raise_for_status()
         sess_data = r_sess.json()
-        print(f"  -> Persisted Events Count: {sess_data['events_count']}")
-        print(f"  -> Persisted User Name   : {sess_data['state'].get('user:name')}")
-        assert sess_data["events_count"] >= 4
-        assert sess_data["state"].get("verified_user_id") == "usr_0a8f67"
+        persisted_events = sess_data.get("events", [])
+        print(f"  -> Persisted Events Count: {len(persisted_events)}")
+        print(f"  -> Persisted User Name   : {sess_data.get('state', {}).get('user:name')}")
+        assert len(persisted_events) >= 4
+        assert sess_data.get("state", {}).get("verified_user_id") == "usr_0a8f67"
 
 
 def main() -> None:
@@ -244,6 +268,14 @@ def main() -> None:
             "connected to live GCP Firestore, BigQuery, and Vertex AI to verify data-plane E2E..."
         )
         procs = []
+
+        def _is_up(port: int) -> bool:
+            try:
+                r = httpx.get(f"http://127.0.0.1:{port}/health", timeout=1.5)
+                return r.status_code == 200
+            except Exception:
+                return False
+
         try:
             env_base = os.environ.copy()
             env_base["GOOGLE_GENAI_USE_VERTEXAI"] = "1"
@@ -251,75 +283,74 @@ def main() -> None:
             env_base["GOOGLE_CLOUD_LOCATION"] = region
             env_base["SKIP_PREFLIGHT_CHECKS"] = "true"
 
-            # 1. Start MCP SSE Server (:8002)
-            env_mcp = {**env_base, "PORT": "8002", "MCP_HOST": "127.0.0.1"}
-            procs.append(
-                subprocess.Popen(
-                    [
-                        ".venv/bin/python",
-                        "adk_agent_app_suggeritore/tools/suggeritore_agent_bq_mcp_soste_tool.py",
-                    ],
-                    cwd=str(REPO_ROOT),
-                    env=env_mcp,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
+            # 1. Start MCP SSE Server (:8002) if not already running
+            if not _is_up(8002):
+                env_mcp = {**env_base, "PORT": "8002", "MCP_HOST": "127.0.0.1"}
+                procs.append(
+                    subprocess.Popen(
+                        [
+                            ".venv/bin/python",
+                            "adk_agent_app_suggeritore/tools/suggeritore_agent_bq_mcp_soste_tool.py",
+                        ],
+                        cwd=str(REPO_ROOT),
+                        env=env_mcp,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
                 )
-            )
 
-            # 2. Start Suggeritore A2A Server (:8001)
-            env_a2a = {
-                **env_base,
-                "MCP_SSE_URL": "http://127.0.0.1:8002/sse",
-                "A2A_PORT": "8001",
-            }
-            procs.append(
-                subprocess.Popen(
-                    [
-                        ".venv/bin/uvicorn",
-                        "adk_agent_app_suggeritore.agent:a2a_app",
-                        "--host",
-                        "127.0.0.1",
-                        "--port",
-                        "8001",
-                    ],
-                    cwd=str(REPO_ROOT),
-                    env=env_a2a,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
+            # 2. Start Suggeritore A2A Server (:8001) if not already running
+            if not _is_up(8001):
+                env_a2a = {
+                    **env_base,
+                    "MCP_SSE_URL": "http://127.0.0.1:8002/sse",
+                    "A2A_PORT": "8001",
+                }
+                procs.append(
+                    subprocess.Popen(
+                        [
+                            ".venv/bin/uvicorn",
+                            "adk_agent_app_suggeritore.agent:a2a_app",
+                            "--host",
+                            "127.0.0.1",
+                            "--port",
+                            "8001",
+                        ],
+                        cwd=str(REPO_ROOT),
+                        env=env_a2a,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
                 )
-            )
 
-            # 3. Start SostaApp Production Runner (:8000)
-            env_runner = {
-                **env_base,
-                "SUGGERITORE_A2A_URL": "http://127.0.0.1:8001",
-            }
-            procs.append(
-                subprocess.Popen(
-                    [
-                        ".venv/bin/uvicorn",
-                        "adk_agent_app.server:app",
-                        "--host",
-                        "127.0.0.1",
-                        "--port",
-                        "8000",
-                    ],
-                    cwd=str(REPO_ROOT),
-                    env=env_runner,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
+            # 3. Start SostaApp Production Runner (:8000) if not already running
+            if not _is_up(8000):
+                env_runner = {
+                    **env_base,
+                    "SUGGERITORE_A2A_URL": "http://127.0.0.1:8001",
+                }
+                procs.append(
+                    subprocess.Popen(
+                        [
+                            ".venv/bin/uvicorn",
+                            "adk_agent_app.server:app",
+                            "--host",
+                            "127.0.0.1",
+                            "--port",
+                            "8000",
+                        ],
+                        cwd=str(REPO_ROOT),
+                        env=env_runner,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
                 )
-            )
 
             # Wait for all 3 servers to bind
             for port in (8002, 8001, 8000):
                 for _ in range(30):
-                    try:
-                        r = httpx.get(f"http://127.0.0.1:{port}/health", timeout=2.0)
-                        if r.status_code == 200:
-                            break
-                    except Exception:
-                        pass
+                    if _is_up(port):
+                        break
                     time.sleep(1)
 
             run_data_plane_verification(
