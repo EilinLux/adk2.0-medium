@@ -15,8 +15,10 @@ classifiers = [
 ]
 dependencies = [
     "google-adk>=2.0.0",
+    "google-cloud-storage",
+    "google-cloud-firestore",
+    "google-cloud-bigquery"
 ]
-
 [project.urls]
 "Homepage" = "https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9"
 "Source" = "https://github.com/EilinLux/adk2.0-medium"

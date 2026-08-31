@@ -3,6 +3,7 @@ from google.adk.agents.llm_agent import Agent
 from adk_agent_app.tools.cameriere_agent_tools import extract_user_profile_tool
 #from adk_agent_app.subagents.suggeritore_agent import suggeritore_agent
 
+
 cameriere_agent = Agent(
     name="Cameriere",
     model="gemini-2.5-flash",
@@ -16,7 +17,7 @@ cameriere_agent = Agent(
     3. Ask if they are traveling with anyone else and if those companions have dietary preferences.
     4. Ask what their final destination is.
     5. IF the user provides a city or place name, NEVER ask for coordinates. 
-    6. Summarize all gathered info (ID, Profile, Companions, Destination) for the Suggeritore.
+    6. Summarize all gathered info (ID, Profile, Companions, Destination) for the Suggeritore AND save it to the session state
     """,
     tools=[extract_user_profile_tool],
     #sub_agents=[suggeritore_agent]

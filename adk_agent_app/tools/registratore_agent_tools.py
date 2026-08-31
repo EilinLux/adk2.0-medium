@@ -1,47 +1,67 @@
-from adk_agent_app.config import logger, db
-from google.adk.tools import FunctionTool
+# agent/tools/gatekeeper_tools.py
+import os
 import uuid
 from typing import List, Dict, Any
+from datetime import datetime, timezone
+from google.cloud import firestore
+from google.adk.tools import FunctionTool
+from adk_agent_app.config import logger
 
-# ==========================================
-# 1. CORE FUNCTIONS WITH ERROR HANDLING
-# ==========================================
+PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
+DATABASE_ID = "adk-agent-dev-session-memory-fs"
 
-def save_new_user(culinary_preferences: List[str], vehicle_type: str) -> Dict[str, Any]:
+def _get_firestore_client():
+    """Lazy initializer to prevent gRPC fork / event loop conflicts."""
+    return firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+
+def save_new_user(
+    name: str,
+    culinary_preferences: List[str],
+    vehicle_type: str,
+    email: str = ""
+) -> Dict[str, Any]:
     """
-    Use this tool to register a brand new user into the database and generate their unique ID.
-    Trigger this only after asking the user for both their food preferences and vehicle type.
+    Registers a new user in Firestore and generates a unique ID.
     
     Args:
-        culinary_preferences (List[str]): Dietary preferences (e.g., ["Vegan", "gluten-free"]).
-        vehicle_type (str): Vehicle type (e.g., 'Gasoline', 'Diesel', 'Electric').
-        
-    Returns:
-        Dict: Contains 'status' ("success" or "error"), the new 'user_id' if successful, and a 'message'.
+        name: User's full name.
+        culinary_preferences: Dietary preferences list (e.g., ['Vegan']).
+        vehicle_type: Vehicle engine/charging type (e.g., 'Electric', 'Gasoline').
+        email: Optional email address.
     """
     try:
-        new_id = f"usr_{uuid.uuid4().hex[:5]}"
+        db = _get_firestore_client()
+        new_id = f"user_{uuid.uuid4().hex[:4]}"
         
-        # Save directly to the mock dictionary
-        db[new_id] = {
-            "culinary_preferences": culinary_preferences,
-            "vehicle_type": vehicle_type
+        # Standardize inputs
+        clean_preferences = [p.capitalize() for p in culinary_preferences] if isinstance(culinary_preferences, list) else [str(culinary_preferences).capitalize()]
+        clean_vehicle = vehicle_type.capitalize()
+
+        user_payload = {
+            "user_id": new_id,
+            "name": name,
+            "email": email,
+            "culinary_preferences": clean_preferences,
+            "vehicle_type": clean_vehicle,
+            "created_at": datetime.now(timezone.utc)
         }
-        
-        logger.info(f"Saved new user {new_id} to mock database.")
+
+        # Write user profile to 'users' collection
+        user_ref = db.collection("users").document(new_id)
+        user_ref.set(user_payload)
+
+        logger.info(f"Successfully registered user '{name}' with ID '{new_id}' in Firestore.")
+
         return {
             "status": "success",
             "user_id": new_id,
-            "message": "User registered successfully. Please provide this user ID to the user."
+            "message": f"User '{name}' registered successfully with ID '{new_id}'. Please inform the user of their new User ID."
         }
     except Exception as e:
-        logger.error(f"Error in save_new_user: {e}")
+        logger.error(f"Error in save_new_user: {e}", exc_info=True)
         return {
             "status": "error",
-            "message": f"Failed to save the new user to the database due to an error: {str(e)}"
+            "message": f"Failed to complete user registration due to database error: {str(e)}"
         }
 
-# ==========================================
-# 2. WRAP FUNCTIONS AS FUNCTION TOOLS
-# ========================================== 
 save_new_user_tool = FunctionTool(save_new_user)
