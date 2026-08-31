@@ -1,0 +1,65 @@
+import os
+from google.cloud import bigquery
+
+# ==========================================
+# CONFIGURATION
+# ==========================================
+PROJECT_ID = "adk-workshop-sosta-app-dev"
+DATASET_ID = "soste_app_dev"
+TABLE_ID = "db_soste"
+
+full_table_path = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
+
+print(f"Connecting to Google Cloud and inserting data into {full_table_path}...")
+client = bigquery.Client(project=PROJECT_ID)
+
+query = f"""
+    INSERT INTO `{full_table_path}` 
+    (autogrill_name, fuel_types, coordinates, services, phone, created_at, updated_at)
+    VALUES 
+        -- North-Central / A1 Autostrada del Sole
+        ('Autogrill Secchia Ovest', ['GASOLINE', 'DIESEL', 'ELECTRIC_FAST'], ST_GEOGFROMTEXT('POINT(10.8333 44.6333)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'WI_FI'], '+39 059 848111', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Area di Servizio Cantagallo', ['DIESEL', 'LPG', 'METHANE', 'ELECTRIC_FAST'], ST_GEOGFROMTEXT('POINT(11.2588 44.4287)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'ATM'], '+39 051 841022', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Somaglia Ovest', ['GASOLINE', 'DIESEL', 'ELECTRIC_ULTRAFAST'], ST_GEOGFROMTEXT('POINT(9.6339 45.1481)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'BABY_CARE'], '+39 0377 57901', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Fiorenzuola dArda', ['GASOLINE', 'DIESEL', 'LPG', 'METHANE'], ST_GEOGFROMTEXT('POINT(9.9103 44.9281)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'MOTEL'], '+39 0523 982100', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Badia al Pino Est', ['GASOLINE', 'DIESEL', 'ELECTRIC_FAST'], ST_GEOGFROMTEXT('POINT(11.7583 43.4112)'), ['RESTAURANT', 'RESTROOM', 'SHOP'], '+39 0575 498012', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Fabro Ovest', ['GASOLINE', 'DIESEL', 'LPG'], ST_GEOGFROMTEXT('POINT(12.0167 42.8667)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'PET_AREA'], '+39 0763 832044', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Teano Ovest', ['GASOLINE', 'DIESEL', 'ELECTRIC_STANDARD'], ST_GEOGFROMTEXT('POINT(14.0734 41.2482)'), ['RESTAURANT', 'RESTROOM', 'SHOP'], '+39 0823 875120', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+
+        -- A8 / A4 Northern Belt & Lakes
+        ('Autogrill Villoresi Est', ['GASOLINE', 'ELECTRIC_ULTRAFAST', 'HYDROGEN'], ST_GEOGFROMTEXT('POINT(9.0333 45.5667)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'WI_FI', 'ACCESSIBLE'], '+39 02 935701', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Villoresi Ovest', ['GASOLINE', 'DIESEL', 'ELECTRIC_FAST'], ST_GEOGFROMTEXT('POINT(9.0321 45.5672)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'ATM'], '+39 02 935705', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Brianza Nord', ['GASOLINE', 'DIESEL', 'LPG', 'ELECTRIC_FAST'], ST_GEOGFROMTEXT('POINT(9.3871 45.5922)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'COWORKING'], '+39 039 606012', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Novara Nord', ['GASOLINE', 'DIESEL', 'ELECTRIC_ULTRAFAST'], ST_GEOGFROMTEXT('POINT(8.5492 45.4678)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'PET_AREA'], '+39 0321 458900', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Scaligera Ovest', ['GASOLINE', 'DIESEL', 'METHANE'], ST_GEOGFROMTEXT('POINT(11.1341 45.4121)'), ['RESTAURANT', 'RESTROOM', 'SHOP'], '+39 045 6101233', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+
+        -- Rome Ring (GRA) & Central Region
+        ('Autogrill Flaminia Est', ['GASOLINE', 'DIESEL', 'LPG'], ST_GEOGFROMTEXT('POINT(12.4924 41.8902)'), ['RESTAURANT', 'RESTROOM', 'SHOP'], '+39 06 3320145', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Casilina Interna', ['GASOLINE', 'DIESEL', 'ELECTRIC_STANDARD'], ST_GEOGFROMTEXT('POINT(12.5841 41.8671)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'ATM'], '+39 06 7267011', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Feronia Est', ['GASOLINE', 'DIESEL', 'ELECTRIC_FAST', 'LPG'], ST_GEOGFROMTEXT('POINT(12.6021 42.1284)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'WI_FI'], '+39 0765 460112', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill La Macchia Ovest', ['GASOLINE', 'DIESEL', 'ELECTRIC_ULTRAFAST'], ST_GEOGFROMTEXT('POINT(13.1412 41.6781)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'BABY_CARE'], '+39 0775 768045', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+
+        -- A14 Adriatic Coast
+        ('Autogrill Sillaro Ovest', ['GASOLINE', 'DIESEL', 'ELECTRIC_FAST'], ST_GEOGFROMTEXT('POINT(11.6601 44.4328)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'OUTDOOR_SEATING'], '+39 0542 670111', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Rubicone Est', ['GASOLINE', 'DIESEL', 'LPG', 'METHANE'], ST_GEOGFROMTEXT('POINT(12.4082 44.1321)'), ['RESTAURANT', 'RESTROOM', 'SHOP'], '+39 0541 941088', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Esino Est', ['GASOLINE', 'DIESEL', 'ELECTRIC_FAST'], ST_GEOGFROMTEXT('POINT(13.3142 43.5901)'), ['RESTAURANT', 'RESTROOM', 'SHOP'], '+39 071 7450123', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Tower Torre Cerrano East', ['GASOLINE', 'DIESEL', 'ELECTRIC_ULTRAFAST'], ST_GEOGFROMTEXT('POINT(14.0891 42.5812)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'PANORAMIC_VIEW'], '+39 085 944012', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+
+        -- South & Islands (A2 / A18)
+        ('Autogrill Salerno Nord', ['GASOLINE', 'DIESEL', 'LPG'], ST_GEOGFROMTEXT('POINT(14.7712 40.7102)'), ['RESTAURANT', 'RESTROOM', 'SHOP'], '+39 089 481099', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Campotenese Ovest', ['GASOLINE', 'DIESEL', 'ELECTRIC_STANDARD'], ST_GEOGFROMTEXT('POINT(15.9612 39.8712)'), ['RESTAURANT', 'RESTROOM', 'SHOP'], '+39 0981 947012', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Lamezia Ovest', ['GASOLINE', 'DIESEL', 'ELECTRIC_FAST'], ST_GEOGFROMTEXT('POINT(16.2201 38.9212)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'PET_AREA'], '+39 0968 438011', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Aci SantAntonio Ovest', ['GASOLINE', 'DIESEL', 'LPG'], ST_GEOGFROMTEXT('POINT(15.1189 37.6012)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'FRESH_PASTRY'], '+39 095 7890123', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+        ('Autogrill Gelso Bianco Nord', ['GASOLINE', 'DIESEL', 'ELECTRIC_ULTRAFAST', 'LPG'], ST_GEOGFROMTEXT('POINT(15.0412 37.4789)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'ATM', 'FRESH_PASTRY'], '+39 095 591044', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())
+"""
+
+def seed_bigquery():
+    try:
+        query_job = client.query(query)
+        query_job.result()  # Wait for query to complete
+        print(f"✅ Successfully inserted {query_job.num_dml_affected_rows} rows into {full_table_path}!")
+    except Exception as e:
+        print(f"❌ An error occurred while inserting data: {e}")
+
+if __name__ == "__main__":
+    seed_bigquery()
