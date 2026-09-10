@@ -1,21 +1,5 @@
 # ADK 2.0 101: Agent Developer Kit Implementation
 
-This repository contains the codebase and architecture blueprints for the **ADK 101** tutorial series published on Medium by *Zelda Ailine Luconi*. 
-
-The project demonstrates how to move away from fragile, notebook-bound AI prototypes and build production-grade, event-driven AI agents using **Google's Agent Developer Kit (ADK) 2.0**, Agentic Architecture best practices**.
-
-## 🚀 Project Overview: Sosta App
-
-The primary implementation built throughout this series is **Sosta App**—an intelligent travel optimization platform designed to eliminate "range anxiety" and "choice fatigue" for travelers. 
-
-### 🛠️ Core Agent Architecture
-
-Here is a polished, production-ready `README.md` for your repository, incorporating all the structural upgrades, visual flowcharts, complete branch mappings, and explicit run commands.
-
----
-
-# ADK 2.0 101: Agent Developer Kit Implementation
-
 This repository contains the codebase, micro-agent implementations, and architectural blueprints for the **ADK 101** tutorial series published on Medium by *Zelda Ailine Luconi*.
 
 The project demonstrates how to move away from fragile, notebook-bound AI prototypes and build production-grade, event-driven AI agents using **Google's Agent Developer Kit (ADK) 2.0** and enterprise agentic design principles.
