@@ -14,9 +14,10 @@ classifiers = [
     "Framework :: Google Cloud"
 ]
 dependencies = [
-    "google-adk[db]>=2.0.0",
+    "google-adk[db,gcp]>=2.0.0",
     "greenlet",
     "google-cloud-firestore"
+    
 ]
 
 [project.urls]
