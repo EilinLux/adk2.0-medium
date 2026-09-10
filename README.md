@@ -33,15 +33,42 @@ Instead of relying on a monolithic prompt, Sosta is architected as a **Digital A
 
 Each article in the series corresponds to a dedicated git branch containing clean, structured Python code (managed via `uv` with standard `pyproject.toml` configuration).
 
+Here is the review of your proposed **Part 3d ("Runners in ADK")** content, followed by the revised series roadmap table with Part 3d incorporated.
+
+---
+
+### Part 1: Editorial & Technical Review of Part 3d
+
+Your proposed draft for **Part 3d** (`Runners in ADK — the orchestrator you never see but always need`) bridges a crucial gap in ADK architecture.
+
+#### Key Feedback & Technical Refinements
+
+1. **Clarified Role in Roadmap**:
+Article 3d explains **how execution happens**—decoupling agent prompts from storage, handling event streaming, tool recursion limits (`RunConfig`), and managing the execution lifecycle.
+2. **Fixed Typos & Terminology**:
+* `"light-motive"` $\rightarrow$ `leitmotif` (or `guiding principle`)
+* `"privious"` $\rightarrow$ `previous`
+* `"shouòd"` $\rightarrow$ `should`
+* Fixed renumbering in section titles (Section `03` followed `01` directly in your TOC).
+
+
+3. **PEP 8 Code Cleanliness**:
+Standardized `InMemoryRunner` vs `Runner` code examples and imports to ensure all snippets match clean Python conventions.
+
+---
+
+### Part 2: Complete Series Roadmap Table (Filled In)
+
+Here is the updated series table incorporating **Article 3d**:
+
 | Medium Article & Milestone | GitHub Branch | Key Concept & Technical Implementation | Architectural Pattern |
 | --- | --- | --- | --- |
 | **#1 · Environment Setup & First Agent** | [`01-first-agent`](https://github.com/EilinLux/adk2.0-medium/tree/01-first-agent) | Declarative environment setup using `uv` and `pyproject.toml`. Instantiating the foundational `Agent` class, configuring prompt instructions, and testing execution across three local runtimes (`adk run`, `adk web`, and programmatic Python invocation). | **Single-Agent Baseline** |
 | **#2a · Assembly Line Principles** | *(Theory / `main`)* | Deconstructing monolithic prompt traps into modular micro-agents using Henry Ford’s assembly line principles. Establishing the 4 core pillars: structured workflows, typed JSON handoffs, technological model heterogeneity, and dual-layer state management (*Travel Sheet* session context vs. *Warehouse* persistent storage). | **System Architecture Blueprint** |
 | **#2b · Multi-Agent Workflows** | [`02b-multi-agent-workflow`](https://github.com/EilinLux/adk2.0-medium/tree/02b-multi-agent-workflow) | Building a hierarchical collaborative team. Implements local tool scoping (`tools=[is_registered_user_tool]`) to enforce the Principle of Least Privilege and eliminate context bloat. Establishes parent-child supervisor delegation (`sub_agents=[registratore, cameriere]`) for dynamic LLM-driven task handoffs. | **Hierarchical Collaborative Team** |
 | **#2c · Graph Workflows & HITL** | [`02c-graph-agent-workflows`](https://www.google.com/search?q=https://github.com/EilinLux/adk2.0-medium/tree/02c-graph-agent-workflows) | Refactoring loose LLM orchestration into a rigid Directed Acyclic Graph (`Workflow`). Implements Human-in-the-Loop (HITL) pauses via `RequestInput` generators, semantic extraction using Pydantic schemas (`output_schema=UserExtraction`), and prompt-injection-proof Python edge routers (`Event(route=...)`). | **Deterministic Pipeline (DAG)** |
+| **#3a · Session & Session States** | [`03a-session-state`](https://www.google.com/search?q=https://github.com/EilinLux/adk2.0-medium/tree/03a-session-state) | Deep-dive into ADK's state mechanics. Automating entity extraction into state via `output_schema` and `output_key`, dynamic prompt templating using `{variable}` injection, and isolating variables across four distinct persistence scopes (`session`, `user:`, `app:`, and `temp:`). | **State & Context Management** |
 
-
----
 
 ## 🤖 Micro-Agent Directory
 
