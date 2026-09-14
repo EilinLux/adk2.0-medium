@@ -5,9 +5,12 @@ from google.cloud import firestore
 from google.adk.tools import ToolContext, FunctionTool
 
 from ..config import logger
+import dotenv
+
+dotenv.load_dotenv()
 
 PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
-DATABASE_ID = "adk-agent-dev-application-db-dev-fs"
+APPLICATION_DB_NAME = os.getenv("APPLICATION_DB_NAME", "adk-agent-dev-application-db-dev-fs")
 
 def _get_firestore_client():
     """Lazy initializer to prevent gRPC fork / event loop conflicts."""

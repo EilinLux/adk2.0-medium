@@ -7,12 +7,15 @@ from google.cloud import firestore
 from google.adk.tools import FunctionTool
 
 from ..config import logger
+import dotenv
+
+dotenv.load_dotenv()
 
 PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
-DATABASE_ID = "adk-agent-dev-application-db-dev-fs"
+APPLICATION_DB_NAME = os.getenv("APPLICATION_DB_NAME", "adk-agent-dev-application-db-dev-fs")
 
 def _get_firestore_client():
-    return firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+    return firestore.Client(project=PROJECT_ID, database=APPLICATION_DB_NAME)
 
 def save_new_user(
     full_name: str,
