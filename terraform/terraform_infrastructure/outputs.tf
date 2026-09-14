@@ -8,25 +8,25 @@
 # CLOUD RUN OUTPUTS
 # ==========================================
 
-output "cloud_run_service_url" {
-  description = "The URL of the Cloud Run service"
-  value       = google_cloud_run_service.adk_agent.status[0].url
-}
+# output "cloud_run_service_url" {
+#   description = "The URL of the Cloud Run service"
+#   value       = google_cloud_run_service.adk_agent.status[0].url
+# }
 
-output "cloud_run_service_name" {
-  description = "The name of the Cloud Run service"
-  value       = google_cloud_run_service.adk_agent.name
-}
+# output "cloud_run_service_name" {
+#   description = "The name of the Cloud Run service"
+#   value       = google_cloud_run_service.adk_agent.name
+# }
 
-output "cloud_run_service_id" {
-  description = "The ID of the Cloud Run service"
-  value       = google_cloud_run_service.adk_agent.id
-}
+# output "cloud_run_service_id" {
+#   description = "The ID of the Cloud Run service"
+#   value       = google_cloud_run_service.adk_agent.id
+# }
 
-output "cloud_run_latest_revision" {
-  description = "The latest revision of the Cloud Run service"
-  value       = google_cloud_run_service.adk_agent.status[0].latest_created_revision_name
-}
+# output "cloud_run_latest_revision" {
+#   description = "The latest revision of the Cloud Run service"
+#   value       = google_cloud_run_service.adk_agent.status[0].latest_created_revision_name
+#}
 
 
 # ==========================================

@@ -50,6 +50,8 @@ locals {
   firestore_config = {
     session_db_name = "${local.resource_prefix}-session-memory-fs"
     food_kb_db_name = "${local.resource_prefix}-food-kb-dev-fs"
+    application_db_name = "${local.resource_prefix}-application-db-dev-fs"
+
     location        = var.firestore_location
   }
 

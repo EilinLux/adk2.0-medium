@@ -37,6 +37,25 @@ resource "google_firestore_database" "food_knowledge_base" {
 }
 
 # ==========================================
+# FIRESTORE DATABASE - APPLICATION DATA
+# ==========================================
+# Stores application data for the ADK agent, such as user profiles, preferences, and other structured data
+# Used by the Gatekeeper agent and Registratore agent  
+
+resource "google_firestore_database" "application_db" {
+  provider    = google-beta
+  project     = var.gcp_project
+  name        = local.firestore_config.application_db_name
+  location_id = local.firestore_config.location
+  type        = "FIRESTORE_NATIVE"
+
+  deletion_policy = var.environment == "prod" && var.firestore_delete_protection ? "SOFT_DELETE" : "DELETE"
+
+  depends_on = [google_project_service.required_apis]
+}
+
+
+# ==========================================
 # FIRESTORE INDEXES
 # ==========================================
 # Define composite indexes for efficient Firestore queries
