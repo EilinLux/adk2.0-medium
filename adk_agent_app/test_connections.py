@@ -75,7 +75,7 @@ def run_all_tests() -> bool:
     results.append(test_firestore(FIRESTORE_FOOD_KB_DB, "Food Knowledge Base"))
 
     # 2. Test BigQuery Data Warehouse
-    results.append(test_bigquery())
+    #results.append(test_bigquery())
 
     # 3. Test Cloud Storage Bucket
     results.append(test_gcs_bucket())

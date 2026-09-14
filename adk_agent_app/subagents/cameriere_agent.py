@@ -1,7 +1,7 @@
 # agent/subagents/cameriere_agent.py
 from google.adk.agents import Agent
-from adk_agent_app.tools.cameriere_agent_tools import extract_user_profile_tool, update_dietary_preferences_tool
-#from adk_agent_app.subagents.suggeritore_agent import suggeritore_agent
+from ..tools.cameriere_agent_tools import extract_user_profile_tool, update_dietary_preferences_tool
+#from       .subagents.suggeritore_agent import suggeritore_agent
 
 cameriere_agent = Agent(
     name="Cameriere",
