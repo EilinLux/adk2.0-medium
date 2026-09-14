@@ -17,6 +17,15 @@ APPLICATION_DB_NAME = os.getenv("APPLICATION_DB_NAME", "adk-agent-dev-applicatio
 def _get_firestore_client():
     return firestore.Client(project=PROJECT_ID, database=APPLICATION_DB_NAME)
 
+import os, uuid
+
+def get_user_id() -> str:
+    # Deterministic static key when running under ADK eval CLI
+    if os.getenv("ADK_EVAL_MODE") == "true":
+        return "usr_f93207"
+    else:
+        return f"usr_{uuid.uuid4().hex[:6]}"
+
 def save_new_user(
     full_name: str,
     email: str,
@@ -31,7 +40,7 @@ def save_new_user(
     """
     try:
         db = _get_firestore_client()
-        new_id = f"usr_{uuid.uuid4().hex[:6]}"
+        new_id = get_user_id()
         
         clean_preferences = [p.capitalize() for p in culinary_preferences] if isinstance(culinary_preferences, list) else [str(culinary_preferences).capitalize()]
         clean_vehicle = vehicle_type.capitalize()
