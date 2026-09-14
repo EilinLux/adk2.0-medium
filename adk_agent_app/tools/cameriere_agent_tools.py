@@ -1,67 +1,87 @@
-# agent/tools/gatekeeper_tools.py
-from adk_agent_app.config import logger
-from typing import Dict, Any
-from google.cloud import firestore
-from google.adk.tools import FunctionTool
+# agent/tools/cameriere_agent_tools.py
 import os
+from typing import Dict, Any, List
+from google.cloud import firestore
+from google.adk.tools import ToolContext, FunctionTool
+
+from adk_agent_app.config import logger
+
 PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
-DATABASE_ID = "adk-session-memory"
+DATABASE_ID = "adk-agent-dev-application-db-dev-fs"
 
-# Always pass both project and database explicitly
-db = firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+def _get_firestore_client():
+    return firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
 
-# ==========================================
-# 1. CORE FUNCTIONS WITH ERROR HANDLING
-# ==========================================
-
-def extract_user_profile(user_id: str) -> Dict[str, Any]:
+async def extract_user_profile(user_id: str, tool_context: ToolContext) -> Dict[str, Any]:
     """
-    Retrieves a registered user's saved dietary preferences, vehicle type, 
-    and general profile details directly from Firestore.
-    Trigger this when you need to know the historical profile of an existing user.
-    
-    Args:
-        user_id (str): The unique identifier of the registered user (e.g., 'user_9876').
-        
-    Returns:
-        Dict: Contains 'status' ("success" or "error"). If success, includes a 'data' dictionary 
-              with 'culinary_preferences' (List[str]), 'vehicle_type' (str), and optional metadata.
+    Extracts complete user profile from the Application DB and populates ADK Session Memory.
     """
     try:
-        # 1. Fetch the user document from the 'users' collection in Firestore
-        user_ref = db.collection("users").document(user_id)
-        user_doc = user_ref.get()
+        db = _get_firestore_client()
+        doc = db.collection("users").document(user_id).get()
 
-        # 2. Return error if document does not exist
-        if not user_doc.exists:
-            return {
-                "status": "error",
-                "message": f"Cannot extract profile. User ID '{user_id}' was not found in Firestore."
-            }
+        if not doc.exists:
+            return {"status": "error", "message": f"User '{user_id}' not found."}
 
-        data = user_doc.to_dict()
+        data = doc.to_dict()
+        vehicle = data.get("vehicle", {})
 
-        # 3. Extract profile details safely
+        # Hydrate all attributes into ADK Session Memory (user: scope)
+        state = tool_context.session.state
+        state["user:name"] = data.get("full_name")
+        state["user:email"] = data.get("email")
+        state["user:preferred_language"] = data.get("preferred_language", "English")
+        state["user:culinary_preferences"] = data.get("culinary_preferences", [])
+        state["user:vehicle_type"] = vehicle.get("vehicle_type", "Gasoline")
+        state["user:connector_type"] = vehicle.get("connector_type")
+        state["user:battery_capacity_kWh"] = vehicle.get("battery_capacity_kWh")
+        state["user:account_status"] = data.get("account_status", "active")
+
+        logger.info(f"Loaded complete profile for {user_id} into ADK session state.")
+
         return {
             "status": "success",
-            "data": {
-                "name": data.get("name", "Unknown"),
-                "culinary_preferences": data.get("culinary_preferences", []),
-                "vehicle_type": data.get("vehicle_type", "Sconosciuto"),
-                "favorite_station": data.get("favorite_station", "None")
-            },
-            "message": f"User profile for '{user_id}' extracted successfully from Firestore."
+            "message": f"Session loaded for {data.get('full_name')}.",
+            "profile": data
         }
-
     except Exception as e:
-        logger.error(f"Error in extract_user_profile: {e}")
+        logger.error(f"Error loading session state: {e}", exc_info=True)
+        return {"status": "error", "message": f"Session hydration failed: {str(e)}"}
+
+async def update_dietary_preferences(new_preferences: List[str], tool_context: ToolContext) -> Dict[str, Any]:
+    """
+    Updates the user's culinary preferences across both active session memory 
+    and the primary Application Database (users collection).
+    """
+    try:
+        # Retrieve verified user ID from session state
+        user_id = tool_context.session.state.get("temp:verified_user_id") or tool_context.session.user_id
+
+        if not user_id:
+            return {"status": "error", "message": "No active user ID found in session state."}
+
+        clean_preferences = [p.capitalize() for p in new_preferences] if isinstance(new_preferences, list) else [str(new_preferences).capitalize()]
+
+        # 1. Update active ADK Session State (immediate prompt injection availability)
+        tool_context.session.state["user:culinary_preferences"] = clean_preferences
+
+        # 2. Persist back to Primary Application Database (future logins)
+        db = _get_firestore_client()
+        db.collection("users").document(user_id).update({
+            "culinary_preferences": clean_preferences
+        })
+
+        logger.info(f"Updated preferences for user '{user_id}' to {clean_preferences} in session state and App DB.")
+
         return {
-            "status": "error",
-            "message": f"Database error while extracting profile: {str(e)}"
+            "status": "success",
+            "message": f"Updated culinary preferences to {clean_preferences}.",
+            "updated_preferences": clean_preferences
         }
+    except Exception as e:
+        logger.error(f"Error updating dietary preferences: {e}", exc_info=True)
+        return {"status": "error", "message": f"Failed to update preferences: {str(e)}"}
 
-# ==========================================
-# 2. WRAP FUNCTIONS AS FUNCTION TOOLS
-# ========================================== 
-
+# Wrap as an ADK FunctionTool
+update_dietary_preferences_tool = FunctionTool(update_dietary_preferences)
 extract_user_profile_tool = FunctionTool(extract_user_profile)
