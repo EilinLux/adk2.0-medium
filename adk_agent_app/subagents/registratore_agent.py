@@ -24,6 +24,7 @@ registratore_agent = Agent(
     3. CONFIRM & HAND OFF:
        - Inform the user that their registration is complete and share their newly generated User ID.
        - Politely explain that you are handing them over to the Cameriere (Dining Concierge) to help organize their trip.
+       - invoke transfer_to_agent('Cameriere') immediately
     """,
     tools=[save_new_user_tool],
 )

@@ -18,13 +18,16 @@ def _get_firestore_client():
     return firestore.Client(project=PROJECT_ID, database=APPLICATION_DB_NAME)
 
 import os, uuid
+import hashlib
 
-def get_user_id() -> str:
-    # Deterministic static key when running under ADK eval CLI
-    if os.getenv("ADK_EVAL_MODE") == "true":
-        return "usr_f93207"
-    else:
-        return f"usr_{uuid.uuid4().hex[:6]}"
+def get_user_id(email: str) -> str:
+  if os.getenv("ADK_EVAL_MODE") == "true":
+    # Returns a deterministic hash based on email (e.g., 'usr_f93207' for Zelda, 'usr_ee1d9f' for Flora)
+    clean_email = email.strip().lower()
+    email_hash = hashlib.md5(clean_email.encode()).hexdigest()[:6]
+    return f"usr_{email_hash}"
+
+  return f"usr_{uuid.uuid4().hex[:6]}"
 
 def save_new_user(
     full_name: str,
@@ -40,7 +43,7 @@ def save_new_user(
     """
     try:
         db = _get_firestore_client()
-        new_id = get_user_id()
+        new_id = get_user_id(email=email)
         
         clean_preferences = [p.capitalize() for p in culinary_preferences] if isinstance(culinary_preferences, list) else [str(culinary_preferences).capitalize()]
         clean_vehicle = vehicle_type.capitalize()
