@@ -5,11 +5,11 @@ from google.cloud import firestore
 # CONFIGURATION
 # ==========================================
 PROJECT_ID = "adk-workshop-sosta-app-dev"
-DATABASE_ID = "adk-agent-dev-session-memory-fs"
+APPLICATION_DB_NAME = "adk-agent-dev-session-memory-fs"
 COLLECTION_NAME = "users"
 
-print(f"Connecting to Firestore database '{DATABASE_ID}'...")
-db = firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+print(f"Connecting to Firestore database '{APPLICATION_DB_NAME}'...")
+db = firestore.Client(project=PROJECT_ID, database=APPLICATION_DB_NAME)
 
 # ==========================================
 # MOCK USER DATA
