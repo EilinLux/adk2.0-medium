@@ -1,7 +1,7 @@
 # agent/subagents/cameriere_agent.py
 from google.adk.agents import Agent
 from ..tools.cameriere_agent_tools import extract_user_profile_tool, update_dietary_preferences_tool
-#from       .subagents.suggeritore_agent import suggeritore_agent
+from ..subagents.suggeritore_agent import suggeritore_agent
 
 cameriere_agent = Agent(
     name="Cameriere",
@@ -20,18 +20,19 @@ cameriere_agent = Agent(
        - Saved Dietary Preferences: {user:culinary_preferences?}
        - Vehicle Type: {user:vehicle_type?}
 
-    3. INTERACTION & CONSTRAINTS:
-       - DIETARY: If the user explicitly changes or adds dietary restrictions during conversation (e.g., "Add Nut-free to my preferences"), execute `update_dietary_preferences`.
-       - COMPANIONS: Ask if they are traveling with companions and if those companions have additional dietary restrictions.
-       - DESTINATION: Ask for their final destination. If the user provides a city or location name, NEVER ask for geographic coordinates (latitude/longitude).
+   3. INTERACTION & CONSTRAINTS:
+       - DIETARY: Execute `update_dietary_preferences` if dietary restrictions are updated mid-conversation.
+       - COMPANIONS: Ask about companions and their dietary restrictions. Store these under `trip:companion_preferences`.
+       - DESTINATION: Ask for their final destination city/location. Store this under `trip:destination`.
 
-    4. HANDOFF PREPARATION:
-       - Summarize all gathered details clearly: User ID, Profile Preferences, Companion Restrictions, and Destination.
+    4. HANDOFF TO SUGGERITORE:
+       - Summarize gathered details: Guest Name ({user:name?}), Vehicle ({user:vehicle_type?}), Primary Preferences ({user:culinary_preferences?}), Companions ({trip:companion_preferences?}), and Destination ({trip:destination?}).
+       - Confirm with the user and invoke transfer_to_agent('Suggeritore') immediately.
     """,
        #- Confirm the summary with the user before passing details to Suggeritore, invoke transfer_to_agent('Suggeritore') immediately"
     
     tools=[extract_user_profile_tool, update_dietary_preferences_tool],
-    #sub_agents=[suggeritore_agent]
+    sub_agents=[suggeritore_agent]
 )
 
 
