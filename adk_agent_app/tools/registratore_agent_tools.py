@@ -1,3 +1,4 @@
+# adk_agent_app/tools/registratore_agent_tools.py
 from adk_agent_app.config import logger, db
 from google.adk.tools import FunctionTool
 import uuid
@@ -43,5 +44,7 @@ def save_new_user(culinary_preferences: List[str], vehicle_type: str) -> Dict[st
 
 # ==========================================
 # 2. WRAP FUNCTIONS AS FUNCTION TOOLS
-# ========================================== 
+# ==========================================
+# Note: The tool name exposed to the LLM is `func.__name__` ('save_new_user'),
+# not the Python variable name ('save_new_user_tool').
 save_new_user_tool = FunctionTool(save_new_user)

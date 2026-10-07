@@ -1,7 +1,7 @@
 [project]
-name = "adk101-medium"
-version = "0.1.0"
-description = "A practical implementation of production-grade AI agents using Google's Agent Developer Kit (ADK) 2.0, following the ADK 101 Medium series for SostaAèè."
+name = "adk2.0-medium"
+version = "3.1.0"
+description = "A practical implementation of production-grade AI agents using Google's Agent Developer Kit (ADK) 2.0, following the ADK 101 Medium series for SostaApp."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
