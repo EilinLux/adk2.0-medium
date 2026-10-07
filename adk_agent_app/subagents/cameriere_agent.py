@@ -1,7 +1,22 @@
 # agent/subagents/cameriere_agent.py
 from google.adk.agents import Agent
 from ..tools.cameriere_agent_tools import extract_user_profile_tool, update_dietary_preferences_tool
-from ..subagents.suggeritore_agent import suggeritore_agent
+#from ..subagents.suggeritore_agent import suggeritore_agent
+from google.adk.agents.remote_a2a_agent import (
+    RemoteA2aAgent,
+    AGENT_CARD_WELL_KNOWN_PATH,
+)
+
+# Create a RemoteA2aAgent that connects to our Suggeritore Agent
+# This acts as a client-side proxy - the Customer Cameriere Agent can use it like a local agent
+suggeritore_agent = RemoteA2aAgent(
+    name="suggeritore_agent",
+    description="The recommendation engine. Uses BigQuery for nearest stations and Firestore for food reviews.",
+    # Point to the agent card URL - this is where the A2A protocol metadata lives
+    agent_card=f"http://localhost:8001{AGENT_CARD_WELL_KNOWN_PATH}",
+)
+
+
 
 cameriere_agent = Agent(
     name="Cameriere",
@@ -27,9 +42,8 @@ cameriere_agent = Agent(
 
     4. HANDOFF TO SUGGERITORE:
        - Summarize gathered details: Guest Name ({user:name?}), Vehicle ({user:vehicle_type?}), Primary Preferences ({user:culinary_preferences?}), Companions ({trip:companion_preferences?}), and Destination ({trip:destination?}).
-       - Confirm with the user and invoke transfer_to_agent('Suggeritore') immediately.
+       - Confirm with the user and invoke transfer_to_agent('suggeritore_agent') immediately.
     """,
-       #- Confirm the summary with the user before passing details to Suggeritore, invoke transfer_to_agent('Suggeritore') immediately"
     
     tools=[extract_user_profile_tool, update_dietary_preferences_tool],
     sub_agents=[suggeritore_agent]

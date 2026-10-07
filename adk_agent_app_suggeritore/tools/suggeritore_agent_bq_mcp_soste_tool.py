@@ -2,9 +2,12 @@ import json
 import os
 from google.cloud import bigquery
 import logging
+from pathlib import Path
 from dotenv import load_dotenv
 from mcp.server.mcpserver import MCPServer
-load_dotenv()  # Load .env file 
+
+load_dotenv()  # Load root .env file
+load_dotenv(Path(__file__).parent.parent / ".env")  # Also load adk_agent_app_suggeritore/.env
 
 # ==========================================
 # 0. SETUP & DATABASE INITIALIZATION
@@ -14,13 +17,16 @@ logger = logging.getLogger(__name__)
 
 mcp = MCPServer("BigQuery-Soste-Server")
 
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+DATASET_ID = os.getenv("DATASET_ID", "soste_app_dev")
+TABLE_ID = os.getenv("TABLE_ID", "db_soste")
 
-FULL_TABLE_PATH = f"{os.getenv('GOOGLE_CLOUD_PROJECT')}.{os.getenv('DATASET_ID')}.{os.getenv('TABLE_ID')}"
+FULL_TABLE_PATH = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
 
 try:
-    bq_client = bigquery.Client(project=os.getenv('GOOGLE_CLOUD_PROJECT'))
+    bq_client = bigquery.Client(project=PROJECT_ID)
 
-    logger.info(f"BigQuery client initialized for project: {os.getenv('GOOGLE_CLOUD_PROJECT')}")
+    logger.info(f"BigQuery client initialized for project: {PROJECT_ID} (table: {FULL_TABLE_PATH})")
 except Exception as e:
     logger.error(f"Failed to initialize BigQuery client: {e}")
     bq_client = None

@@ -14,7 +14,7 @@ classifiers = [
     "Framework :: Google Cloud"
 ]
 dependencies = [
-    "google-adk[gcp,db,eval]==2.3.0",
+    "google-adk[gcp,db,eval,a2a]==2.3.0",
     "google-cloud-storage==3.13.1",
     "google-cloud-firestore==2.29.0",
     "google-cloud-bigquery==3.44.0",
