@@ -1,21 +1,14 @@
+# tests/03a-session-state/session_test_2_output_key_with_output_schema.py
 import asyncio
+from dotenv import load_dotenv
+from pydantic import BaseModel, Field
 from google.genai import types
 from google.adk.agents import Agent
 from google.adk.runners import Runner
-from pydantic import BaseModel, Field
 from google.adk.sessions import InMemorySessionService
-from google.adk.tools import ToolContext
 
-import os
-
-# Clear Vertex AI routing environment variables
-os.environ.pop("GOOGLE_GENAI_USE_VERTEXAI", None)
-os.environ.pop("GCP_PROJECT", None)
-os.environ.pop("GOOGLE_CLOUD_PROJECT", None)
-
-# Set your standard AI Studio key
-from dotenv import load_dotenv
 load_dotenv()
+
 
 class PopulateStateInput(BaseModel):
     preference: str = Field(
@@ -26,9 +19,8 @@ class PopulateStateInput(BaseModel):
     )
 
 
-
 async def main():
-    # 1. Define the ADK Agent
+    # 1. Define the ADK Agent (output_key paired with output_schema)
     gatekeeper_agent = Agent(
         name="gatekeeper_agent",
         model="gemini-2.5-flash",
@@ -47,7 +39,7 @@ async def main():
     user_id = "user_4567"
     session_id = "s_8f9a2b1c-9012"
 
-    # Create the session with your initial state
+    # Create the session with initial state
     session = await session_service.create_session(
         app_name=app_name,
         user_id=user_id,
@@ -71,11 +63,11 @@ async def main():
         session_service=session_service
     )
 
-    # Unstructured input: The LLM will parse "favorite dish" -> key, "Risotto" -> value
+    # Unstructured input: The LLM parses "favorite dish" -> preference, "Risotto Alla Milanese" -> value
     user_message = types.Content(
         role="user",
         parts=[types.Part.from_text(text="My favorite dish is Risotto Alla Milanese.")]
-    )   
+    )
     print("Sending message to agent...")
     for turn in runner.run(
         user_id=user_id,
