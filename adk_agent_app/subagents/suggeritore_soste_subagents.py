@@ -10,34 +10,34 @@ from pathlib import Path
 import asyncio
 
 # # 1. Risolvi il percorso assoluto dello script FastMCP in modo sicuro
-# CURRENT_DIR = Path(__file__).parent.resolve()
-# FAST_MCP_SCRIPT_PATH = str(CURRENT_DIR.parent / "tools" / "suggeritore_agent_bq_mcp_soste_tool.py")
+CURRENT_DIR = Path(__file__).parent.resolve()
+FAST_MCP_SCRIPT_PATH = str(CURRENT_DIR.parent / "tools" / "suggeritore_agent_bq_mcp_soste_tool.py")
 
-# # 2. Usa l'interprete Python corrente (sys.executable) dell'ambiente .venv attivo
-# mcp_params = StdioServerParameters(
-#     command=sys.executable,
-#     args=[FAST_MCP_SCRIPT_PATH]
-# )
+# 2. Usa l'interprete Python corrente (sys.executable) dell'ambiente .venv attivo
+mcp_params = StdioServerParameters(
+    command=sys.executable,
+    args=[FAST_MCP_SCRIPT_PATH]
+)
 
-# # 2. Definiamo la funzione asincrona che l'ADK eseguirà direttamente quando l'agente la chiama
-# async def get_mcp_soste_session(latitude: float, longitude: float, fuel_type: str = None) -> str:
-#     """
-#     Searches BigQuery for highway service areas and restaurants near target coordinates matching fuel requirements.
-#     """
-#     async with stdio_client(mcp_params) as (read, write):
-#         async with ClientSession(read, write) as session:
-#             await session.initialize()
+# 2. Definiamo la funzione asincrona che l'ADK eseguirà direttamente quando l'agente la chiama
+async def get_mcp_soste_session(latitude: float, longitude: float, fuel_type: str = None) -> str:
+    """
+    Searches BigQuery for highway service areas and restaurants near target coordinates matching fuel requirements.
+    """
+    async with stdio_client(mcp_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
             
-#             # Argomenti da passare al FastMCP tool
-#             args = {
-#                 "latitude": latitude,
-#                 "longitude": longitude
-#             }
-#             if fuel_type:
-#                 args["fuel_type"] = fuel_type
+            # Argomenti da passare al FastMCP tool
+            args = {
+                "latitude": latitude,
+                "longitude": longitude
+            }
+            if fuel_type:
+                args["fuel_type"] = fuel_type
                 
-#             result = await session.call_tool("find_soste_by_fuel_and_location", arguments=args)
-#             return str(result.content)
+            result = await session.call_tool("find_soste_by_fuel_and_location", arguments=args)
+            return str(result.content)
         
  
 
@@ -66,8 +66,8 @@ soste_search_agent = Agent(
     Call 'find_soste_by_fuel_and_location' using the latitude, longitude, and required fuel/charging type.
     If no stops are found for a specific fuel type, retry without the fuel_type filter to return all available nearby stops.
     """,
-    # tools=[get_mcp_soste_session]  # Using the MCP session for BigQuery access
-    tools=[soste_search_tool]   # Using the FunctionTool for BigQuery access
+    tools=[get_mcp_soste_session]  # Using the MCP session for BigQuery access
+    #tools=[soste_search_tool]   # Using the FunctionTool for BigQuery access
 )
 
 # SUB-AGENT 3: Menu & Dietary Checker
