@@ -107,9 +107,14 @@ gcloud auth application-default login
 5. **Run the Multi-Agent / Graph Workflow:**
 
 ```bash
-# Launch the interactive ADK Dev UI in your browser
+# Launch the interactive ADK Dev UI for the main Sosta app
 uv run adk web
 
-# Or run the agent directly in the terminal
-uv run adk run adk_agent_app
+# Or launch the ADK Dev UI for the 02c Graph Workflow progressive examples
+uv run adk web tests/02c-graph-agent-workflows
+
+# Or run a specific Graph Workflow example directly in the terminal:
+uv run adk run tests/02c-graph-agent-workflows/agent_basic_graphworkflow
+uv run adk run tests/02c-graph-agent-workflows/agent_with_requestinput
+uv run adk run tests/02c-graph-agent-workflows/agent_with_requestinput_and_extractor
 ```
