@@ -1,5 +1,6 @@
 import os
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
 # ==========================================
 # CONFIGURATION
@@ -8,12 +9,56 @@ PROJECT_ID = "adk-workshop-sosta-app-dev"
 DATASET_ID = "soste_app_dev"
 TABLE_ID = "db_soste"
 
+LOCATION = "EU"  # Cambia con la tua region GCP (es. "europe-west1" o "US")
 full_table_path = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
 
-print(f"Connecting to Google Cloud and inserting data into {full_table_path}...")
 client = bigquery.Client(project=PROJECT_ID)
 
-query = f"""
+
+def ensure_dataset_exists():
+    """Crea il dataset BigQuery se non esiste."""
+    dataset_ref = client.dataset(DATASET_ID)
+    try:
+        client.get_dataset(dataset_ref)
+        print(f"✅ Dataset '{DATASET_ID}' già esistente.")
+    except NotFound:
+        print(f"⚙️ Creazione del Dataset '{DATASET_ID}' in corso...")
+        dataset = bigquery.Dataset(dataset_ref)
+        dataset.location = LOCATION
+        client.create_dataset(dataset, timeout=30)
+        print(f"✅ Dataset '{DATASET_ID}' creato con successo.")
+
+
+def ensure_table_exists():
+    """Crea la tabella BigQuery con lo schema e clustering geospaziale se non esiste."""
+    table_ref = client.dataset(DATASET_ID).table(TABLE_ID)
+    try:
+        client.get_table(table_ref)
+        print(f"✅ Tabella '{full_table_path}' già esistente.")
+    except NotFound:
+        print(f"⚙️ Creazione della Tabella '{full_table_path}' in corso...")
+        schema = [
+            bigquery.SchemaField("stop_name", "STRING", mode="REQUIRED"),
+            bigquery.SchemaField("fuel_types", "STRING", mode="REPEATED"),
+            bigquery.SchemaField("coordinates", "GEOGRAPHY", mode="REQUIRED"),
+            bigquery.SchemaField("services", "STRING", mode="REPEATED"),
+            bigquery.SchemaField("phone", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("created_at", "TIMESTAMP", mode="REQUIRED"),
+            bigquery.SchemaField("updated_at", "TIMESTAMP", mode="REQUIRED"),
+        ]
+
+        table = bigquery.Table(table_ref, schema=schema)
+        # Ottimizzazione geospaziale: clustering sulla colonna GEOGRAPHY
+        table.clustering_fields = ["coordinates"]
+
+        client.create_table(table)
+        print(f"✅ Tabella '{full_table_path}' creata con successo.")
+
+
+# ==========================================
+# SEED QUERY
+# ==========================================
+insert_query = f"""
     INSERT INTO `{full_table_path}` 
     (stop_name, fuel_types, coordinates, services, phone, created_at, updated_at)
     VALUES 
@@ -53,13 +98,21 @@ query = f"""
         ('Gelso Bianco Nord', ['GASOLINE', 'DIESEL', 'ELECTRIC_ULTRAFAST', 'LPG'], ST_GEOGFROMTEXT('POINT(15.0412 37.4789)'), ['RESTAURANT', 'RESTROOM', 'SHOP', 'ATM', 'FRESH_PASTRY'], '+39 095 591044', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())
 """
 
+
 def seed_bigquery():
+    # 1. Assicurati che Dataset e Tabella esistano prima dell'inserimento
+    ensure_dataset_exists()
+    ensure_table_exists()
+
+    # 2. Inserimento dei dati
+    print(f"🚀 Inserimento dati in corso su {full_table_path}...")
     try:
-        query_job = client.query(query)
-        query_job.result()  # Wait for query to complete
-        print(f"✅ Successfully inserted {query_job.num_dml_affected_rows} rows into {full_table_path}!")
+        query_job = client.query(insert_query)
+        query_job.result()  # Attendi il completamento
+        print(f"✅ Inserite con successo {query_job.num_dml_affected_rows} righe in {full_table_path}!")
     except Exception as e:
-        print(f"❌ An error occurred while inserting data: {e}")
+        print(f"❌ Si è verificato un errore durante l'inserimento: {e}")
+
 
 if __name__ == "__main__":
     seed_bigquery()
