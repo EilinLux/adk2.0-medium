@@ -1,13 +1,14 @@
+# adk_agent_app/subagents/suggeritore_soste_subagents.py
 from google.adk.agents import Agent
 from ..tools.suggeritore_agent_route_tools import route_generator_tool
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
-
-from ..tools.suggeritore_agent_route_tools import route_generator_tool
 from ..tools.suggeritore_agent_bq_soste_tools import soste_search_tool
-import sys
-from pathlib import Path
-import asyncio
+
+# Placeholder for MCP integration in 05b:
+# import asyncio
+# from pathlib import Path
+# import sys
+# from mcp import ClientSession, StdioServerParameters
+# from mcp.client.stdio import stdio_client
 
 # # 1. Risolvi il percorso assoluto dello script FastMCP in modo sicuro
 # CURRENT_DIR = Path(__file__).parent.resolve()

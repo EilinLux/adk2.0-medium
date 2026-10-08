@@ -1,6 +1,12 @@
+# adk_agent_app/subagents/suggeritore_agent.py
 from google.adk.agents import Agent
 from google.adk.tools import AgentTool
-from .suggeritore_soste_subagents import route_planner_agent, soste_search_agent, menu_checker_agent
+
+from .suggeritore_soste_subagents import (
+    menu_checker_agent,
+    route_planner_agent,
+    soste_search_agent,
+)
 
 suggeritore_agent = Agent(
     name="Suggeritore",
@@ -25,6 +31,6 @@ suggeritore_agent = Agent(
     tools=[
         AgentTool(agent=route_planner_agent),
         AgentTool(agent=soste_search_agent),
-        AgentTool(agent=menu_checker_agent)
-    ]
+        AgentTool(agent=menu_checker_agent),
+    ],
 )

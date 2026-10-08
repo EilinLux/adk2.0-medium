@@ -1,3 +1,4 @@
+# tests/03a-session-state/session_test_5_variable_injection.py
 import asyncio
 from typing import Any
 from pydantic import BaseModel, Field
@@ -11,6 +12,8 @@ from google.adk.sessions import InMemorySessionService
 load_dotenv()
 
 
+# Note: `dict[str, Any]` in `output_schema` requires Vertex AI (`GOOGLE_GENAI_USE_VERTEXAI=1`).
+# For guaranteed non-empty extraction under strict Controlled Generation, use a nested `BaseModel`.
 class PopulateStateInput(BaseModel):
     preferences: dict[str, Any] = Field(
         description=(
