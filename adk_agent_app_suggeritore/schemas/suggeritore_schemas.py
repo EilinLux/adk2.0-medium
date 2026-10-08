@@ -1,4 +1,4 @@
-# adk_agent_app/schemas/suggeritore_schemas.py
+# adk_agent_app_suggeritore/schemas/suggeritore_schemas.py
 from typing import List, Optional
 from pydantic import BaseModel, Field
 

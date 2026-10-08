@@ -1,22 +1,13 @@
-import os
-import sys
-from pathlib import Path
-from google.cloud import firestore
-from google.cloud import bigquery
-from google.cloud import storage
-
-# ==========================================
-# CONFIGURATION
-# ==========================================
-PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
-ENVIRONMENT = "dev"
-
-# Database & Bucket Identifiers
-FIRESTORE_SESSION_DB = "adk-agent-dev-session-memory-fs"
-FIRESTORE_FOOD_KB_DB = "adk-agent-dev-food-kb-dev-fs"
-BIGQUERY_DATASET = "soste_app_dev"
-BIGQUERY_TABLE = "db_soste"
-GCS_BUCKET = f"adk-agent-dev-product-specs"
+# adk_agent_app_suggeritore/test_connections.py
+from google.cloud import bigquery, firestore, storage
+from .config import (
+    BIGQUERY_DATASET,
+    BIGQUERY_TABLE,
+    FIRESTORE_FOOD_KB_DB,
+    FIRESTORE_SESSION_DB,
+    GCS_BUCKET,
+    PROJECT_ID,
+)
 
 
 def test_firestore(db_name: str, label: str) -> bool:
@@ -24,7 +15,6 @@ def test_firestore(db_name: str, label: str) -> bool:
     print(f"Testing Firestore ({label} -> '{db_name}')...", end=" ")
     try:
         db = firestore.Client(project=PROJECT_ID, database=db_name)
-        # Fix: Fetch the first collection reference without using page_size
         col_iter = db.collections()
         _ = next(col_iter, None)
         print("✅ SUCCESS")
@@ -32,6 +22,7 @@ def test_firestore(db_name: str, label: str) -> bool:
     except Exception as e:
         print(f"❌ FAILED\n   Error: {e}")
         return False
+
 
 def test_bigquery() -> bool:
     """Tests query execution against the BigQuery dataset & table."""
@@ -63,26 +54,22 @@ def test_gcs_bucket() -> bool:
         print(f"❌ FAILED\n   Error: {e}")
         return False
 
+
 def run_all_tests() -> bool:
     print("=" * 60)
     print(f" RUNNING GCP RESOURCE CONNECTIVITY TESTS FOR: {PROJECT_ID}")
     print("=" * 60 + "\n")
 
-    results = []
-
-    # 1. Test Firestore Databases
-    results.append(test_firestore(FIRESTORE_SESSION_DB, "Session Memory"))
-    results.append(test_firestore(FIRESTORE_FOOD_KB_DB, "Food Knowledge Base"))
-
-    # 2. Test BigQuery Data Warehouse
-    #results.append(test_bigquery())
-
-    # 3. Test Cloud Storage Bucket
-    results.append(test_gcs_bucket())
+    results = [
+        test_firestore(FIRESTORE_SESSION_DB, "Session Memory"),
+        test_firestore(FIRESTORE_FOOD_KB_DB, "Food Knowledge Base"),
+        test_bigquery(),
+        test_gcs_bucket(),
+    ]
 
     print("\n" + "=" * 60)
     is_success = all(results)
-    
+
     if is_success:
         print("🎉 ALL GCP RESOURCES PASSED CONNECTIVITY CHECKS!")
     else:
@@ -90,8 +77,8 @@ def run_all_tests() -> bool:
         print(f"⚠️ {failed_count} TEST(S) FAILED. Check IAM permissions or Terraform state.")
     print("=" * 60)
 
-    # CRITICAL: Return the boolean status to agent.py
     return is_success
+
 
 if __name__ == "__main__":
     run_all_tests()

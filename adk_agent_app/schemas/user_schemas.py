@@ -1,6 +1,6 @@
-# agent/schemas/user_schemas.py
-from pydantic import BaseModel, Field, EmailStr
+# adk_agent_app/schemas/user_schemas.py
 from typing import List, Optional
+from pydantic import BaseModel, Field
 
 class UserRegistrationInput(BaseModel):
     """Input payload when calling the onboarding pipeline programmatically."""

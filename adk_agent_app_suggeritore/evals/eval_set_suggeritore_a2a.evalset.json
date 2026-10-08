@@ -1,0 +1,98 @@
+{
+  "eval_set_id": "eval_set_suggeritore_a2a",
+  "name": "eval_set_suggeritore_a2a",
+  "description": "Standalone evaluation of the Suggeritore A2A microservice verifying its 3-step AgentTool trajectory (RoutePlannerAgent -> SosteSearchAgent -> MenuCheckerAgent) backed by the MCP SSE Server.",
+  "eval_cases": [
+    {
+      "eval_id": "suggeritore_a2a_milano_to_roma_vegan_ev",
+      "conversation": [
+        {
+          "invocation_id": "e-suggeritore-a2a-turn-1",
+          "user_content": {
+            "parts": [
+              {
+                "text": "Please optimize a trip for Guest Name: Zelda Ailine Luconi, Vehicle: Electric, Primary Preferences: Vegan, Companions: None (traveling alone), Origin: Milano, Destination: Rome."
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Hello Zelda! I have optimized your trip from Milano to Roma.\n\nHere is your recommended itinerary:\n\n**Your Journey:** Milano to Roma\n**Optimal Midpoint Stop:** Located near latitude 43.678, longitude 10.8506.\n\n1. **Badia al Pino Est**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Hosts restaurant services where you can find vegan options such as salads, pasta with tomato sauce, and grilled vegetables.\n\n2. **Cantagallo**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Offers adaptable vegan choices such as salads, pasta dishes, grilled vegetables, and plant-based milk for coffee.\n\n3. **Sillaro Ovest**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Service area restaurant with fresh produce, pasta, and vegetable options.\n\n4. **Secchia Ovest**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Provides salad bars, plain pasta, and grilled vegetables suitable for a vegan diet.\n\nEnjoy your trip to Roma!"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "destination_city": "Roma",
+                          "origin_city": "Milano"
+                        },
+                        "name": "RoutePlannerAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "fuel_type": "ELECTRIC_FAST",
+                          "latitude": 43.678,
+                          "longitude": 10.8506
+                        },
+                        "name": "SosteSearchAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "dietary_preferences": [
+                            "Vegan"
+                          ],
+                          "stop_names": [
+                            "Badia al Pino Est",
+                            "Cantagallo",
+                            "Sillaro Ovest",
+                            "Secchia Ovest"
+                          ]
+                        },
+                        "name": "MenuCheckerAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "adk_agent_app_suggeritore",
+        "user_id": "zelda_suggeritore_a2a_test_user"
+      }
+    }
+  ]
+}

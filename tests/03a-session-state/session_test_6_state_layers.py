@@ -1,3 +1,4 @@
+# tests/03a-session-state/session_test_6_state_layers.py
 import asyncio
 from typing import Any
 from pydantic import BaseModel, Field
@@ -13,6 +14,8 @@ load_dotenv()
 
 
 # 1. Pydantic Model for Structured Output Extraction
+# Note: `dict[str, Any]` in `output_schema` requires Vertex AI (`GOOGLE_GENAI_USE_VERTEXAI=1`).
+# For guaranteed non-empty extraction under strict Controlled Generation, use a nested `BaseModel`.
 class PreferenceData(BaseModel):
     preferences: dict[str, Any] = Field(
         description="Key-value pairs of extracted user preferences (e.g., {'favorite_dish': 'Risotto Alla Milanese'})"
@@ -20,7 +23,7 @@ class PreferenceData(BaseModel):
 
 
 # 2. Tool that populates Ephemeral ('temp:') State during execution
-async def search_mock_restaurant_api(cuisine: str, tool_context: ToolContext) -> str:
+async def search_mock_restaurant_api(cuisine: str, tool_context: ToolContext) -> dict[str, Any]:
     """Searches external API and stores raw payload in ephemeral 'temp:' state."""
     tool_context.session.state["temp:raw_api_payload"] = {
         "status_code": 200,
@@ -28,9 +31,10 @@ async def search_mock_restaurant_api(cuisine: str, tool_context: ToolContext) ->
         "raw_response_bytes": "0x4150495f5241575f44415441"
     }
     return {
-            "status": "success",
-            "message": f"Found 3 restaurants for cuisine '{cuisine}'."
-            }
+        "status": "success",
+        "message": f"Found 3 restaurants for cuisine '{cuisine}'."
+    }
+
 
 # 3. Helper function to create the ADK Agents
 def create_agents():
@@ -85,7 +89,7 @@ async def main():
     print("==================================================================")
 
     # 1. Initialize Zelda's persistent user profile and app config
-    zelda_s1 = await session_service.create_session(
+    await session_service.create_session(
         app_name=app_name,
         user_id="user_zelda",
         session_id="zelda_session_1",
@@ -113,12 +117,6 @@ async def main():
                 if part.text:
                     print(f"Gatekeeper Response: {part.text}")
 
-    # Check state after Gatekeeper runs
-    updated_zelda_s1 = await session_service.get_session(app_name=app_name, user_id="user_zelda", session_id="zelda_session_1")
-    print("\n[Zelda Session 1 State]:")
-    print(f"- Session Scope ('user_information'): {updated_zelda_s1.state.get('user_information')}")
-    print(f"- Ephemeral Scope ('temp:raw_api_payload'): {updated_zelda_s1.state.get('temp:raw_api_payload')} (Expected: None)")
-
     # 2. Run Recommendation Agent for Zelda (Triggers Tool + Ephemeral Temp State)
     runner_recommendation = Runner(agent=recommendation_agent, app_name=app_name, session_service=session_service)
     
@@ -134,24 +132,27 @@ async def main():
                 if part.text:
                     print(f"Agent Output: {part.text}")
 
+    # Verify state after both agents (and search_mock_restaurant_api tool) have executed
+    updated_zelda_s1 = await session_service.get_session(app_name=app_name, user_id="user_zelda", session_id="zelda_session_1")
+    print("\n[Zelda Session 1 State After Tool Execution]:")
+    print(f"- Session Scope ('user_information'): {updated_zelda_s1.state.get('user_information')}")
+    print(f"- Ephemeral Scope ('temp:raw_api_payload'): {updated_zelda_s1.state.get('temp:raw_api_payload')} (Expected: None - Purged after turn)")
+
     print("\n==================================================================")
     print("TEST 2: MARIO - USER ISOLATION & DIFFERENT LANGUAGE (English / Gluten-Free)")
     print("==================================================================")
 
-    mario_s1 = await session_service.create_session(
+    # Note: We intentionally omit 'user_information' for Mario to test optional '{user_information?}' injection!
+    await session_service.create_session(
         app_name=app_name,
         user_id="user_mario",
         session_id="mario_session_1",
         state={
-            **global_app_config,
             "user:user_preferred_language": "English",    # User Scope (English)
             "user:dietary_restrictions": "Gluten-Free",  # User Scope (Gluten-Free)
             "current_subagent": "gatekeeper_agent",      # Session Scope
         }
     )
-
-    # Pre-populate Mario's session preference directly to test subagent response
-    mario_s1.state["user_information"] = {"preferences": {"favorite_dish": "Gluten-Free Pasta"}}
 
     msg_mario = types.Content(
         role="user",
@@ -169,24 +170,22 @@ async def main():
     print("TEST 3: ZELDA - SESSION 2 (Persistence Verification Across Sessions)")
     print("==================================================================")
 
-    # Zelda opens a brand new chat session (`zelda_session_2`)
-    # User-scoped keys persist, but session keys (`user_information`, `workflow_step`) reset!
+    # Zelda opens a brand new chat session (`zelda_session_2`).
+    # Notice we do NOT pass `user:` or `app:` keys here—SessionService automatically persists and merges them!
+    # Meanwhile, unprefixed session keys (`user_information`, `workflow_step`) reset to None.
     zelda_s2 = await session_service.create_session(
         app_name=app_name,
         user_id="user_zelda",
         session_id="zelda_session_2",
         state={
-            **global_app_config,
-            "user:user_preferred_language": "Italian",  # Persisted from DB/Profile
-            "user:dietary_restrictions": "Vegetarian", # Persisted from DB/Profile
-            "current_subagent": "gatekeeper_agent",     # Reset for new session
+            "current_subagent": "gatekeeper_agent",     # Fresh session-scoped state for Session 2
         }
     )
 
     print("\n--- Verifying Zelda's State in New Session 2 ---")
-    print(f"1. User Language ('user:'):     {zelda_s2.state.get('user:user_preferred_language')} (Persisted across sessions)")
-    print(f"2. Dietary Needs ('user:'):      {zelda_s2.state.get('user:dietary_restrictions')} (Persisted across sessions)")
-    print(f"3. App Beta Flag ('app:'):       {zelda_s2.state.get('app:enable_beta_recommendations')} (Shared app-wide)")
+    print(f"1. User Language ('user:'):      {zelda_s2.state.get('user:user_preferred_language')} (Automatically persisted across sessions)")
+    print(f"2. Dietary Needs ('user:'):      {zelda_s2.state.get('user:dietary_restrictions')} (Automatically persisted across sessions)")
+    print(f"3. App Beta Flag ('app:'):       {zelda_s2.state.get('app:enable_beta_recommendations')} (Automatically shared app-wide)")
     print(f"4. Old Dish ('user_information'): {zelda_s2.state.get('user_information')} (Expected: None - Reset for Session 2)")
     print(f"5. Temp Data ('temp:'):          {zelda_s2.state.get('temp:raw_api_payload')} (Expected: None - Cleared after turn)")
 
