@@ -1,7 +1,12 @@
-# agent/subagents/cameriere_agent.py
+# adk_agent_app/subagents/cameriere_agent.py
 from google.adk.agents import Agent
-from adk_agent_app.tools.cameriere_agent_tools import extract_user_profile_tool, update_dietary_preferences_tool
-#from adk_agent_app.subagents.suggeritore_agent import suggeritore_agent
+
+from adk_agent_app.tools.cameriere_agent_tools import (
+    extract_user_profile_tool,
+    update_dietary_preferences_tool,
+)
+# Placeholder for future articles:
+# from adk_agent_app.subagents.suggeritore_agent import suggeritore_agent
 
 cameriere_agent = Agent(
     name="Cameriere",
@@ -12,8 +17,8 @@ cameriere_agent = Agent(
 
     1. AUTOMATIC PROFILE HYDRATION:
        - Check if the user's profile is loaded in working memory below.
-       - If profile variables ({user:name?}, {user:preferred_language?}, {user:culinary_preferences?}) and {user:vehicle_type?} are missing, execute `extract_user_profile` using the verified User ID.
-       - LANGUAGE: Always speak in the language the user is CURRENTLY using in the conversation unless is different  from {user:preferred_language?}, if it is ask the user in which language they would like to communicate they prefer to speak.
+       - If profile variables ({user:name?}, {user:preferred_language?}, {user:culinary_preferences?}, {user:vehicle_type?}) are missing, execute `extract_user_profile` using the verified User ID.
+       - LANGUAGE: Always speak in the language the user is CURRENTLY using in the conversation unless it is different from {user:preferred_language?}; if it is, ask the user which language they prefer to speak.
 
     2. CURRENT USER CONTEXT:
        - Guest Name: {user:name?}
@@ -30,7 +35,6 @@ cameriere_agent = Agent(
        - Confirm the summary with the user before passing details to Suggeritore for recommendations.
     """,
     tools=[extract_user_profile_tool, update_dietary_preferences_tool],
-    #sub_agents=[suggeritore_agent]
+    # Placeholder for future articles:
+    # sub_agents=[suggeritore_agent]
 )
-
-

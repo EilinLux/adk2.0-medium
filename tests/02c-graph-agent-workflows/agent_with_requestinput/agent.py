@@ -1,3 +1,4 @@
+# tests/02c-graph-agent-workflows/agent_with_requestinput/agent.py
 from typing import Dict, Any
 from google.adk import Agent, Workflow, Event
 from google.adk.events import RequestInput  # Import the HITL event
@@ -68,7 +69,8 @@ registratore_agent = Agent(
 cameriere_agent = Agent(
     name="cameriere_agent",
     model="gemini-2.5-flash",
-    instruction="""Help the registered user plan thier stop:
+    instruction="""
+    Help the registered user plan their stop:
     1. Ask if they are traveling with anyone else and if those companions have dietary preferences.
     2. Ask what their final destination is.
     3. IF the user provides a city or place name, NEVER ask for coordinates. 

@@ -1,18 +1,18 @@
-# agent/tools/registratore_agent_tools.py
-import os
-import uuid
-from typing import List, Dict, Any, Optional
+# adk_agent_app/tools/registratore_agent_tools.py
 from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
+import uuid
+
 from google.cloud import firestore
 from google.adk.tools import FunctionTool
 
-from adk_agent_app.config import logger
+from adk_agent_app.config import FIRESTORE_APP_DB, PROJECT_ID, logger
 
-PROJECT_ID = os.getenv("GCP_PROJECT", "adk-workshop-sosta-app-dev")
-DATABASE_ID = "adk-agent-dev-application-db-dev-fs"
 
-def _get_firestore_client():
-    return firestore.Client(project=PROJECT_ID, database=DATABASE_ID)
+def _get_firestore_client() -> firestore.Client:
+    """Lazy initializer to prevent gRPC fork / event loop conflicts."""
+    return firestore.Client(project=PROJECT_ID, database=FIRESTORE_APP_DB)
+
 
 def save_new_user(
     full_name: str,
@@ -21,7 +21,7 @@ def save_new_user(
     culinary_preferences: List[str],
     vehicle_type: str,
     connector_type: Optional[str] = None,
-    battery_capacity_kWh: Optional[float] = None
+    battery_capacity_kWh: Optional[float] = None,
 ) -> Dict[str, Any]:
     """
     Registers a new user in the Application Database with complete profile details.
@@ -29,8 +29,12 @@ def save_new_user(
     try:
         db = _get_firestore_client()
         new_id = f"usr_{uuid.uuid4().hex[:6]}"
-        
-        clean_preferences = [p.capitalize() for p in culinary_preferences] if isinstance(culinary_preferences, list) else [str(culinary_preferences).capitalize()]
+
+        clean_preferences = (
+            [p.capitalize() for p in culinary_preferences]
+            if isinstance(culinary_preferences, list)
+            else [str(culinary_preferences).capitalize()]
+        )
         clean_vehicle = vehicle_type.capitalize()
 
         user_payload = {
@@ -42,10 +46,10 @@ def save_new_user(
             "vehicle": {
                 "vehicle_type": clean_vehicle,
                 "connector_type": connector_type,
-                "battery_capacity_kWh": battery_capacity_kWh
+                "battery_capacity_kWh": battery_capacity_kWh,
             },
             "account_status": "active",
-            "created_at": datetime.now(timezone.utc)
+            "created_at": datetime.now(timezone.utc),
         }
 
         # Save to primary Application DB
@@ -55,10 +59,13 @@ def save_new_user(
         return {
             "status": "success",
             "user_id": new_id,
-            "message": f"Successfully registered {full_name} with ID '{new_id}'."
+            "message": f"Successfully registered {full_name} with ID '{new_id}'.",
         }
     except Exception as e:
         logger.error(f"Error in save_new_user: {e}", exc_info=True)
         return {"status": "error", "message": f"Registration failed: {str(e)}"}
 
+
+# Note: The tool name exposed to the LLM is `func.__name__` ('save_new_user'),
+# not the Python variable name ('save_new_user_tool').
 save_new_user_tool = FunctionTool(save_new_user)
