@@ -41,8 +41,6 @@ async def save_new_user(
     culinary_preferences: List[str],
     vehicle_type: str,
     tool_context: ToolContext,
-    connector_type: Optional[str] = None,
-    battery_capacity_kWh: Optional[float] = None,
 ) -> Dict[str, Any]:
     """Registers a new user profile in Firestore and hydrates active session memory.
 
@@ -57,8 +55,6 @@ async def save_new_user(
         culinary_preferences: A list of food restrictions or preferences (e.g., ['Vegetarian', 'Nut-free']).
         vehicle_type: Type of vehicle driven (e.g., 'Electric', 'Hybrid', 'Gasoline').
         tool_context: Injected runtime context (automatically handled by ADK framework).
-        connector_type: Optional EV plug specification (e.g., 'Type 2', 'CCS2').
-        battery_capacity_kWh: Optional total battery size in kilowatt-hours (e.g., 75.5).
 
     Returns:
         Dict[str, Any]: A structured registration result dictionary.
@@ -105,8 +101,8 @@ async def save_new_user(
             "culinary_preferences": clean_preferences,
             "vehicle": {
                 "vehicle_type": clean_vehicle_type,
-                "connector_type": connector_type or "",
-                "battery_capacity_kWh": battery_capacity_kWh,
+                "connector_type": None,
+                "battery_capacity_kWh": None,
             },
             "account_status": "active",
             "created_at": created_at_iso,
@@ -123,8 +119,8 @@ async def save_new_user(
         state["user:preferred_language"] = clean_language
         state["user:culinary_preferences"] = clean_preferences
         state["user:vehicle_type"] = clean_vehicle_type
-        state["user:connector_type"] = connector_type or ""
-        state["user:battery_capacity_kWh"] = battery_capacity_kWh
+        state["user:connector_type"] = ""
+        state["user:battery_capacity_kWh"] = None
         state["temp:verified_user_id"] = new_id
         state["workflow_step"] = "user_registered"
 

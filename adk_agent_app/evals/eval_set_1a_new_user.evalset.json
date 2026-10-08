@@ -280,12 +280,90 @@
           "final_response": {
             "parts": [
               {
-                "text": "Great! Your trip details are confirmed. I am ready to pass all of this information to Suggeritore to prepare your personalized recommendations for Rome."
+                "text": "Hello Zelda! I have optimized your trip from Milano to Roma.\n\nHere is your recommended itinerary:\n\n**Your Journey:** Milano to Roma\n**Optimal Midpoint Stop:** Located near latitude 43.678, longitude 10.8506.\n\n1. **Badia al Pino Est**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Hosts restaurant services where you can find vegan options such as salads, pasta with tomato sauce, and grilled vegetables.\n\n2. **Cantagallo**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Offers adaptable vegan choices such as salads, pasta dishes, and grilled vegetables.\n\n3. **Sillaro Ovest** & **Secchia Ovest**\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging and restaurant options suitable for a vegan diet.\n\nEnjoy your trip to Roma!"
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {},
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "agent_name": "Suggeritore"
+                        },
+                        "name": "transfer_to_agent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "destination_city": "Roma",
+                          "origin_city": "Milano"
+                        },
+                        "name": "RoutePlannerAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "fuel_type": "ELECTRIC_FAST",
+                          "latitude": 43.678,
+                          "longitude": 10.8506
+                        },
+                        "name": "SosteSearchAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "dietary_preferences": [
+                            "Vegan"
+                          ],
+                          "stop_names": [
+                            "Badia al Pino Est",
+                            "Cantagallo",
+                            "Sillaro Ovest",
+                            "Secchia Ovest"
+                          ]
+                        },
+                        "name": "MenuCheckerAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          },
           "creation_timestamp": 1789461748.3490272
         }
       ],

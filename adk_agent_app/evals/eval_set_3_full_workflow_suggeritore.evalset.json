@@ -1,0 +1,269 @@
+{
+  "eval_set_id": "eval_set_3_full_workflow_suggeritore",
+  "name": "eval_set_3_full_workflow_suggeritore",
+  "eval_cases": [
+    {
+      "eval_id": "full_workflow_new_user_to_suggeritore",
+      "conversation": [
+        {
+          "invocation_id": "e-69678585-2380-48a6-b0e0-ad08e80a6175",
+          "user_content": {
+            "parts": [
+              {
+                "text": "hello"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Hello! Welcome to Sosta. May I ask if you are already registered with us?"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-b6acc69d-9b56-406f-a055-eeb2df8b9813",
+          "user_content": {
+            "parts": [
+              {
+                "text": "no, but I would like to register"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Great! I can help you with that. To get you registered, I'll need a few details. Could you please provide your full name, email address, your preferred language, any culinary or dietary preferences you have (like Vegetarian or Gluten-free), and the type of vehicle you drive (e.g., Electric, Gasoline, Hybrid)?"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Gatekeeper",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "agent_name": "Registratore"
+                        },
+                        "name": "transfer_to_agent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "invocation_id": "e-58e84eaf-cd07-48a7-8554-9d56395fa482",
+          "user_content": {
+            "parts": [
+              {
+                "text": "my name is Zelda Ailine Luconi, my email address is zelda.luconi@gmail.com, I speak English and I love vegan food. ah, and I drive a electric car"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Hello Zelda Ailine Luconi! I see you're all set up with your profile, and it looks like you prefer Vegan food and drive an Electric car.\n\nTo help me plan your trip, could you tell me if you're traveling with companions? If so, do they have any dietary restrictions? Also, what is your final destination?"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "culinary_preferences": [
+                            "Vegan"
+                          ],
+                          "email": "zelda.luconi@gmail.com",
+                          "full_name": "Zelda Ailine Luconi",
+                          "preferred_language": "English",
+                          "vehicle_type": "Electric"
+                        },
+                        "name": "save_new_user"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "agent_name": "Cameriere"
+                        },
+                        "name": "transfer_to_agent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "user_id": "usr_7c0adf"
+                        },
+                        "name": "extract_user_profile"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "invocation_id": "e-98b0b5a5-5772-438f-9fe0-cf01aafa7d30",
+          "user_content": {
+            "parts": [
+              {
+                "text": "I am travelling alone to Rome"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Excellent! So, to confirm, here are the details for your trip:\n* **Guest Name:** Zelda Ailine Luconi\n* **Vehicle:** Electric\n* **Primary Preferences:** Vegan\n* **Companions:** None (traveling alone)\n* **Destination:** Rome\n\nIs this summary correct?"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {}
+        },
+        {
+          "invocation_id": "e-ef120b86-2e34-464e-a399-c89932dd0228",
+          "user_content": {
+            "parts": [
+              {
+                "text": "yes"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Hello Zelda! I have optimized your trip from Milano to Roma.\n\nHere is your recommended itinerary:\n\n**Your Journey:** Milano to Roma\n**Optimal Midpoint Stop:** Located near latitude 43.678, longitude 10.8506.\n\n1. **Badia al Pino Est**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Hosts restaurant services where you can find vegan options such as salads, pasta with tomato sauce, and grilled vegetables.\n\n2. **Cantagallo**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Offers adaptable vegan choices such as salads, pasta dishes, grilled vegetables, and plant-based milk for coffee.\n\n3. **Sillaro Ovest**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Service area restaurant with fresh produce, pasta, and vegetable options.\n\n4. **Secchia Ovest**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Provides salad bars, plain pasta, and grilled vegetables suitable for a vegan diet.\n\nEnjoy your trip to Roma!"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "agent_name": "Suggeritore"
+                        },
+                        "name": "transfer_to_agent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "destination_city": "Roma",
+                          "origin_city": "Milano"
+                        },
+                        "name": "RoutePlannerAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "fuel_type": "ELECTRIC_FAST",
+                          "latitude": 43.678,
+                          "longitude": 10.8506
+                        },
+                        "name": "SosteSearchAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Suggeritore",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "args": {
+                          "dietary_preferences": [
+                            "Vegan"
+                          ],
+                          "stop_names": [
+                            "Badia al Pino Est",
+                            "Cantagallo",
+                            "Sillaro Ovest",
+                            "Secchia Ovest"
+                          ]
+                        },
+                        "name": "MenuCheckerAgent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "adk_agent_app",
+        "user_id": "zelda_full_workflow_test_user"
+      }
+    }
+  ]
+}
