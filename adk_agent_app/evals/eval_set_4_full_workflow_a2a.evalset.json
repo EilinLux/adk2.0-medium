@@ -1,9 +1,9 @@
 {
-  "eval_set_id": "eval_set_3_full_workflow_suggeritore",
-  "name": "eval_set_3_full_workflow_suggeritore",
+  "eval_set_id": "eval_set_4_full_workflow_a2a",
+  "name": "eval_set_4_full_workflow_a2a",
   "eval_cases": [
     {
-      "eval_id": "full_workflow_new_user_to_suggeritore",
+      "eval_id": "full_workflow_new_user_to_suggeritore_a2a",
       "conversation": [
         {
           "invocation_id": "e-69678585-2380-48a6-b0e0-ad08e80a6175",
@@ -191,65 +191,6 @@
                           "agent_name": "Suggeritore"
                         },
                         "name": "transfer_to_agent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "destination_city": "Roma",
-                          "origin_city": "Milano"
-                        },
-                        "name": "RoutePlannerAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "fuel_type": "ELECTRIC_FAST",
-                          "latitude": 43.678,
-                          "longitude": 10.8506
-                        },
-                        "name": "SosteSearchAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "dietary_preferences": [
-                            "Vegan"
-                          ],
-                          "stop_names": [
-                            "Badia al Pino Est",
-                            "Cantagallo",
-                            "Sillaro Ovest",
-                            "Secchia Ovest"
-                          ]
-                        },
-                        "name": "MenuCheckerAgent"
                       }
                     }
                   ],
