@@ -42,6 +42,7 @@ To keep the codebase clean, isolated, and easy to follow, **each article in the 
 | **#5c: [RAG & Hybrid Knowledge Base Grounding](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`05c-rag-and-knowledge-base`](https://github.com/EilinLux/adk2.0-medium/tree/05c-rag-and-knowledge-base) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/05c-rag-and-knowledge-base/adk_agent_app) & [`tests/05c-rag-and-knowledge-base`](https://github.com/EilinLux/adk2.0-medium/tree/05c-rag-and-knowledge-base/tests/05c-rag-and-knowledge-base)) | Eliminating ungrounded menu hallucinations in `MenuCheckerAgent` by combining a structured **Firestore Food Knowledge Base** (`adk-agent-dev-food-kb-fs`, `stop_food_kb` collection) with **Vertex AI RAG Engine** over official Autogrill Product Specification PDFs in Cloud Storage (`gs://adk-agent-dev-product-specs/product_specs/`):<br>• [**`vertex_rag_seed.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/terraform/terraform_infrastructure/seeding/vertex_rag_seed.py): Provisions the Vertex AI RAG Corpus (`sosta-product-specs-corpus` with `text-embedding-005`) and imports the 8 Product Specification PDFs from GCS.<br>• [**`suggeritore_agent_food_kb_rag_tools.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/adk_agent_app/tools/suggeritore_agent_food_kb_rag_tools.py): Defines `get_stop_food_inventory_and_reviews` (`stop_food_kb_tool`) and `retrieve_product_specs_rag` (`product_specs_rag_tool`) wired into `MenuCheckerAgent`.<br>• [**1. `rag_test_1_builtin_vertex_rag_retrieval.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/tests/05c-rag-and-knowledge-base/rag_test_1_builtin_vertex_rag_retrieval.py): Demonstrates ADK's built-in `VertexAiRagRetrieval` on a standalone agent vs. the Gemini 2.x `400 INVALID_ARGUMENT` constraint when mixing native `Retrieval` tools with custom `FunctionTool` declarations.<br>• [**2. `rag_test_2_hybrid_firestore_and_rag.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/tests/05c-rag-and-knowledge-base/rag_test_2_hybrid_firestore_and_rag.py): End-to-end verification of `MenuCheckerAgent` combining Firestore stop inventory lookups (`europe-west1`) with Vertex AI RAG product spec retrieval (`europe-west3`). |
 | **#5d: [Beyond Basic Subagents: Agent2Agent (A2A) Protocol](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`05d-from-subagent-to-a2a-protocol`](https://github.com/EilinLux/adk2.0-medium/tree/05d-from-subagent-to-a2a-protocol) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/05d-from-subagent-to-a2a-protocol/adk_agent_app) & [`adk_agent_app_suggeritore`](https://github.com/EilinLux/adk2.0-medium/tree/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore)) | Decoupling `Suggeritore` into an independent remote **A2A Microservice** (`to_a2a(agent, port=8001)` in [`adk_agent_app_suggeritore/agent.py`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore/agent.py)) backed by a persistent **MCP SSE Server** (`port=8002` in [`suggeritore_agent_bq_mcp_soste_tool.py`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore/tools/suggeritore_agent_bq_mcp_soste_tool.py)) and hybrid **Firestore Food KB + Vertex AI RAG** ([`suggeritore_agent_food_kb_rag_tools.py`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore/tools/suggeritore_agent_food_kb_rag_tools.py)), connected to `Cameriere` via `RemoteA2aAgent` (`/.well-known/agent-card.json`) in [`cameriere_agent.py`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app/subagents/cameriere_agent.py), orchestrated with [`script_run_a2a_stack.sh`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/script_run_a2a_stack.sh), and evaluated across distributed boundaries via [`eval_set_4_full_workflow_a2a.evalset.json`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app/evals/eval_set_4_full_workflow_a2a.evalset.json) and [`eval_set_suggeritore_a2a.evalset.json`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore/evals/eval_set_suggeritore_a2a.evalset.json). |
 | **#6a: [Production Runner, Firestore SessionService & MemoryService in SostaApp](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`06a-runner-session-and-memory`](https://github.com/EilinLux/adk2.0-medium/tree/06a-runner-session-and-memory) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/06a-runner-session-and-memory/adk_agent_app) & [`tests/06a-runner-session-and-memory`](https://github.com/EilinLux/adk2.0-medium/tree/06a-runner-session-and-memory/tests/06a-runner-session-and-memory)) | Replacing `adk web`'s ephemeral in-memory defaults with a custom production **ADK `Runner`** ([`adk_agent_app/runner.py`](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/runner.py)) and **FastAPI Server** ([`adk_agent_app/server.py`](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/server.py)) wired to the dedicated Firestore database (`adk-agent-dev-session-memory-fs`):<br>• [**`firestore_session_service.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/services/firestore_session_service.py): `FirestoreSessionService` persisting multi-turn event history and `state_delta` (`user:` / `app:` / session state) into the `sosta_sessions` collection.<br>• [**`firestore_memory_service.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/services/firestore_memory_service.py): `FirestoreMemoryService` persisting cross-session episodic memories into `sosta_memories` and automatically injecting `<PAST_CONVERSATIONS>` into `Cameriere` via ADK's `preload_memory` tool.<br>• [**1. `runner_test_1_event_loop_and_runconfig.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/tests/06a-runner-session-and-memory/runner_test_1_event_loop_and_runconfig.py): Deep-dive into `Runner.run_async()`, the ADK `Event` yield loop (`get_function_calls()`, `get_function_responses()`, `actions.state_delta`, `is_final_response()`), and `RunConfig(max_llm_calls=...)`.<br>• [**2. `runner_test_2_firestore_session_persistence.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/tests/06a-runner-session-and-memory/runner_test_2_firestore_session_persistence.py): Proves stateless process recovery—Process #1 authenticates `usr_0a8f67`, is destroyed, and Process #2 seamlessly resumes the exact same `session_id` from Firestore.<br>• [**3. `runner_test_3_cross_session_memory_in_runner.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/tests/06a-runner-session-and-memory/runner_test_3_cross_session_memory_in_runner.py): End-to-end verification of `FirestoreMemoryService` + `preload_memory` recalling episodic trip context across separate sessions (`trip_session_october` $\rightarrow$ `trip_session_november`). |
+| **#6b: [Containerizing & Deploying the 3-Service Agent Stack to Google Cloud Run](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`06b-cloud-deployment`](https://github.com/EilinLux/adk2.0-medium/tree/06b-cloud-deployment) <br> ([`Dockerfile`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/Dockerfile), [`terraform/terraform_infrastructure/cloud-run.tf`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/terraform/terraform_infrastructure/cloud-run.tf) & [`tests/06b-cloud-deployment`](https://github.com/EilinLux/adk2.0-medium/tree/06b-cloud-deployment/tests/06b-cloud-deployment)) | Packaging the entire multi-agent platform into a single role-dispatched Docker image ([`Dockerfile`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/Dockerfile) + [`docker-entrypoint.sh`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/docker-entrypoint.sh) with `SERVICE_ROLE=mcp\|a2a\|runner`) pushed to **Google Artifact Registry**, and deploying 3 independent **Google Cloud Run v2** services via **Terraform** ([`cloud-run.tf`](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/terraform/terraform_infrastructure/cloud-run.tf)):<br>• **`adk-agent-dev-mcp-sse`** (`SERVICE_ROLE=mcp`): Serverless BigQuery MCP SSE Server.<br>• **`adk-agent-dev-suggeritore-a2a`** (`SERVICE_ROLE=a2a`): Remote A2A microservice with `CloudRunA2AMiddleware` dynamically resolving public `https://*.run.app/` URLs in `/.well-known/agent-card.json` and authenticating to MCP via Google OIDC identity tokens.<br>• **`adk-agent-dev`** (`SERVICE_ROLE=runner`): Stateless SostaApp FastAPI Production Runner backed by `FirestoreSessionService` and `FirestoreMemoryService`, calling `Suggeritore` over A2A with `CloudRunOIDCAuth`.<br>• [**`cloud_run_test_e2e.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06b-cloud-deployment/tests/06b-cloud-deployment/cloud_run_test_e2e.py): End-to-end verification of all 3 deployed Cloud Run services. |
 
 ---
 
@@ -50,7 +51,7 @@ To keep the codebase clean, isolated, and easy to follow, **each article in the 
 * **Gatekeeper:** Authentication guardrail and entry-point orchestrator. Validates user accounts and routes users to the appropriate flow.
 * **Registratore:** Onboarding specialist. Collects culinary preferences, dietary restrictions, and vehicle specifications for new users.
 * **Cameriere:** Session coordinator. Retrieves stored user profiles, recalls past episodic trip memories via `preload_memory`, gathers active trip context (companions, final destination), and delegates optimization over A2A (`RemoteA2aAgent`).
-* **Suggeritore (`adk_agent_app_suggeritore`):** Remote A2A microservice (`port=8001`). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE on `port=8002`), and `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG).
+* **Suggeritore (`adk_agent_app_suggeritore`):** Remote A2A microservice (`port=8001` locally / `adk-agent-dev-suggeritore-a2a` on Cloud Run). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE on `port=8002` locally / `adk-agent-dev-mcp-sse` on Cloud Run), and `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG).
 
 ---
 
@@ -77,10 +78,10 @@ To follow along with a specific Medium article, create and switch to a local bra
 git checkout -b <branch-name> origin/<branch-name>
 ```
 
-Example for this article (`06a-runner-session-and-memory`):
+Example for this article (`06b-cloud-deployment`):
 
 ```bash
-git checkout -b 06a-runner-session-and-memory origin/06a-runner-session-and-memory
+git checkout -b 06b-cloud-deployment origin/06b-cloud-deployment
 ```
 
 2. **Install dependencies:**
@@ -122,32 +123,19 @@ VERTEX_RAG_CORPUS_DISPLAY_NAME=sosta-product-specs-corpus
 # GOOGLE_API_KEY=your_gemini_api_key_here
 ```
 
-4. **Authenticate with Google Cloud & Provision Infrastructure:**
-Follow the instructions in [`terraform/README.md`](file:///Users/zelda.luconi/Medium/adk2.0-testing-env/adk2.0-medium/terraform/README.md) to provision and seed the Firestore, BigQuery, Cloud Storage, and Vertex AI RAG resources, then authenticate locally:
+4. **Build, Push & Deploy the 3-Service Stack to Google Cloud Run via Terraform:**
 
 ```bash
-gcloud auth application-default login
+# 1. Build the linux/amd64 container image and push to Google Artifact Registry
+cd terraform
+make docker-push
 
-# Upload Product Spec PDFs to GCS and seed the Vertex AI RAG Corpus
-uv run python terraform/terraform_infrastructure/seeding/upload_pdfs.py
-uv run python terraform/terraform_infrastructure/seeding/vertex_rag_seed.py
+# 2. Deploy all 3 Cloud Run services (adk-agent-dev-mcp-sse, adk-agent-dev-suggeritore-a2a, adk-agent-dev)
+cd terraform_infrastructure
+terraform apply -var-file=../environments/dev.tfvars
+
+# 3. Run the end-to-end verification test against the live Cloud Run stack
+cd ../..
+uv run python tests/06b-cloud-deployment/cloud_run_test_e2e.py
 ```
 
-5. **Run the Production Runner Tests & Launch the 3-Service Stack:**
-
-```bash
-# 1. Verify the ADK Runner event loop & RunConfig guardrails
-uv run python tests/06a-runner-session-and-memory/runner_test_1_event_loop_and_runconfig.py
-
-# 2. Verify stateless process recovery via FirestoreSessionService
-uv run python tests/06a-runner-session-and-memory/runner_test_2_firestore_session_persistence.py
-
-# 3. Verify cross-session episodic recall via FirestoreMemoryService + preload_memory
-uv run python tests/06a-runner-session-and-memory/runner_test_3_cross_session_memory_in_runner.py
-
-# 4. Launch the 3-service stack with the Production FastAPI Runner on :8000
-USE_CUSTOM_RUNNER=true ./script_run_a2a_stack.sh
-
-# 5. Or launch with the ADK Web UI on :8000
-./script_run_a2a_stack.sh
-```

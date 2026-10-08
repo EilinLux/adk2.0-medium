@@ -84,15 +84,16 @@ refresh:
 	@echo "Refreshing Terraform state for $(ENV) environment..."
 	cd $(TF_DIR) && terraform refresh -var-file=../environments/$(ENV).tfvars
 
-# Build and push Docker image to Artifact Registry
+# Build and push linux/amd64 Docker image to Artifact Registry (from repository root ..)
 docker-build:
-	@echo "Building Docker image for ADK Agent..."
-	docker build -t adk-agent:latest .
+	@echo "Building linux/amd64 Docker image for ADK Agent Stack..."
+	docker build --platform linux/amd64 -t adk-agent:latest ..
 
 docker-push: docker-build
-	@echo "Tagging and pushing Docker image..."
+	@echo "Tagging and pushing Docker image to Artifact Registry..."
 	docker tag adk-agent:latest europe-west1-docker.pkg.dev/adk-workshop-sosta-app-dev/adk-agent/adk-agent:latest
 	docker push europe-west1-docker.pkg.dev/adk-workshop-sosta-app-dev/adk-agent/adk-agent:latest
+
 
 # Create GCS bucket for remote state
 setup-remote-state:

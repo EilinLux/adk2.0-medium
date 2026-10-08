@@ -13,7 +13,31 @@ from ..tools.cameriere_agent_tools import (
     update_dietary_preferences_tool,
 )
 
+import httpx
+
 SUGGERITORE_A2A_URL = os.getenv("SUGGERITORE_A2A_URL", "http://localhost:8001").rstrip("/")
+
+
+class CloudRunOIDCAuth(httpx.Auth):
+    """Attaches a Google Cloud OIDC ID token when calling https://*.run.app A2A services."""
+
+    def __init__(self, target_audience: str):
+        self.target_audience = target_audience.rstrip("/")
+
+    def auth_flow(self, request: httpx.Request):
+        if self.target_audience.startswith("https://"):
+            try:
+                from google.auth.transport.requests import Request as GoogleAuthRequest
+                from google.oauth2 import id_token
+
+                token = id_token.fetch_id_token(
+                    GoogleAuthRequest(), self.target_audience
+                )
+                request.headers["Authorization"] = f"Bearer {token}"
+            except Exception:
+                pass
+        yield request
+
 
 # Create a RemoteA2aAgent that connects to our Suggeritore A2A Microservice
 # This acts as a client-side proxy - Cameriere can transfer to it like a local sub-agent
@@ -22,6 +46,10 @@ suggeritore_agent = RemoteA2aAgent(
     description="Orchestrates multi-agent trip optimization to find ideal stops based on charging/fuel and dining needs.",
     # Point to the agent card URL - this is where the A2A protocol metadata lives
     agent_card=f"{SUGGERITORE_A2A_URL}{AGENT_CARD_WELL_KNOWN_PATH}",
+    httpx_client=httpx.AsyncClient(
+        timeout=600.0,
+        auth=CloudRunOIDCAuth(SUGGERITORE_A2A_URL),
+    ),
 )
 
 

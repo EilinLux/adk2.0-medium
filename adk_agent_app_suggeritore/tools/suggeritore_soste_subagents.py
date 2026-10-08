@@ -18,8 +18,26 @@ from ..tools.suggeritore_agent_food_kb_rag_tools import (
 )
 from ..tools.suggeritore_agent_route_tools import route_generator_tool
 
+from urllib.parse import urlparse
+
 MCP_PORT = os.getenv("MCP_PORT", "8002")
-MCP_SSE_URL = f"http://127.0.0.1:{MCP_PORT}/sse"
+MCP_SSE_URL = os.getenv("MCP_SSE_URL", f"http://127.0.0.1:{MCP_PORT}/sse")
+
+
+def _get_mcp_auth_headers(mcp_url: str) -> dict[str, str]:
+    """Fetches a Google Cloud OIDC ID token when connecting to a Cloud Run https://*.run.app MCP server."""
+    if not mcp_url.startswith("https://"):
+        return {}
+    try:
+        from google.auth.transport.requests import Request as GoogleAuthRequest
+        from google.oauth2 import id_token
+
+        parsed = urlparse(mcp_url)
+        audience = f"{parsed.scheme}://{parsed.netloc}"
+        token = id_token.fetch_id_token(GoogleAuthRequest(), audience)
+        return {"Authorization": f"Bearer {token}"}
+    except Exception:
+        return {}
 
 
 # Define the async tool function that ADK executes when SosteSearchAgent invokes it
@@ -38,7 +56,8 @@ async def get_mcp_soste_session(
     Returns:
         str: Stringified MCP tool execution content containing matching highway stops.
     """
-    async with sse_client(MCP_SSE_URL) as (read, write):
+    headers = _get_mcp_auth_headers(MCP_SSE_URL)
+    async with sse_client(MCP_SSE_URL, headers=headers, timeout=30.0) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
 
@@ -54,6 +73,7 @@ async def get_mcp_soste_session(
                 "find_soste_by_fuel_and_location", arguments=args
             )
             return str(result.content)
+
 
 
 # SUB-AGENT 1: Route Planner
