@@ -199,14 +199,14 @@ gcloud projects add-iam-policy-binding adk-workshop-sosta-app-dev \
 
 ```
 
-Once permissions are configured, run the database seeding scripts to populate your Firestore collections and BigQuery tables:
+Once permissions are configured, run the database seeding scripts to populate your Firestore collections, BigQuery tables, and GCS bucket:
 
 ```bash
-python seeding/firestore_seed.py
-python seeding/bigquery_seed.py
-python seeding/firestore_memory_seed.py
-
-
+uv run python seeding/firestore_app_db_seed.py
+uv run python seeding/firestore_food_kb_seed.py
+uv run python seeding/firestore_memory_seed.py
+uv run python seeding/bq_seed.py
+uv run python seeding/upload_pdfs.py
 ```
 
 With the infrastructure provisioned via Terraform and the database seeded with initial knowledge, our agent tools now have real backend services to interact with.

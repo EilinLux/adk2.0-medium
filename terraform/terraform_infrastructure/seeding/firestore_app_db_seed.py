@@ -1,10 +1,14 @@
+import os
+from dotenv import load_dotenv
 from google.cloud import firestore
+
+load_dotenv()
 
 # ==========================================
 # CONFIGURATION
 # ==========================================
-PROJECT_ID = "adk-workshop-sosta-app-dev"
-DATABASE_ID = "adk-agent-dev-application-db-dev-fs"         
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+DATABASE_ID = os.getenv("FIRESTORE_APP_DB", "adk-agent-dev-application-db-fs")
 COLLECTION_NAME = "users"
 
 print(f"Connecting to Firestore database '{DATABASE_ID}'...")
@@ -52,6 +56,20 @@ mock_users = {
             "battery_capacity_kWh": 52
         },
         "account_status": "active"
+    },
+    "usr_0a8f67": {
+        "user_id": "usr_0a8f67",
+        "full_name": "Zelda Ailine Luconi",
+        "email": "zelda.luconi@gmail.com",
+        "preferred_language": "Italian",
+        "culinary_preferences": ["Vegan"],
+        "vehicle": {
+            "vehicle_type": "Electric",
+            "connector_type": None,
+            "battery_capacity_kWh": None
+        },
+        "account_status": "active",
+        "created_at": "2026-09-11T13:37:44.114983Z"
     }
 }
 
@@ -72,6 +90,7 @@ def seed_database():
             
             # Prepare payload
             payload = {
+                "user_id": user_id,
                 "full_name": data["full_name"],
                 "email": data["email"],
                 "preferred_language": data["preferred_language"],
@@ -79,6 +98,8 @@ def seed_database():
                 "vehicle": data["vehicle"],
                 "account_status": data["account_status"]
             }
+            if "created_at" in data:
+                payload["created_at"] = data["created_at"]
             
             doc_ref.set(payload)
             print(f"  -> Inserted data for: {user_id}")
