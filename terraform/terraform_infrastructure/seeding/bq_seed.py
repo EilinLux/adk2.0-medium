@@ -22,7 +22,10 @@ def ensure_dataset_exists():
     """Crea il dataset BigQuery se non esiste."""
     dataset_ref = client.dataset(DATASET_ID)
     try:
-        client.get_dataset(dataset_ref)
+        dataset = client.get_dataset(dataset_ref)
+        if dataset.default_table_expiration_ms is not None:
+            dataset.default_table_expiration_ms = None
+            client.update_dataset(dataset, ["default_table_expiration_ms"])
         print(f"✅ Dataset '{DATASET_ID}' già esistente.")
     except NotFound:
         print(f"⚙️ Creazione del Dataset '{DATASET_ID}' in corso...")
@@ -36,7 +39,10 @@ def ensure_table_exists():
     """Crea la tabella BigQuery con lo schema e clustering geospaziale se non esiste."""
     table_ref = client.dataset(DATASET_ID).table(TABLE_ID)
     try:
-        client.get_table(table_ref)
+        table = client.get_table(table_ref)
+        if table.expires is not None:
+            table.expires = None
+            client.update_table(table, ["expires"])
         print(f"✅ Tabella '{full_table_path}' già esistente.")
     except NotFound:
         print(f"⚙️ Creazione della Tabella '{full_table_path}' in corso...")
@@ -54,7 +60,10 @@ def ensure_table_exists():
         # Ottimizzazione geospaziale: clustering sulla colonna GEOGRAPHY
         table.clustering_fields = ["coordinates"]
 
-        client.create_table(table)
+        table = client.create_table(table)
+        if table.expires is not None:
+            table.expires = None
+            client.update_table(table, ["expires"])
         print(f"✅ Tabella '{full_table_path}' creata con successo.")
 
 

@@ -25,3 +25,7 @@ FIRESTORE_FOOD_KB_DB = os.getenv("FIRESTORE_FOOD_KB_DB", "adk-agent-dev-food-kb-
 BIGQUERY_DATASET = os.getenv("BIGQUERY_DATASET", "soste_app_dev")
 BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE", "db_soste")
 GCS_BUCKET = os.getenv("GCS_BUCKET", "adk-agent-dev-product-specs")
+VERTEX_RAG_LOCATION = os.getenv("VERTEX_RAG_LOCATION", "europe-west3")
+VERTEX_RAG_CORPUS_DISPLAY_NAME = os.getenv(
+    "VERTEX_RAG_CORPUS_DISPLAY_NAME", "sosta-product-specs-corpus"
+)
