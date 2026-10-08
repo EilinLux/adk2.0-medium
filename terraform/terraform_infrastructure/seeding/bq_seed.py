@@ -1,13 +1,16 @@
 import os
+from dotenv import load_dotenv
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
+
+load_dotenv()
 
 # ==========================================
 # CONFIGURATION
 # ==========================================
-PROJECT_ID = "adk-workshop-sosta-app-dev"
-DATASET_ID = "soste_app_dev"
-TABLE_ID = "db_soste"
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "adk-workshop-sosta-app-dev")
+DATASET_ID = os.getenv("BIGQUERY_DATASET", "soste_app_dev")
+TABLE_ID = os.getenv("BIGQUERY_TABLE", "db_soste")
 
 LOCATION = "EU"  # Cambia con la tua region GCP (es. "europe-west1" o "US")
 full_table_path = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"

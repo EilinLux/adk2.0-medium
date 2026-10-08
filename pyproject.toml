@@ -1,7 +1,7 @@
 [project]
-name = "adk101-medium"
-version = "0.1.0"
-description = "A practical implementation of production-grade AI agents using Google's Agent Developer Kit (ADK) 2.0, following the ADK 101 Medium series for SostaAèè."
+name = "adk2.0-medium"
+version = "5.2.0"
+description = "A practical implementation of production-grade AI agents using Google's Agent Developer Kit (ADK) 2.0, following the ADK 101 Medium series for SostaApp."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
@@ -14,14 +14,11 @@ classifiers = [
     "Framework :: Google Cloud"
 ]
 dependencies = [
-    "google-adk[gcp,db,eval]==2.3.0",
-    "google-cloud-storage==3.13.1",
-    "google-cloud-firestore==2.29.0",
-    "google-cloud-bigquery==3.44.0",
-    "google-genai==2.10.0",
-    "fastapi==0.138.1",
-    "uvicorn==0.49.0",
-    "python-dotenv==1.2.2",
+    "google-adk[gcp,db,eval]>=2.0.0",
+    "google-cloud-storage>=3.0.0",
+    "google-cloud-firestore>=2.29.0",
+    "google-cloud-bigquery>=3.44.0",
+    "python-dotenv>=1.0.0",
     "greenlet",
     "pytest",
     "anyio",
@@ -31,6 +28,7 @@ dependencies = [
     "twisted",
     "mcp"
 ]
+
 [project.urls]
 "Homepage" = "https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9"
 "Source" = "https://github.com/EilinLux/adk2.0-medium"
