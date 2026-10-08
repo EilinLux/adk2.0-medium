@@ -1,19 +1,40 @@
+# tests/03c-memory-test/memory_test_1_inmemory.py
+"""
+ADK 2.0 101 - Article 3c: InMemoryMemoryService Demo
+----------------------------------------------------
+Demonstrates saving a completed session to `InMemoryMemoryService` via
+`add_session_to_memory()` and retrieving past conversation turns across sessions
+via `search_memory()`.
+"""
 import asyncio
 from typing import Any
-from pydantic import BaseModel, Field
+import warnings
+
 from dotenv import load_dotenv
+from pydantic import BaseModel, Field
 
 from google.genai import types
 from google.adk.agents import Agent
+from google.adk.memory import InMemoryMemoryService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.adk.tools import ToolContext
-from google.adk.memory import InMemoryMemoryService
 
 load_dotenv()
 
+# Suppress experimental warnings and deprecation notices
+warnings.filterwarnings("ignore", message=".*JSON_SCHEMA_FOR_FUNC_DECL.*")
+warnings.filterwarnings(
+    "ignore",
+    category=FutureWarning,
+    module="google.adk.memory.vertex_ai_memory_bank_service",
+)
+
 
 # 1. Pydantic Model for Structured Output Extraction
+# NOTE: Open-ended `dict[str, Any]` in `output_schema` generates `additionalProperties: true`,
+# which is supported by Vertex AI (`GOOGLE_GENAI_USE_VERTEXAI=1`) but rejected by the
+# Gemini Developer API (`GOOGLE_GENAI_USE_VERTEXAI=0`).
 class PreferenceData(BaseModel):
     preferences: dict[str, Any] = Field(
         description="Key-value pairs of extracted user preferences (e.g., {'culinary_preference': 'Salmon'})"
@@ -21,16 +42,16 @@ class PreferenceData(BaseModel):
 
 
 # 2. Tool that populates Ephemeral ('temp:') State during execution
-async def search_mock_restaurant_api(cuisine: str, tool_context: ToolContext) -> str:
+async def search_mock_restaurant_api(cuisine: str, tool_context: ToolContext) -> dict[str, Any]:
     """Searches external API and stores raw payload in ephemeral 'temp:' state."""
-    tool_context.session.state["temp:raw_api_payload"] = {
+    tool_context.state["temp:raw_api_payload"] = {
         "status_code": 200,
         "results_count": 3,
-        "raw_response_bytes": "0x4150495f5241575f44415441"
+        "raw_response_bytes": "0x4150495f5241575f44415441",
     }
     return {
         "status": "success",
-        "message": f"Found 3 restaurants for cuisine/ingredient '{cuisine}'."
+        "message": f"Found 3 restaurants for cuisine/ingredient '{cuisine}'.",
     }
 
 

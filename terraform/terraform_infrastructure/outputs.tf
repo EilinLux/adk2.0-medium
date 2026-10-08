@@ -96,6 +96,16 @@ output "firestore_food_kb_database_uid" {
   value       = google_firestore_database.food_knowledge_base.uid
 }
 
+output "firestore_application_database_name" {
+  description = "Name of the Firestore application database"
+  value       = google_firestore_database.application_db.name
+}
+
+output "firestore_application_database_uid" {
+  description = "UID of the Firestore application database"
+  value       = google_firestore_database.application_db.uid
+}
+
 # ==========================================
 # GCP PROJECT INFORMATION
 # ==========================================
