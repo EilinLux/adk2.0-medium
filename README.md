@@ -41,6 +41,7 @@ To keep the codebase clean, isolated, and easy to follow, **each article in the 
 | **#5b: [From FunctionTool to Model Context Protocol (MCP)](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`05b-from-tool-to-mcp`](https://github.com/EilinLux/adk2.0-medium/tree/05b-from-tool-to-mcp) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/05b-from-tool-to-mcp/adk_agent_app)) | Decoupling BigQuery geospatial stop search into a standalone **Model Context Protocol (MCP)** stdio server ([`suggeritore_agent_bq_mcp_soste_tool.py`](https://github.com/EilinLux/adk2.0-medium/blob/05b-from-tool-to-mcp/adk_agent_app/tools/suggeritore_agent_bq_mcp_soste_tool.py)) using `@mcp.tool()` and connecting `SosteSearchAgent` via `stdio_client` and `ClientSession` (`get_mcp_soste_session`) in [`suggeritore_soste_subagents.py`](https://github.com/EilinLux/adk2.0-medium/blob/05b-from-tool-to-mcp/adk_agent_app/subagents/suggeritore_soste_subagents.py). |
 | **#5c: [RAG & Hybrid Knowledge Base Grounding](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`05c-rag-and-knowledge-base`](https://github.com/EilinLux/adk2.0-medium/tree/05c-rag-and-knowledge-base) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/05c-rag-and-knowledge-base/adk_agent_app) & [`tests/05c-rag-and-knowledge-base`](https://github.com/EilinLux/adk2.0-medium/tree/05c-rag-and-knowledge-base/tests/05c-rag-and-knowledge-base)) | Eliminating ungrounded menu hallucinations in `MenuCheckerAgent` by combining a structured **Firestore Food Knowledge Base** (`adk-agent-dev-food-kb-fs`, `stop_food_kb` collection) with **Vertex AI RAG Engine** over official Autogrill Product Specification PDFs in Cloud Storage (`gs://adk-agent-dev-product-specs/product_specs/`):<br>• [**`vertex_rag_seed.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/terraform/terraform_infrastructure/seeding/vertex_rag_seed.py): Provisions the Vertex AI RAG Corpus (`sosta-product-specs-corpus` with `text-embedding-005`) and imports the 8 Product Specification PDFs from GCS.<br>• [**`suggeritore_agent_food_kb_rag_tools.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/adk_agent_app/tools/suggeritore_agent_food_kb_rag_tools.py): Defines `get_stop_food_inventory_and_reviews` (`stop_food_kb_tool`) and `retrieve_product_specs_rag` (`product_specs_rag_tool`) wired into `MenuCheckerAgent`.<br>• [**1. `rag_test_1_builtin_vertex_rag_retrieval.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/tests/05c-rag-and-knowledge-base/rag_test_1_builtin_vertex_rag_retrieval.py): Demonstrates ADK's built-in `VertexAiRagRetrieval` on a standalone agent vs. the Gemini 2.x `400 INVALID_ARGUMENT` constraint when mixing native `Retrieval` tools with custom `FunctionTool` declarations.<br>• [**2. `rag_test_2_hybrid_firestore_and_rag.py`**](https://github.com/EilinLux/adk2.0-medium/blob/05c-rag-and-knowledge-base/tests/05c-rag-and-knowledge-base/rag_test_2_hybrid_firestore_and_rag.py): End-to-end verification of `MenuCheckerAgent` combining Firestore stop inventory lookups (`europe-west1`) with Vertex AI RAG product spec retrieval (`europe-west3`). |
 | **#5d: [Beyond Basic Subagents: Agent2Agent (A2A) Protocol](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`05d-from-subagent-to-a2a-protocol`](https://github.com/EilinLux/adk2.0-medium/tree/05d-from-subagent-to-a2a-protocol) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/05d-from-subagent-to-a2a-protocol/adk_agent_app) & [`adk_agent_app_suggeritore`](https://github.com/EilinLux/adk2.0-medium/tree/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore)) | Decoupling `Suggeritore` into an independent remote **A2A Microservice** (`to_a2a(agent, port=8001)` in [`adk_agent_app_suggeritore/agent.py`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore/agent.py)) backed by a persistent **MCP SSE Server** (`port=8002` in [`suggeritore_agent_bq_mcp_soste_tool.py`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore/tools/suggeritore_agent_bq_mcp_soste_tool.py)) and hybrid **Firestore Food KB + Vertex AI RAG** ([`suggeritore_agent_food_kb_rag_tools.py`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore/tools/suggeritore_agent_food_kb_rag_tools.py)), connected to `Cameriere` via `RemoteA2aAgent` (`/.well-known/agent-card.json`) in [`cameriere_agent.py`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app/subagents/cameriere_agent.py), orchestrated with [`script_run_a2a_stack.sh`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/script_run_a2a_stack.sh), and evaluated across distributed boundaries via [`eval_set_4_full_workflow_a2a.evalset.json`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app/evals/eval_set_4_full_workflow_a2a.evalset.json) and [`eval_set_suggeritore_a2a.evalset.json`](https://github.com/EilinLux/adk2.0-medium/blob/05d-from-subagent-to-a2a-protocol/adk_agent_app_suggeritore/evals/eval_set_suggeritore_a2a.evalset.json). |
+| **#6a: [Production Runner, Firestore SessionService & MemoryService in SostaApp](https://medium.com/@ailluzdatascience/list/agent-developer-kit-adk-5d957c62e9a9)** | [`06a-runner-session-and-memory`](https://github.com/EilinLux/adk2.0-medium/tree/06a-runner-session-and-memory) <br> ([`adk_agent_app`](https://github.com/EilinLux/adk2.0-medium/tree/06a-runner-session-and-memory/adk_agent_app) & [`tests/06a-runner-session-and-memory`](https://github.com/EilinLux/adk2.0-medium/tree/06a-runner-session-and-memory/tests/06a-runner-session-and-memory)) | Replacing `adk web`'s ephemeral in-memory defaults with a custom production **ADK `Runner`** ([`adk_agent_app/runner.py`](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/runner.py)) and **FastAPI Server** ([`adk_agent_app/server.py`](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/server.py)) wired to the dedicated Firestore database (`adk-agent-dev-session-memory-fs`):<br>• [**`firestore_session_service.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/services/firestore_session_service.py): `FirestoreSessionService` persisting multi-turn event history and `state_delta` (`user:` / `app:` / session state) into the `sosta_sessions` collection.<br>• [**`firestore_memory_service.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/adk_agent_app/services/firestore_memory_service.py): `FirestoreMemoryService` persisting cross-session episodic memories into `sosta_memories` and automatically injecting `<PAST_CONVERSATIONS>` into `Cameriere` via ADK's `preload_memory` tool.<br>• [**1. `runner_test_1_event_loop_and_runconfig.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/tests/06a-runner-session-and-memory/runner_test_1_event_loop_and_runconfig.py): Deep-dive into `Runner.run_async()`, the ADK `Event` yield loop (`get_function_calls()`, `get_function_responses()`, `actions.state_delta`, `is_final_response()`), and `RunConfig(max_llm_calls=...)`.<br>• [**2. `runner_test_2_firestore_session_persistence.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/tests/06a-runner-session-and-memory/runner_test_2_firestore_session_persistence.py): Proves stateless process recovery—Process #1 authenticates `usr_0a8f67`, is destroyed, and Process #2 seamlessly resumes the exact same `session_id` from Firestore.<br>• [**3. `runner_test_3_cross_session_memory_in_runner.py`**](https://github.com/EilinLux/adk2.0-medium/blob/06a-runner-session-and-memory/tests/06a-runner-session-and-memory/runner_test_3_cross_session_memory_in_runner.py): End-to-end verification of `FirestoreMemoryService` + `preload_memory` recalling episodic trip context across separate sessions (`trip_session_october` $\rightarrow$ `trip_session_november`). |
 
 ---
 
@@ -48,7 +49,7 @@ To keep the codebase clean, isolated, and easy to follow, **each article in the 
 
 * **Gatekeeper:** Authentication guardrail and entry-point orchestrator. Validates user accounts and routes users to the appropriate flow.
 * **Registratore:** Onboarding specialist. Collects culinary preferences, dietary restrictions, and vehicle specifications for new users.
-* **Cameriere:** Session coordinator. Retrieves stored user profiles, gathers active trip context (companions, final destination), and delegates optimization over A2A (`RemoteA2aAgent`).
+* **Cameriere:** Session coordinator. Retrieves stored user profiles, recalls past episodic trip memories via `preload_memory`, gathers active trip context (companions, final destination), and delegates optimization over A2A (`RemoteA2aAgent`).
 * **Suggeritore (`adk_agent_app_suggeritore`):** Remote A2A microservice (`port=8001`). Orchestrates `RoutePlannerAgent`, `SosteSearchAgent` (via MCP SSE on `port=8002`), and `MenuCheckerAgent` (via Firestore Food KB + Vertex AI RAG).
 
 ---
@@ -76,10 +77,10 @@ To follow along with a specific Medium article, create and switch to a local bra
 git checkout -b <branch-name> origin/<branch-name>
 ```
 
-Example for this article (`05d-from-subagent-to-a2a-protocol`):
+Example for this article (`06a-runner-session-and-memory`):
 
 ```bash
-git checkout -b 05d-from-subagent-to-a2a-protocol origin/05d-from-subagent-to-a2a-protocol
+git checkout -b 06a-runner-session-and-memory origin/06a-runner-session-and-memory
 ```
 
 2. **Install dependencies:**
@@ -132,19 +133,21 @@ uv run python terraform/terraform_infrastructure/seeding/upload_pdfs.py
 uv run python terraform/terraform_infrastructure/seeding/vertex_rag_seed.py
 ```
 
-5. **Launch the 3-Service A2A + MCP Stack & Run Evaluations:**
+5. **Run the Production Runner Tests & Launch the 3-Service Stack:**
 
 ```bash
-# 1. Verify connectivity to Firestore, BigQuery, and Cloud Storage
-uv run python adk_agent_app/test_connections.py
+# 1. Verify the ADK Runner event loop & RunConfig guardrails
+uv run python tests/06a-runner-session-and-memory/runner_test_1_event_loop_and_runconfig.py
 
-# 2. Launch the complete 3-service stack (MCP SSE Server on :8002, Suggeritore A2A Server on :8001, and Cameriere ADK Web UI on :8000)
+# 2. Verify stateless process recovery via FirestoreSessionService
+uv run python tests/06a-runner-session-and-memory/runner_test_2_firestore_session_persistence.py
+
+# 3. Verify cross-session episodic recall via FirestoreMemoryService + preload_memory
+uv run python tests/06a-runner-session-and-memory/runner_test_3_cross_session_memory_in_runner.py
+
+# 4. Launch the 3-service stack with the Production FastAPI Runner on :8000
+USE_CUSTOM_RUNNER=true ./script_run_a2a_stack.sh
+
+# 5. Or launch with the ADK Web UI on :8000
 ./script_run_a2a_stack.sh
-
-# 3. Evaluate the Suggeritore A2A Microservice directly (requires MCP SSE Server running on :8002)
-ADK_EVAL_MODE=true uv run adk eval adk_agent_app_suggeritore adk_agent_app_suggeritore/evals/eval_set_suggeritore_a2a.evalset.json --config_file_path=adk_agent_app_suggeritore/evals/eval_config.json --print_detailed_results
-
-# 4. Evaluate the end-to-end Sosta App client across the live A2A + MCP stack (requires :8001 and :8002 running)
-ADK_EVAL_MODE=true uv run adk eval adk_agent_app adk_agent_app/evals/eval_set_4_full_workflow_a2a.evalset.json --config_file_path=adk_agent_app/evals/eval_config.json --print_detailed_results
 ```
-

@@ -186,19 +186,24 @@ done
 echo "  ✅ Suggeritore Agent Card is online at: $FOUND_CARD"
 
 # ------------------------------------------------------------------------------
-# 6. LAUNCH SERVICE 3: CAMERIERE PRIMARY AGENT APP + WEB UI (Port 8000)
+# 6. LAUNCH SERVICE 3: CAMERIERE PRIMARY AGENT APP + WEB UI / FASTAPI RUNNER (Port 8000)
 # ------------------------------------------------------------------------------
 echo ""
-echo "🤵 Step 5: Launching Cameriere Agent with ADK Web UI on Port $CAMERIERE_PORT..."
-
-# Launching 'adk web' hosts both the API and the interactive browser UI
-adk web adk_agent_app --port $CAMERIERE_PORT \
-    > "$LOG_DIR/cameriere_app.log" 2>&1 &
+if [ "${USE_CUSTOM_RUNNER:-false}" = "true" ]; then
+    echo "🤵 Step 5: Launching SostaApp Production FastAPI Runner (FirestoreSessionService + MemoryService) on Port $CAMERIERE_PORT..."
+    uvicorn adk_agent_app.server:app --host 127.0.0.1 --port $CAMERIERE_PORT \
+        > "$LOG_DIR/cameriere_app.log" 2>&1 &
+else
+    echo "🤵 Step 5: Launching Cameriere Agent with ADK Web UI on Port $CAMERIERE_PORT..."
+    # Launching 'adk web' hosts both the API and the interactive browser UI
+    adk web adk_agent_app --port $CAMERIERE_PORT \
+        > "$LOG_DIR/cameriere_app.log" 2>&1 &
+fi
 
 CAMERIERE_PID=$!
-echo "  ↳ Cameriere Web UI PID: $CAMERIERE_PID (Logs: $LOG_DIR/cameriere_app.log)"
+echo "  ↳ Cameriere PID: $CAMERIERE_PID (Logs: $LOG_DIR/cameriere_app.log)"
 
-echo "  ⌛ Waiting for Cameriere Agent & Web UI on http://localhost:$CAMERIERE_PORT..."
+echo "  ⌛ Waiting for Cameriere Agent on http://localhost:$CAMERIERE_PORT..."
 while ! python3 -c "import socket; s = socket.socket(); s.settimeout(1); exit(0 if s.connect_ex(('127.0.0.1', $CAMERIERE_PORT)) == 0 else 1)" 2>/dev/null; do
     if ! kill -0 $CAMERIERE_PID 2>/dev/null; then
         echo ""
