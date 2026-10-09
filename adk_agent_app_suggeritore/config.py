@@ -18,9 +18,7 @@ PROJECT_ID = (
 )
 ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
 
-# Database & Bucket Identifiers (loaded from .env with fallback defaults)
-FIRESTORE_APP_DB = os.getenv("FIRESTORE_APP_DB", "adk-agent-dev-application-db-fs")
-FIRESTORE_SESSION_DB = os.getenv("FIRESTORE_SESSION_DB", "adk-agent-dev-session-memory-fs")
+# Database, Bucket & RAG Identifiers owned by the Suggeritore A2A Microservice
 FIRESTORE_FOOD_KB_DB = os.getenv("FIRESTORE_FOOD_KB_DB", "adk-agent-dev-food-kb-fs")
 BIGQUERY_DATASET = os.getenv("BIGQUERY_DATASET", "soste_app_dev")
 BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE", "db_soste")
