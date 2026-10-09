@@ -18,14 +18,6 @@ PROJECT_ID = (
 )
 ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
 
-# Database & Bucket Identifiers (loaded from .env with fallback defaults)
+# Database Identifiers owned by the primary SostaApp agent (Gatekeeper / Registratore / Cameriere)
 FIRESTORE_APP_DB = os.getenv("FIRESTORE_APP_DB", "adk-agent-dev-application-db-fs")
 FIRESTORE_SESSION_DB = os.getenv("FIRESTORE_SESSION_DB", "adk-agent-dev-session-memory-fs")
-FIRESTORE_FOOD_KB_DB = os.getenv("FIRESTORE_FOOD_KB_DB", "adk-agent-dev-food-kb-fs")
-BIGQUERY_DATASET = os.getenv("BIGQUERY_DATASET", "soste_app_dev")
-BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE", "db_soste")
-GCS_BUCKET = os.getenv("GCS_BUCKET", "adk-agent-dev-product-specs")
-VERTEX_RAG_LOCATION = os.getenv("VERTEX_RAG_LOCATION", "europe-west3")
-VERTEX_RAG_CORPUS_DISPLAY_NAME = os.getenv(
-    "VERTEX_RAG_CORPUS_DISPLAY_NAME", "sosta-product-specs-corpus"
-)
