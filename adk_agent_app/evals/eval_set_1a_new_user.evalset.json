@@ -38,7 +38,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Great! I can help you with that. To get started, what is your full name?"
+                "text": "Great! I can help you with that. To get you registered, I'll need a few details. Could you please provide your full name, email address, your preferred language, any culinary or dietary preferences you have (like Vegetarian or Gluten-free), and the type of vehicle you drive (e.g., Electric, Gasoline, Hybrid)?"
               }
             ],
             "role": "model"
@@ -174,90 +174,12 @@
           "final_response": {
             "parts": [
               {
-                "text": "Hello Zelda! I have optimized your trip from Milano to Roma.\n\nHere is your recommended itinerary:\n\n**Your Journey:** Milano to Roma\n**Optimal Midpoint Stop:** Located near latitude 43.678, longitude 10.8506.\n\n1. **Badia al Pino Est**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Hosts restaurant services where you can find vegan options such as salads, pasta with tomato sauce, and grilled vegetables.\n\n2. **Cantagallo**\n   * **Location:** Along your route from Milano to Roma.\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging.\n   * **Dining for Vegans:** Offers adaptable vegan choices such as salads, pasta dishes, and grilled vegetables.\n\n3. **Sillaro Ovest** & **Secchia Ovest**\n   * **Charging:** Equipped with **ELECTRIC_FAST** charging and restaurant options suitable for a vegan diet.\n\nEnjoy your trip to Roma!"
+                "text": "Great! Your trip details are confirmed. I am ready to pass all of this information to Suggeritore to prepare your personalized recommendations for Rome."
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {
-            "invocation_events": [
-              {
-                "author": "Cameriere",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "agent_name": "Suggeritore"
-                        },
-                        "name": "transfer_to_agent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "destination_city": "Roma",
-                          "origin_city": "Milano"
-                        },
-                        "name": "RoutePlannerAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "fuel_type": "ELECTRIC_FAST",
-                          "latitude": 43.678,
-                          "longitude": 10.8506
-                        },
-                        "name": "SosteSearchAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "dietary_preferences": [
-                            "Vegan"
-                          ],
-                          "stop_names": [
-                            "Badia al Pino Est",
-                            "Cantagallo",
-                            "Sillaro Ovest",
-                            "Secchia Ovest"
-                          ]
-                        },
-                        "name": "MenuCheckerAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              }
-            ]
-          }
+          "intermediate_data": {}
         }
       ],
       "session_input": {
