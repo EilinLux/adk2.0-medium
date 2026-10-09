@@ -107,6 +107,17 @@ resource "google_project_iam_member" "artifact_registry_reader" {
 }
 
 # ==========================================
+# IAM ROLES - SENSITIVE DATA PROTECTION (CLOUD DLP)
+# ==========================================
+# Permissions to inspect and de-identify PII via Cloud DLP API
+
+resource "google_project_iam_member" "dlp_user" {
+  project = var.gcp_project
+  role    = "roles/dlp.user"
+  member  = "serviceAccount:${google_service_account.adk_agent.email}"
+}
+
+# ==========================================
 # CUSTOM ROLES (OPTIONAL)
 # ==========================================
 # Uncomment to grant additional roles if needed
