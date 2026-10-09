@@ -34,7 +34,7 @@ os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "1"
 os.environ["GOOGLE_CLOUD_PROJECT"] = PROJECT_ID
 os.environ["GOOGLE_CLOUD_LOCATION"] = LOCATION
 
-from adk_agent_app_suggeritore.tools.suggeritore_soste_subagents import (
+from adk_agent_app_suggeritore.subagents.menu_checker_agent import (
     menu_checker_agent,
 )
 

@@ -254,90 +254,12 @@
           "final_response": {
             "parts": [
               {
-                "text": "Ecco l'itinerario consigliato per il tuo viaggio da Milano a Roma con il tuo veicolo elettrico e le tue preferenze vegane:\n\n1. **Badia al Pino Est**\n   * **Posizione:** Lungo il percorso da Milano a Roma.\n   * **Ricarica:** Dispone di ricarica rapida **ELECTRIC_FAST**.\n   * **Opzioni Vegane:** Ristorante con insalate, pasta al pomodoro e verdure grigliate.\n\n2. **Cantagallo**\n   * **Posizione:** Lungo il percorso da Milano a Roma.\n   * **Ricarica:** Dispone di ricarica rapida **ELECTRIC_FAST**.\n   * **Opzioni Vegane:** Offre opzioni vegane come insalate, primi piatti di pasta, verdure e latte vegetale per la colazione.\n\n3. **Sillaro Ovest** e **Secchia Ovest**\n   * **Ricarica:** Entrambe dispongono di colonnine **ELECTRIC_FAST** e servizi di ristorazione adatti a chi segue una dieta vegana.\n\nBuon viaggio verso Roma!"
+                "text": "Fantastico! Ora passerò tutti questi dettagli al Suggeritore, che si occuperà di fornirti i migliori consigli e raccomandazioni per il tuo viaggio e le tue esperienze culinarie a Roma."
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {
-            "invocation_events": [
-              {
-                "author": "Cameriere",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "agent_name": "Suggeritore"
-                        },
-                        "name": "transfer_to_agent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "destination_city": "Roma",
-                          "origin_city": "Milano"
-                        },
-                        "name": "RoutePlannerAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "fuel_type": "ELECTRIC_FAST",
-                          "latitude": 43.678,
-                          "longitude": 10.8506
-                        },
-                        "name": "SosteSearchAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "dietary_preferences": [
-                            "Vegan"
-                          ],
-                          "stop_names": [
-                            "Badia al Pino Est",
-                            "Cantagallo",
-                            "Sillaro Ovest",
-                            "Secchia Ovest"
-                          ]
-                        },
-                        "name": "MenuCheckerAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              }
-            ]
-          }
+          "intermediate_data": {}
         }
       ],
       "session_input": {

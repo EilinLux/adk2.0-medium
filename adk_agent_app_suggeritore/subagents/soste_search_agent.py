@@ -1,4 +1,4 @@
-# adk_agent_app_suggeritore/tools/suggeritore_soste_subagents.py
+# adk_agent_app_suggeritore/subagents/soste_search_agent.py
 import os
 from typing import Optional
 
@@ -6,17 +6,8 @@ from google.adk.agents import Agent
 from mcp import ClientSession
 from mcp.client.sse import sse_client
 
-from ..schemas.suggeritore_schemas import (
-    MenuCheckerInput,
-    RoutePlannerInput,
-    SosteSearchInput,
-)
+from ..schemas.suggeritore_schemas import SosteSearchInput
 from ..tools.suggeritore_agent_bq_soste_tools import soste_search_tool
-from ..tools.suggeritore_agent_food_kb_rag_tools import (
-    product_specs_rag_tool,
-    stop_food_kb_tool,
-)
-from ..tools.suggeritore_agent_route_tools import route_generator_tool
 
 MCP_PORT = os.getenv("MCP_PORT", "8002")
 MCP_SSE_URL = f"http://127.0.0.1:{MCP_PORT}/sse"
@@ -56,21 +47,6 @@ async def get_mcp_soste_session(
             return str(result.content)
 
 
-# SUB-AGENT 1: Route Planner
-route_planner_agent = Agent(
-    name="RoutePlannerAgent",
-    model="gemini-2.5-flash",
-    description="Calculates route direction and target midpoint stop coordinates for a given origin and destination city.",
-    instruction="""
-    You are the Route Planner Specialist.
-    When given `origin_city` and `destination_city`, call `calculate_route_and_target_stop` to determine
-    the optimal midpoint stop coordinates (`latitude` and `longitude`).
-    Return the coordinates and route summary clearly.
-    """,
-    input_schema=RoutePlannerInput,
-    tools=[route_generator_tool],
-)
-
 # SUB-AGENT 2: Highway Stops Search (via MCP SSE Server)
 soste_search_agent = Agent(
     name="SosteSearchAgent",
@@ -85,19 +61,4 @@ soste_search_agent = Agent(
     input_schema=SosteSearchInput,
     tools=[get_mcp_soste_session],  # Using the MCP SSE session for BigQuery access
     # tools=[soste_search_tool]     # Using the FunctionTool for BigQuery access
-)
-
-# SUB-AGENT 3: Menu & Dietary Checker (Firestore Food KB + Vertex AI RAG over Product Spec PDFs)
-menu_checker_agent = Agent(
-    name="MenuCheckerAgent",
-    model="gemini-2.5-flash",
-    description="Evaluates restaurant services and menu options against user and companion dietary preferences using the Firestore Food KB and Product Specification RAG.",
-    instruction="""
-    You are a Dining and Dietary Specialist.
-    1. First, call `get_stop_food_inventory_and_reviews` with the `stop_names` provided in the input JSON to inspect the stocked food items and traveler reviews at each stop.
-    2. Next, call `retrieve_product_specs_rag` with a query combining the candidate food products and `dietary_preferences` to verify exact ingredients, allergen declarations ('CONTAINS' vs 'FREE FROM'), and certifications from the official Product Specification PDFs.
-    3. Evaluate each stop in `stop_names`, highlighting which specific stocked items are verified safe for the traveler's `dietary_preferences` (such as 'Vegan Salad' / 'Vegan Rainbow Salad' and 'Espresso Coffee' at Secchia Ovest, or 'Fruit Bowl' at Sillaro Ovest) and which items contain restricted allergens.
-    """,
-    input_schema=MenuCheckerInput,
-    tools=[stop_food_kb_tool, product_specs_rag_tool],
 )
