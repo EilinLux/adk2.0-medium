@@ -1,10 +1,16 @@
 # adk_agent_app_suggeritore/test_connections.py
+import os
+from pathlib import Path
+import sys
+
+# Ensure project root is on sys.path when run directly as a script
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from google.cloud import bigquery, firestore, storage
-from .config import (
+from adk_agent_app_suggeritore.config import (
     BIGQUERY_DATASET,
     BIGQUERY_TABLE,
     FIRESTORE_FOOD_KB_DB,
-    FIRESTORE_SESSION_DB,
     GCS_BUCKET,
     PROJECT_ID,
 )
@@ -57,11 +63,10 @@ def test_gcs_bucket() -> bool:
 
 def run_all_tests() -> bool:
     print("=" * 60)
-    print(f" RUNNING GCP RESOURCE CONNECTIVITY TESTS FOR: {PROJECT_ID}")
+    print(f" RUNNING GCP RESOURCE CONNECTIVITY TESTS FOR SUGGERITORE: {PROJECT_ID}")
     print("=" * 60 + "\n")
 
     results = [
-        test_firestore(FIRESTORE_SESSION_DB, "Session Memory"),
         test_firestore(FIRESTORE_FOOD_KB_DB, "Food Knowledge Base"),
         test_bigquery(),
         test_gcs_bucket(),
@@ -71,7 +76,7 @@ def run_all_tests() -> bool:
     is_success = all(results)
 
     if is_success:
-        print("🎉 ALL GCP RESOURCES PASSED CONNECTIVITY CHECKS!")
+        print("🎉 ALL SUGGERITORE GCP RESOURCES PASSED CONNECTIVITY CHECKS!")
     else:
         failed_count = results.count(False)
         print(f"⚠️ {failed_count} TEST(S) FAILED. Check IAM permissions or Terraform state.")
