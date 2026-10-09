@@ -4,6 +4,12 @@ import sys
 
 from google.adk.agents import Agent
 
+from .callbacks import (
+    after_model_guardrail,
+    after_tool_guardrail,
+    before_model_guardrail,
+    before_tool_guardrail,
+)
 from .subagents.cameriere_agent import cameriere_agent
 from .subagents.registratore_agent import registratore_agent
 from .test_connections import run_all_tests
@@ -33,4 +39,8 @@ root_agent = Agent(
     """,
     tools=[is_registered_user_tool],
     sub_agents=[registratore_agent, cameriere_agent],
+    before_model_callback=before_model_guardrail,
+    after_model_callback=after_model_guardrail,
+    before_tool_callback=before_tool_guardrail,
+    after_tool_callback=after_tool_guardrail,
 )
