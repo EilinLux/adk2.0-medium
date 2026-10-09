@@ -58,3 +58,36 @@ class MenuCheckerInput(BaseModel):
     dietary_preferences: List[str] = Field(
         description="List of dietary preferences to match (e.g., ['Vegan'])."
     )
+
+
+class TripCalculatorInput(BaseModel):
+    """Input contract for TripCalculatorAgent when called via AgentTool."""
+
+    battery_capacity_kwh: float = Field(
+        description="Total EV battery capacity in kWh (e.g., 75.0)."
+    )
+    current_soc_percent: float = Field(
+        default=20.0,
+        description="Current battery State of Charge percentage on arrival (e.g., 20.0).",
+    )
+    target_soc_percent: float = Field(
+        default=80.0,
+        description="Target battery State of Charge percentage at departure (e.g., 80.0).",
+    )
+    charger_power_kw: float = Field(
+        default=150.0,
+        description="DC fast charger power output in kW (e.g., 150.0).",
+    )
+    cost_per_kwh_eur: float = Field(
+        default=0.65,
+        description="Unit price of electricity in EUR per kWh (default 0.65).",
+    )
+    dining_cost_eur: float = Field(
+        default=0.0,
+        description="Estimated total dining cost in EUR across all travelers (default 0.0).",
+    )
+    passengers_count: int = Field(
+        default=1,
+        description="Total number of travelers splitting the charging + dining bill (default 1).",
+    )
+
