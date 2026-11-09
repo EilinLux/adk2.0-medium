@@ -208,10 +208,10 @@ def test_sosta_runner_health_and_forwarded_headers():
 def test_cloud_armor_legitimate_traffic_passes():
     """Verify normal conversational inputs pass Cloud Armor without false positives."""
     legitimate_queries = [
-        "Vorrei un tavolo per 4 persone stasera alle 20:30",
-        "Qual è la capienza massima dell'area sosta di Bologna?",
-        "Consigliami un primo piatto tipico emiliano",
-        "Quali sono i servizi inclusi per i camperisti?",
+        "I would like a table for 4 people tonight at 8:30 PM",
+        "What is the maximum capacity of the Bologna rest area?",
+        "Recommend a typical local first course",
+        "What services are included for camper van travelers?",
     ]
     for query in legitimate_queries:
         status, reason = CloudArmorWafSimulator.evaluate(payload=query)
