@@ -1,6 +1,28 @@
 {
   "criteria": {
-    "tool_trajectory_avg_score": 1.0,
+    "tool_trajectory_avg_score": {
+      "threshold": 1.0,
+      "match_type": "EXACT",
+      "fail_on_unexpected_tool_call": true,
+      "per_tool_rules": {
+        "save_new_user": {
+          "require_exact_match": true,
+          "description": "State-mutating database write requires exact arguments match"
+        },
+        "update_dietary_preferences": {
+          "require_exact_match": true,
+          "description": "State-mutating profile update requires exact arguments match"
+        },
+        "extract_user_profile": {
+          "require_exact_match": true,
+          "description": "Session hydration check"
+        },
+        "transfer_to_agent": {
+          "require_exact_match": true,
+          "description": "Strict agent routing control"
+        }
+      }
+    },
     "response_match_score": 0.50
   }
 }
