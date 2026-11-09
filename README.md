@@ -198,3 +198,47 @@ uv run adk web
 ADK_EVAL_MODE=true uv run adk eval adk_agent_app adk_agent_app/evals/eval_set_1_new_user.evalset.json --config_file_path=adk_agent_app/evals/eval_config.json
 ADK_EVAL_MODE=true uv run adk eval adk_agent_app adk_agent_app/evals/eval_set_2_existing_user.evalset.json --config_file_path=adk_agent_app/evals/eval_config.json
 ```
+
+---
+
+### 🎯 Tackling Evaluation Strictness via `eval_config.json`
+
+When evaluating multi-turn conversational agents with tool trajectories, striking the right balance between **conversational flexibility** and **strict operational safety** is crucial:
+
+* **The Strictness Challenge:** Conversational LLM agents exhibit natural linguistic variability. Enforcing blanket exact-match trajectory scoring across every conversational turn can cause brittle evaluation failures for harmless dialog variations.
+* **State-Mutating Actions vs. Informational Queries:** While natural language responses tolerate variations, state-mutating actions (such as `save_new_user` and `update_dietary_preferences` in the Application DB) require uncompromising precision. An incorrect argument or missing attribute directly corrupts persistent state.
+* **Fine-Grained Trajectory Control in `eval_config.json`:**
+  * `fail_on_unexpected_tool_call: true`: Guarantees that unprompted, hallucinated, or out-of-sequence tool calls fail the trajectory evaluation immediately.
+  * `per_tool_rules`: Defines specific enforcement criteria per tool, enforcing `require_exact_match: true` for state-mutating tools to validate exact parameter payloads (`full_name`, `email`, `culinary_preferences`, `vehicle_type`), while safeguarding agent delegation boundaries (`transfer_to_agent` and `extract_user_profile`).
+
+```json
+{
+  "criteria": {
+    "tool_trajectory_avg_score": {
+      "threshold": 1.0,
+      "match_type": "EXACT",
+      "fail_on_unexpected_tool_call": true,
+      "per_tool_rules": {
+        "save_new_user": {
+          "require_exact_match": true,
+          "description": "State-mutating database write requires exact arguments match"
+        },
+        "update_dietary_preferences": {
+          "require_exact_match": true,
+          "description": "State-mutating profile update requires exact arguments match"
+        },
+        "extract_user_profile": {
+          "require_exact_match": true,
+          "description": "Session hydration check"
+        },
+        "transfer_to_agent": {
+          "require_exact_match": true,
+          "description": "Strict agent routing control"
+        }
+      }
+    },
+    "response_match_score": 0.50
+  }
+}
+```
+
