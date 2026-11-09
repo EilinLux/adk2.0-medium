@@ -18,12 +18,27 @@
           "final_response": {
             "parts": [
               {
-                "text": "Hello! Welcome to Sosta. Are you an already registered user?"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Hello! Welcome to Sosta. Are you already a registered user?\n",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {}
+          "intermediate_data": {
+            "invocation_events": []
+          }
         },
         {
           "invocation_id": "e-dd3fce2c-5748-4010-9cda-53ecb6aca0e8",
@@ -38,7 +53,20 @@
           "final_response": {
             "parts": [
               {
-                "text": "Hello Zelda Ailine Luconi, I noticed that your preferred language is Italian, but you started the conversation in English. Would you prefer to continue in English or would you like me to switch to Italian?"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Hello, Zelda Ailine Luconi! I see that your saved preferred language is Italian. Would you prefer to continue in Italian, or would you like to use another language?\n\nAlso, are you traveling with companions? If so, do they have any dietary restrictions? And what is your final destination?",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
@@ -50,12 +78,28 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
                       "function_call": {
+                        "id": "adk-303477e2-23be-4fb4-9d55-4a46106f3e16",
                         "args": {
                           "user_id": "usr_0a8f67"
                         },
-                        "name": "is_registered_user"
-                      }
+                        "name": "is_registered_user",
+                        "partial_args": null,
+                        "will_continue": null
+                      },
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": "AY89a1-vzYJmAtflVgSBy7lf79vHxxWwVTt6oR1Z9Yp7Aal4l6AgtQYmkZ49lImdA2xD7VqoyF2etNws36Zp7RE2VevJbkKfOLdTHEn4F5OAOthjQKq46iIJZAg-tcsOuy2jnoNL6uqaOgKEAEDhCkdmiqk6TZL85TsCuOe7qxe7na7h0C5ASGVeeBAFMs024km4sZcVwLmTp7NqGhMqzTTY6x8WR1glt43cNkXk2udkyzlJ1OJhwuH3G30W0KrtMy10PzW6izpIFqVa06x3YlCI1sLGLK1jQ_kKK3ag7oS_mkn6ty18R02vo8JIBMgte8QOA059kvOkhEvvZuP9KNd0mkBGi9xP5azMfeISJGb1UbX-NWb9MwqMuOFYZJKVpI8CxiJ6nqCJblWsq9mZQee1v71ni_Jn8i8kSUx_3GU18fvytwF8_PzJwYcuZh55O4BM2yu8hRzBmw6COuK_RsKP7JYvhFd-hoyQTBJKIYccgaMbWvboWANLSqzMK1AWz7teVIt-wAGSMiT3hO6ncSle-thvH1MXfw67me0JK2ujkkm-0HRjn_ePTdmKAEh0i95dmLLLD_1AtmfRMoI4FYdR7eDgZ-PvTkbd_74i4YMYGQ_BKeCwg7xH0tMdpR4XpBl0mRbQuzeBha-FASSAFBH2RXOoru6ZMnGYP_5fG-ECOTY=",
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "model"
@@ -66,12 +110,129 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
+                      "function_response": {
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-303477e2-23be-4fb4-9d55-4a46106f3e16",
+                        "name": "is_registered_user",
+                        "response": {
+                          "status": "success",
+                          "exists": true,
+                          "verified_user_id": "usr_0a8f67",
+                          "message": "User 'usr_0a8f67' verified successfully. Profile loaded into working memory."
+                        }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
+                    }
+                  ],
+                  "role": "user"
+                }
+              },
+              {
+                "author": "Gatekeeper",
+                "content": {
+                  "parts": [
+                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
                       "function_call": {
+                        "id": "adk-a2faaf36-6abe-4c36-b4a7-a92ecf064131",
                         "args": {
                           "agent_name": "Cameriere"
                         },
-                        "name": "transfer_to_agent"
-                      }
+                        "name": "transfer_to_agent",
+                        "partial_args": null,
+                        "will_continue": null
+                      },
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": "AY89a18DHAsVnflAbq_yRHgpD_tqaoLCHTlSlOONZL98QC5xKx3GyInzZTD08iosQ6_L40BtWTNInmc5_jrrxewhZqfY12seR-RTA20NLdfIfwk_3vMllQmxeuW4pHOfzopHwi3xlqRS5My4RwFZdFlxbCwvYje-pZ3s1e0ZXb0g3Rq6ffqAaxTMQFhdR4lpV5ON_RAPZP7NJBqzoBemqfddhAIqVj117Sla3UI7YLeFA89jG58XPuvYzlUIw2y2AcXYyDZMRVt3liO7HPzm2oCSB9VaOhColwGzyB89HHKZl-4CVOKx7Mkaub9t5NzkUa-waazNrZC8HB0DIW7-jFe1Y4iua_GUfi2F3EfWwAJu-s64o2WzwkP96VBca4jxZIqQRF7t0RIHGtbxs51e1G9RC8oTsUVVaM-5SI7XIVPzfxEWEjsibV1k3UpHdffPEcDlJK0w2VwGxrU3OwdkKBp-hWkPGCHcGp1aV02-2rtm2SDWnu7WjqSXvpaIL8icB5Gx209QAogorUCFMfeMBqX-Rr_OHeFMADpS0l6amzevnN13Fj32oEQ3soNjC7D8K6FEN8VrxqoZUfZeYAzs-GIPN5p4ZF8hO_8kEq4XD3mfz8RZEGvm1pfbpIvfk1mr9EyJocm3LIyN54TrYOSlfzgK4-Gx6aDkJDpWf5ucgPVUZS5uoI0WSmZi3biSwPXxrtfGaNwpCc2H9UAolzarhlBaq-fmDbzzWv4-lg==",
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Gatekeeper",
+                "content": {
+                  "parts": [
+                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
+                      "function_response": {
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-a2faaf36-6abe-4c36-b4a7-a92ecf064131",
+                        "name": "transfer_to_agent",
+                        "response": {
+                          "result": null
+                        }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
+                    }
+                  ],
+                  "role": "user"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": {
+                        "id": "adk-714c7035-a820-4cc8-b892-00ad100d33b7",
+                        "args": {
+                          "user_id": "usr_0a8f67"
+                        },
+                        "name": "extract_user_profile",
+                        "partial_args": null,
+                        "will_continue": null
+                      },
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": "AY89a18cEtO3N0oKxxlSBAI90AjeWCQJNhriPkbnFe1tBMxH5GghiJRniDXh1MYd3PE6O3SugmqTsZq6kWUddB90NqwPJWkvhYeieVuSDTIx9RvYpFtoLVQegxlDYhMZwOkUbIId9U6YAQAfdlcM8pLXS_vkZJzHhYO5yY4Fz4n0k74vYbd75jP8cK56kky99arCGkNCB8okIC6gLRHSSMDXxNA4jNxwWIJIALx4kT5tnQ_3IF1MbzqxnRsUgseBplMz6I8X0rHjPvkzXVgcw5YjEssSIvSDSQIDVsqK_2zujHSQYqeM9iIBpfnsX0BOMpRdaz4W_ytq7HZ9FytZzm6UTqaoN9VxD_pHFpRg4BuD35cyrrs6ZAZ8jy3RR15PAlHrJnfluoMsSgZt-Ey6XFfjA8KjIRD6qh6mcZXbsfG1AUz8MFXpCJXG_vBcCvhAzsK01ycLGLYm8E_0LAk1StnP4xR_Qs1RZfwIPGAyhIGiLIgx3mEwvK_4LMR1TGfeXjkm11yGm2vNekWNz-GxNN1KMkCYy0Rv45Jqc6mbfIW_O-f_e9SJdSa0kwvNUR25suCvGyHogcJ91EeMNPimWHiuuXWdfvHUUmLwVMmutw9So8J6vKJpljbpJvPaLW-cgond0kPdrUYVSDWFRPavy-VE59YYWXk4oiWtb3h31hVquPxOXsglEULvxHlIMkls",
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "model"
@@ -82,15 +243,49 @@
                 "content": {
                   "parts": [
                     {
-                      "function_call": {
-                        "args": {
-                          "user_id": "usr_0a8f67"
-                        },
-                        "name": "extract_user_profile"
-                      }
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
+                      "function_response": {
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-714c7035-a820-4cc8-b892-00ad100d33b7",
+                        "name": "extract_user_profile",
+                        "response": {
+                          "status": "success",
+                          "message": "Session loaded for Zelda Ailine Luconi.",
+                          "profile": {
+                            "created_at": "2026-09-11T13:37:44.114983Z",
+                            "preferred_language": "Italian",
+                            "culinary_preferences": [
+                              "Vegan"
+                            ],
+                            "email": "zelda.luconi@gmail.com",
+                            "account_status": "active",
+                            "vehicle": {
+                              "connector_type": null,
+                              "battery_capacity_kWh": null,
+                              "vehicle_type": "Electric"
+                            },
+                            "full_name": "Zelda Ailine Luconi",
+                            "user_id": "usr_0a8f67"
+                          }
+                        }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
-                  "role": "model"
+                  "role": "user"
                 }
               }
             ]
@@ -109,12 +304,27 @@
           "final_response": {
             "parts": [
               {
-                "text": "Perfect! We will speak in English.\n\nNow that I have your updated profile, could you tell me if you are traveling with companions and if they have any particular dietary restrictions? And what is your final destination?"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Great, English it is!\n\nAre you traveling with companions? If so, do they have any additional dietary restrictions? And what is your final destination?",
+                "thought": null,
+                "thought_signature": "AY89a1-vuAJTn6QQRwi_he2P7iG9uZaIlQX6eqgP0avS5eF5iovc4mn5Oz4CPdXerGRJXjzkt4oMnPKBcUtQRvmQDNCKfIIxYwZzSGxFi-AWx-EC4jGCVAScLZ-B4tejdYt9ItceFndsi30UYS8VFTgbX_mEseuvDCV1mlKF9mOFVl2nBOO2ymKkfh3MepPZUDTxLdGkUJZuOQ1HcCPHd53QnmaRX5zmJOD18ZZBxu_bXUuzAFyOPtseX81qgKJDqKYOhfF5zK62iCSzWFUp7MVtuDlcA9cGVroq-kJMJDcWII2FJnWQFcmGmcO5dg9cfYMKDqj3fKpzmHIYEUvv6c20NZz_5b46s3h1jPpjsfH51SAcax9tMlMP",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {}
+          "intermediate_data": {
+            "invocation_events": []
+          }
         },
         {
           "invocation_id": "e-77020428-35ce-4d8c-849f-e24d7c02b135",
@@ -129,12 +339,27 @@
           "final_response": {
             "parts": [
               {
-                "text": "Thank you for the information, Zelda Ailine.\n\nSo you are traveling alone and your destination is Rome. Fantastic!\n\nRegarding the oysters, I would just like to clarify one point to ensure I have your preferences correct. Your profile indicates that you are vegan. \"I like oysters\" implies a significant change to your dietary preferences. Could you confirm if you wish to update your preferences from vegan to also include oysters, or if there was a misunderstanding? It is important for me to give you the best recommendations."
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Thank you for the information! So, you are traveling alone and your destination is Rome.\n\nRegarding your dietary preferences, your profile currently lists 'Vegan'. You mentioned you like oysters. Would you like to update your dietary preferences to include oysters, or are you looking for vegan-friendly options that might also offer oysters for a companion, for example? Please clarify your complete dietary preferences so I can ensure the best recommendations for you.",
+                "thought": null,
+                "thought_signature": "AY89a19WFYYW7okhRUEMCwpa5Uy7XAMDpy0a9wfNDq9RIodHfusYsIedlH92WQhCU_wZEfwoVhLjjF0RXm9-To-u9DmZKo-DUw4XopK06Lp4eQyv8KBajz0Ko8gdliu0pjEvZC2pA-gy113zZhejVIpe847LbF_nuua1sOc5IF8gkqYL9JTVDU5vAApfXqL1BDTKFNJfUYozL1Ck8Sc86GpZ9_nhzYsxUqTGImsQnmkLdlGgYbo1Y8OYnHh3Q2gqhL2NsUqgYH_D0JWGQ2tXOewC_0StCGZx0Mt1u_boP7cYw6oxea6DbA7GJiIVYvcLkFfWZKI3tMw3MtTQU1ql9Cg_Lz__8ZHhvWOCX4Jr3oHh01hh2QbsL47MhcdFTxnadZFgS2ohd6VpKxk-w6ectGfVKQeKFGRngRdE6PeIm_eB2nXCMEAEjC81GUdB4AGvWmc61WM6fjSF8l0zZo0DQ7s3sMXVWDW9b6g8yrd0lDkwsLyLVBcJmevgpMCnT18lee2pwFJpfvr50jHPMN-PhquGuHkQLL80gkmqjlVqNu8GeDCO82yOBmInJKmf6Qy19VjpSYyNiWWOZE7dOlexO5HBz8BKsi_XZNswdgt8i5Vy5-c6kGk5e_TfenxJWJupkd2kGQKfo-9iNy8zlutFt_77I9iTVV275nuZXSPyC-lOc_wgl50TIdGOc9gofapPzg7P0kP8f9eszwsoj2H1FPz8VftHKB4fDmidVqF1bQ==",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {}
+          "intermediate_data": {
+            "invocation_events": []
+          }
         },
         {
           "invocation_id": "e-9fbf5736-61fd-4e24-a79c-2b55529fcb82",
@@ -149,12 +374,27 @@
           "final_response": {
             "parts": [
               {
-                "text": "I understand, thank you for the clarification.\n\nConsidering that you like oysters, I gather that your dietary preferences have changed from a strictly vegan diet.\n\nPlease, could you indicate your complete current dietary preferences or restrictions so that I can update your profile and ensure the best recommendations for you?"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Thank you for clarifying.\n\nTo ensure I update your profile correctly and provide the best recommendations, could you please tell me your *complete* dietary preferences? For example, are you still vegan but also want to include oysters, or have your preferences changed entirely?",
+                "thought": null,
+                "thought_signature": "AY89a1_Zq5Na1hptZxUGEKEyBXul9R8pTzac2oX9tJ5aVuzunz6BJvwfFGAFYNh8oDd5s806ZKbFgZVmlbG-sNiBd-oLFAB1qOMGnWMUYbDqmw8c41g24uEXtP_fkSFRsj9QMcYACt0pZYy_hDamZcNOHYtQ1PvPQg_dTGL6cNlgTUUmwkl6hI719P23m2yPR8KB0lLt9ccKPCc4BhSZulkobSwBvdzer0zu4AJdgqwjyjI0csCiBVtyMe6iepDDnEwD_S1WBsgPiwh3WUCiv8QfgsOwrGLnO0HvpFv13oZ4x1bhh1xHKr4Dpw1i-z5BEli-a37pdv0SM3a8kumzhqdEkWm7k0UKFy-M54jCZfXStEPWFW6lyZTBlz3HvIze6X4siWkA4lwfpuToLqZxbwce48l7wSkqQzFIc9eEuunDun8srxYB99pJ8EtPxodJrgZYjVxUWA-xswVgul2d7uCH7v-xsgXMtbT-Fb7NVlw0gwLWWq2dQoxQ4I9yj8VaxnJp8yjP_4bJpyrLpyGp3yg_uCx5dO7r5TCB0-XzT9NErqAYX4spVT2PQunbLd3l5RhpOpMmL-lN8RSB_h9btb6b57SbW5V93sM7mKtJM0sci5wMkJ9aVPGPviIEqQLsyj1y4GbX69rOQir16k0Mo_qWvYfQ0K1yRyevNVm91-Etleb3CE6cTu1p_DtjjSMRFwAE6rKjWOwWSaoZtsrYs4E1h4lZ8TJF_r41v0k_lm0BCRh6C6be62u0T7UtQfNmsAMCL_-ytjcGapP8W2L3aCorhJ7VwD76WXremWrqX67kaoaQUZ4y3mkkaCqRpzK9q_8lraFA_UC0lC-iCJYBteChjycKWI-UL17NGFjAogrW4ryGoJflHmOfao5m9W6KzAkOzSVPIwf3rN2X6cjc5frg",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {}
+          "intermediate_data": {
+            "invocation_events": []
+          }
         },
         {
           "invocation_id": "e-8eb8e6c5-c394-4fb7-89fc-aacd6ea19915",
@@ -169,12 +409,27 @@
           "final_response": {
             "parts": [
               {
-                "text": "Thank you for the clarification, Zelda Ailine.\n\nSo, summarizing the information I have collected so far:\n\n*   **User ID:** `usr_0a8f67`\n*   **Name:** Zelda Ailine Luconi\n*   **Dietary Preferences:** You are no longer strictly vegan and you like oysters. Otherwise, your preferences remain as usual.\n*   **Vehicle Type:** Electric\n*   **Travel Companions:** Traveling alone\n*   **Destination:** Rome\n\nIs this summary correct?"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Your current saved dietary preference is 'Vegan', which means excluding all animal products. Oysters are an animal product. Could you please clarify your complete dietary preferences? For example, are you looking to add 'Oysters' to your profile, or are you saying you are no longer strictly vegan but wish to maintain other vegan-friendly choices? I need to understand your preferences clearly to update your profile accurately.",
+                "thought": null,
+                "thought_signature": "AY89a1-LYqzL1C9HWR3pcFsOmBUBH0lLuH7mc8CJ5G1RYh7csoG1zcBEcr9FyHGtuF1yvaIE4Mm3OvwIF6PKrByMQmu3xexhGrK2yDW9PgQPc11fnJG8h9rnt2xWWlggcs9uXal8O2DV7LXyIjtsJTnl5A7uUYphah27wZJTwfJy5brOThWc9z10zRa6wj5hExMthPZxL2AbcYVF9wWHfNFFVUfYx2WB1b2GQtIk7ft0XGGUnaer3GddaxIpf55SFR6gQYzvHGRe66Srr6SkL-T0KyvPvsRyBgW5KJj-k6o1BJQ0RogiLngJC9Na-b1Y3czBnjB48uUJkCRSYe6Akgjr2ArQ4J1-sPTwaTOgPp2OjwfBtcwuaRbu4tF-bto8vuThMi_7TG7e9bcdL2Ev7bj7mgDW4NTl4D675OTxybBJNZy6YK4XR5_zWsLq1y6xQwmQRVHa1r2DC1GhH5F1MmWXl4RqJ1PdUrDvXGQNpJHVisJc-2k_v23tU57vtlkfwsVjpRLs_Aw1inOkpCGLA4yG4YefOGJTAoVKQoga9OY7V_aXzjFuLqHPkfbH_extD-L1f7ohcKRNJoGNlV7In8_6wua6vNZrcw_KGVixp9uKb1OUnWp23YNWH__4vnM5VPdAFYdn5mtxphHs-EchyfHx2hTy4ADNPcniv_wLpsRbNLrXSxuniF8wv_BULHiCAA==",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {}
+          "intermediate_data": {
+            "invocation_events": []
+          }
         }
       ],
       "session_input": {
