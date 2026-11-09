@@ -27,7 +27,8 @@ def _fetch_user_document(user_id: str) -> Dict[str, Any]:
 
 
 async def is_registered_user(user_id: str, tool_context: ToolContext) -> Dict[str, Any]:
-    """Checks the database to verify if a given User ID is registered and hydrates session state.
+    """Checks the database to verify if a given User ID is registered and records verified_user_id in session state.
+    Full profile hydration is delegated exclusively to Cameriere's extract_user_profile tool upon transfer.
 
     Args:
         user_id: The unique identifier of the user (e.g., 'usr_12345').
@@ -51,32 +52,21 @@ async def is_registered_user(user_id: str, tool_context: ToolContext) -> Dict[st
                 ),
             }
 
-        vehicle = user_data.get("vehicle", {})
-
-        # Hydrate active ADK Session Memory via ToolContext
-        state = tool_context.state
-        state["user:name"] = user_data.get("full_name") or user_data.get("name", "")
-        state["user:email"] = user_data.get("email", "")
-        state["user:preferred_language"] = user_data.get("preferred_language", "English")
-        state["user:culinary_preferences"] = user_data.get("culinary_preferences", [])
-        state["user:vehicle_type"] = vehicle.get(
-            "vehicle_type", user_data.get("vehicle_type", "Gasoline")
-        )
-
         # Save verified ID key in session scope (for multi-turn tools) and temp: scope
+        state = tool_context.state
         state["verified_user_id"] = user_id
         state["temp:verified_user_id"] = user_id
         state["workflow_step"] = "user_verified"
 
         logger.info(
-            f"Verified user '{user_id}' and hydrated profile into active ADK session memory."
+            f"Verified user '{user_id}' successfully in Gatekeeper. Delegating profile hydration to Cameriere."
         )
 
         return {
             "status": "success",
             "exists": True,
             "verified_user_id": user_id,
-            "message": f"User '{user_id}' verified successfully. Profile loaded into working memory.",
+            "message": f"User '{user_id}' verified successfully. Profile hydration delegated to Cameriere.",
         }
 
     except Exception as e:
