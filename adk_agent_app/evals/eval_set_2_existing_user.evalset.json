@@ -3,7 +3,7 @@
   "name": "eval_set_2_existing_user",
   "eval_cases": [
     {
-      "eval_id": "updating_with_ostriche_for_vegan",
+      "eval_id": "updating_with_oysters_for_vegan",
       "conversation": [
         {
           "invocation_id": "e-e912f5d1-ef96-4e3d-b723-63f676f7322d",
@@ -38,7 +38,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Ciao Zelda Ailine Luconi, ho notato che la tua lingua preferita è l'italiano, ma hai iniziato la conversazione in inglese. Preferisci continuare in inglese o ti piacerebbe che passassi all'italiano?"
+                "text": "Hello Zelda Ailine Luconi, I noticed that your preferred language is Italian, but you started the conversation in English. Would you prefer to continue in English or would you like me to switch to Italian?"
               }
             ],
             "role": "model"
@@ -101,7 +101,7 @@
           "user_content": {
             "parts": [
               {
-                "text": "italiano va bene"
+                "text": "English is fine"
               }
             ],
             "role": "user"
@@ -109,7 +109,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Perfetto! Parleremo in italiano.\n\nOra che ho il tuo profilo aggiornato, potresti dirmi se viaggi con dei compagni e se hanno delle restrizioni alimentari particolari? E qual è la tua destinazione finale?"
+                "text": "Perfect! We will speak in English.\n\nNow that I have your updated profile, could you tell me if you are traveling with companions and if they have any particular dietary restrictions? And what is your final destination?"
               }
             ],
             "role": "model"
@@ -121,7 +121,7 @@
           "user_content": {
             "parts": [
               {
-                "text": "allora viaggio da sola ma ho scoperto la scorsa volta che mi piacciono le ostriche, la mia destinazione è Roma"
+                "text": "I am traveling alone, but I discovered last time that I like oysters; my destination is Rome"
               }
             ],
             "role": "user"
@@ -129,7 +129,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Grazie per le informazioni, Zelda Ailine.\n\nQuindi viaggi da sola e la tua destinazione è Roma. Fantastico!\n\nPer quanto riguarda le ostriche, vorrei solo chiarire un punto per assicurarmi di avere le tue preferenze corrette. Il tuo profilo indica che sei vegana. \"Mi piacciono le ostriche\" implica un cambiamento significativo nelle tue preferenze alimentari. Potresti confermare se desideri aggiornare le tue preferenze da vegana a includere anche le ostriche, o se c'è stato un malinteso? È importante per me consigliarti al meglio."
+                "text": "Thank you for the information, Zelda Ailine.\n\nSo you are traveling alone and your destination is Rome. Fantastic!\n\nRegarding the oysters, I would just like to clarify one point to ensure I have your preferences correct. Your profile indicates that you are vegan. \"I like oysters\" implies a significant change to your dietary preferences. Could you confirm if you wish to update your preferences from vegan to also include oysters, or if there was a misunderstanding? It is important for me to give you the best recommendations."
               }
             ],
             "role": "model"
@@ -141,7 +141,7 @@
           "user_content": {
             "parts": [
               {
-                "text": "non è un malinteso"
+                "text": "It is not a misunderstanding"
               }
             ],
             "role": "user"
@@ -149,7 +149,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Capisco, grazie per la chiarifica.\n\nConsiderando che ti piacciono le ostriche, deduco che le tue preferenze alimentari siano cambiate rispetto a una dieta strettamente vegana.\n\nPer favore, potresti indicarmi le tue attuali preferenze o restrizioni alimentari complete, così posso aggiornare il tuo profilo e assicurarti i migliori consigli?"
+                "text": "I understand, thank you for the clarification.\n\nConsidering that you like oysters, I gather that your dietary preferences have changed from a strictly vegan diet.\n\nPlease, could you indicate your complete current dietary preferences or restrictions so that I can update your profile and ensure the best recommendations for you?"
               }
             ],
             "role": "model"
@@ -161,7 +161,7 @@
           "user_content": {
             "parts": [
               {
-                "text": "oltre alle ostriche tutto il resto come sempre"
+                "text": "Apart from oysters, everything else as usual"
               }
             ],
             "role": "user"
@@ -169,7 +169,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Grazie per la precisazione, Zelda Ailine.\n\nQuindi, ricapitolando le informazioni che ho raccolto finora:\n\n*   **ID Utente:** `usr_0a8f67`\n*   **Nome:** Zelda Ailine Luconi\n*   **Preferenze Alimentari:** Non sei più strettamente vegana e ti piacciono le ostriche. Per il resto, le tue preferenze sono come sempre.\n*   **Tipo di Veicolo:** Elettrico\n*   **Compagni di viaggio:** Viaggi da sola\n*   **Destinazione:** Roma\n\nÈ corretto questo riepilogo?"
+                "text": "Thank you for the clarification, Zelda Ailine.\n\nSo, summarizing the information I have collected so far:\n\n*   **User ID:** `usr_0a8f67`\n*   **Name:** Zelda Ailine Luconi\n*   **Dietary Preferences:** You are no longer strictly vegan and you like oysters. Otherwise, your preferences remain as usual.\n*   **Vehicle Type:** Electric\n*   **Travel Companions:** Traveling alone\n*   **Destination:** Rome\n\nIs this summary correct?"
               }
             ],
             "role": "model"
