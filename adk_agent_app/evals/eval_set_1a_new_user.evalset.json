@@ -18,13 +18,27 @@
           "final_response": {
             "parts": [
               {
-                "text": "Hello! Welcome to Sosta. May I ask if you are already registered with us?",
-                "thought_signature": "CrUBAY89a18xEL6jSximxJSAalWBf_s6t1d3m9MtEfWtPpkZyhoyQKFcrZo6DRXdoXM5pRRo4ySsdk3Ftu8qQnNE82qEezmO17-_mDy2AudiyZP8GV_ugCKO41PHnIeVGIWQCd77ZJcNdHpl_vBH2G11UJwTyfBCobn1Cowu6IYloZiIwfEHHtpNQ114sQFHYwOXaMhRTPbuOiYJ3t0svag9onnjt6sAogRVbns6u2bt0GDbF6EHSQ=="
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Hello! Welcome to Sosta. Are you already a registered user?",
+                "thought": null,
+                "thought_signature": "AY89a1_OIrP6iNqqLWvN7j3bxd-yNotQRML6rOalRYUg_sBZ1Z5W3xBmwx8JxY7Z0I5ykBtSGngSJMy9xIRshkETHImRxsdEPGa5MGIXDGz7Eq8faTaRVYT9O6NPXeYkxx5EXu6Ci8P8CHwEC1lk6zKi7KGFZ-9vzKCLnvbF2BhefEre7LoPQ6MuBr6rbrcPL-hxxQRV-hZ5GZhi8i5EwgGoFjQfmpdmYdwxikwvBacB3KgMNTjqHtHcdSYCnEIXWCI98oqCpu5KaCDsvrEu",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {},
+          "intermediate_data": {
+            "invocation_events": []
+          },
           "creation_timestamp": 1789461596.5247638
         },
         {
@@ -40,8 +54,20 @@
           "final_response": {
             "parts": [
               {
-                "text": "Great! I can help you with that. To get you registered, I'll need a few details. Could you please provide your full name, email address, your preferred language, any culinary or dietary preferences you have (like Vegetarian or Gluten-free), and the type of vehicle you drive (e.g., Electric, Gasoline, Hybrid)?",
-                "thought_signature": "CtsCAY89a18IBeK3EdA-pl8PrdscH7NRpXdFXePAuvMUSA-apPrNbyjIVS99-lqpX_OWAh30aMkw-I_qSgZrEP7ofIGiCL0LOv1ZEUM5wLT_tvUOM8wKeoLrgHHyyu9sX-GCNPwSNT3Bd39k-vCcQyC1GmcMNjhYDzNiQO2jydu54nZN-sOHy8tNojQ2irRvH-ZgHiqRFIXYQrZ_qjsfwAsukXcpZBjXOmyg0v-HclvZlkPgkFle_trULc2JRtdvem_Sfjz8QZSDaZ7RJWDsonZr47TtqS4FngciLfsVKuS5EX__OeCqbvag7jAEqKURA5vbsiDznLyuF-bFVhpjtQvxrLRo3CwjUkvvAUJTPL5CkWX4-GA2yRGDcV7jVpsg_LqyiF-RPDxWJoPSRzPPGuPxjzkwtz_Fi342xsODBcbP8qTnOZxRlOH1AAX4SJQLWFQ8JlQ9-_ROrfdnBus="
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Hello! I can help you with that. To get started, what is your full name?",
+                "thought": null,
+                "thought_signature": "AY89a1_wzrJ1DucHYarjLDLLQNb9WdCy9HEx3PJb4kyIhhUmvxO-UhxJk6ZLkfa26D-CD4opEdtqkJHF_Ks3cVNP2m036s5WrcON9Xx-zAbtRJulfqKPoBAfs4IvVOXPbGtUmUKqSk_5sX_-vvemAhlEsD_GwBx1kczpAz68bSLrdF2yrRdv_BBFgBY15Loenc6bIebVNgMNeUTTJHH7SLchGpfsjck_pJ1w-fUamjlmeRNeeNQjLerANzlU-oO1NeC8TK7ki6xLELkgjQ==",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
@@ -53,14 +79,28 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
                       "function_call": {
-                        "id": "adk-50be4977-acfd-42af-8a0d-8ec7cf32a019",
+                        "id": "adk-0a86ca4d-88da-4c5a-9b21-d62e229ba0ec",
                         "args": {
                           "agent_name": "Registratore"
                         },
-                        "name": "transfer_to_agent"
+                        "name": "transfer_to_agent",
+                        "partial_args": null,
+                        "will_continue": null
                       },
-                      "thought_signature": "CsMBAY89a1_mB54MJDIZUV6JYXFraTML-qppzY6ikIBJ5ItQe4wsbPqlyk5LjeXAEclydxxmjHor5zbQmq0hswRVfsQTmvE9O_mJ_L5MEA_EtnpylTwSJyJTKnNCm5-j8fhsUXXviMVNa_hzTTkqyioAg0MGyzwTVnR0iZJZi4IBedvQowxxyhb-0vLhPLogRRhlzWZj39fAZnSMU6NJSICaqE7KMbzs__AwGI88Lgq4mHooU8fLJc7QMujXJXsdoijntFhC"
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": "AY89a19n6a-m24fqnR-vSuX7UI89YE0I_e-ItiUt1z9qNoYlAt5ihoBEG4hNG5jKZ0luFB_ML7pepaMaGVn16L9t9lW-ocazu-gTLMw8TUZEvx9FTUu_9iDoL2FbbSgD4bI3GaKuMW30bj2MhGuTEmXYhMfeGkjBgpZauR4E1wFnGw-kn4xY1IBsqo_mFTnMHZikGoZAVLm0a2WL6S293x2cD9j4XDID5yJuhAWFXFfLUsJjobh9xu-FNbHY6iTqSNL6awnRof6RAvYDKomu9SPVgE6Rm_2kAgvKchhnlNnx8debFsoklb6XpYu0_JkNM1ZWN_auG59feFdxtytGs7ZWvG1AqZ0G_UI-Apj6yR5-9zUQnlUQ8O7k41aireFCBIJR_w1wGF44YFDt8zI8mohmqyhBkAavjO64c0wtkxHYOGRJJ0OppkNu8FKcZ73FDCNVBv7kobJsuzan-EoHaB316oK6-vMnEVRuAHMsOzvEWVR0VvShAL3QVI3wqe6fQFJD1a-7TEVvKKB8t2X0YBMrQ_GwClyyullzDXBOl-4jLeOxFqF261Vyu7IgQVDZizStSoNMfRkLGt9o3Dv_114zF4T8ZfxVS-yGbmVGsRXVOueERNQs_7auLUvfPVhTcsJ0hyo6h2D4lAfxnANbvLZ9sQ70_5sfHJLk0iSxcxBkfcEfffO5gszLmfwRuZ2Jy_c8RqwhN2wOieOSZe8jRY14jx1H4lQ=",
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "model"
@@ -71,13 +111,29 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
                       "function_response": {
-                        "id": "adk-50be4977-acfd-42af-8a0d-8ec7cf32a019",
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-0a86ca4d-88da-4c5a-9b21-d62e229ba0ec",
                         "name": "transfer_to_agent",
                         "response": {
                           "result": null
                         }
-                      }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "user"
@@ -100,8 +156,20 @@
           "final_response": {
             "parts": [
               {
-                "text": "Hello Zelda Ailine Luconi! I see you're all set up with your profile, and it looks like you prefer Vegan food and drive an Electric car.\n\nTo help me plan your trip, could you tell me if you're traveling with companions? If so, do they have any dietary restrictions? Also, what is your final destination?",
-                "thought_signature": "CvMDAY89a19FMaaUXWsS3uJGMffBAI6eVNUHIPU09bK-GKqbEM-gGZyY6bH8l79QMuh4IoB-Og-ONmXM7Sn-tfnkcL-245AV5vESp7xoOoDzLrPDu28j7nr0lgd843shRsQgoNb0fccwSevbuQwEuCwwKA0epKputBViELlDjZPtO_dgFEXIJbE7dNgwUkvFjhNfassP33r8zDsn7GnPMOjStan8hZmIfsfsN2ctM5HPAbbiFfbpmt0JwL676wHqhGmwdnYAdMxnwXg615Oz02aGQJPTfi0Jw6uI-yaJwC3zEKGxit7GUldinHTav6E1B0_HSONn7UtdquhwHTKtNXkEr1kG-sUTZWpex-XS90G0Q1t5WTFWZAWwrIvhXMnPXn7KnC5U-w4jSZWmVJCUCg0suuzRsYNvp4iBBd8T9dAxFtLvzfpCMy8NQcZhh90Dc1LG9cZGpDxJCTINZkTraDFDLQ_zdZYXp-PeqLhXQHzKfxRtKWUVFJAeoyza6rHfAyZxMXeHMkrHE_val-oK1Ko6Mo6Z7zlMqZNPYYI0Dt1s_yRV8u_B8mWfxrGVYrinF0gYUD0PulX9VfxchMAnTD-T_r8Yr-g5Ryc3Se4yGY1IyS4eUvHY_WKnNB7dBrNAEpZz2YIYnaqoiUyanOYqMawpzFn0Vg=="
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Hello Zelda Ailine Luconi! Your saved preferred language is English. Do you prefer to continue in English, or would you like to switch to another language?\n\nAlso, are you traveling with companions? If so, do they have any dietary restrictions? And what is your final destination?",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
@@ -113,20 +181,34 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
                       "function_call": {
-                        "id": "adk-17536a18-8536-4c2d-b128-ef53704e1791",
+                        "id": "adk-329221f5-b079-4b47-8325-f10b2589de0c",
                         "args": {
+                          "preferred_language": "English",
                           "culinary_preferences": [
                             "Vegan"
                           ],
                           "email": "zelda.luconi@gmail.com",
-                          "full_name": "Zelda Ailine Luconi",
-                          "preferred_language": "English",
-                          "vehicle_type": "Electric"
+                          "vehicle_type": "Electric",
+                          "full_name": "Zelda Ailine Luconi"
                         },
-                        "name": "save_new_user"
+                        "name": "save_new_user",
+                        "partial_args": null,
+                        "will_continue": null
                       },
-                      "thought_signature": "Cr8DAY89a18fkTxbcbeYXc6xQDxQRJNDHzAgPvCJ2SkL_04hGsV5ffTCw63gL7zi_d3pjV6WLKVH3eWfMrP_ZkIixSAPnHTHNPbsWjODruU_oe1t8taF2B2fJ84ODku1KqvL6IBfv_q6NfXM4Qbj7KYYnFrvv-juPXEduTmhJ6PFPNkDJCk90zBGbokbeVFx1Gkm_S5__GFH7kb6Tpoz_Z8-ksYFDik_SPK8kZBsc-v87GHnz52jtNmUm1qpeJlRdRPNiJxFJ3nHxUnl7Rf1OjMc8IcQ4UjDiFOCngmNZRh3WTYx5SAIqR1OZNEvkMUw1ynxq3s49wYGNu0FYV797Q3fqcbfxD9G5gjbk1JnuJ4FQYs0dYHP7r5SiLCCx0otyf0CndY_RdIE3buRntVnnUaedrKYXZ3NvlTulcRi3eBv4vtC5jHPBEE1McRhNKuC67fdtzz5MQ8MwOILX_HT4drsMgjzB-OcI9GjwD1Byo1Ax6Mw1bobfCVl65i5fw25wkFZ35XNXVwviCLgO9cW0Abh6tEKZOy6TtwZoxKSVzo-oG4Sw91GLtcXlwLs1rM-HZkLyBPP60xU0_q1T6gR8XWJ"
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": "AY89a1-lt--6Nic3b0DC48VxcblRjCK_jePMete2vyyo-5rxaiDV5H0PHbj0plud8V6eIsHQHwa-da7ehMeEDvMgMYUIgDAgYNpV67YJLWJ6gcz6Fftl8_2neWxcLgFuNv8TbJjR02dr7Ehj3RT3cw-MuRM3GDdAiPqPWg5mmA4gteygGZKmJPbJpZE7THHINZ_F0zuJnymtwOWgeo_1NI6lCXqziOVAuu0ifg8ubXuICux5yOZjB9BMirw-2IRNIxz3Mscme-k5gG1XJmeTHxuCk8qBqPMTw5vyNTBVZDxwlZCoEocgG9XrnbIjzk1gmNABi_JYT6OqX169VSBfW71ZvGn4q5eZDUhWgRq453VyoODk7CkyTubyY2roXfE6Vi0h-upsuCXsnE8Snn1DhHkLOYwjPpWdvtmKfIy8eVU3smwWj78cawm-TLNBXA2sXpWqtJYgIdxLPAl2os5EPHWzgOJVgUVy0Y3Q6WUFUjJhEhBsKJhpsRGi34ug7lTZ7oeoVdJY9rTiaNAEbK_-CHRZd9Sw4eK9KLRo-WVD4jFjektEIA0QsNrcZlvQbN34Wg3WErxrVBVNxfjNpDJM-ViNhSvsssflIti9kalwxR0Dp7DConUfeIpHObVwjuqTr3JANmNPdfNbyLMCWxvJ1VWsLTsBWYpX0_GaHzFE6aXT6JUvz1IYCAY9McojQbfLcxz22Qap00H3WMr9V3kHF6LZ",
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "model"
@@ -137,15 +219,31 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
                       "function_response": {
-                        "id": "adk-17536a18-8536-4c2d-b128-ef53704e1791",
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-329221f5-b079-4b47-8325-f10b2589de0c",
                         "name": "save_new_user",
                         "response": {
                           "status": "success",
                           "user_id": "usr_7c0adf",
                           "message": "Successfully registered Zelda Ailine Luconi with ID 'usr_7c0adf'."
                         }
-                      }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "user"
@@ -156,17 +254,28 @@
                 "content": {
                   "parts": [
                     {
-                      "text": "Wonderful! Your registration is complete, Zelda Ailine Luconi. Your User ID is 'usr_7c0adf'.\n\nI'm now handing you over to our Cameriere, who will help you organize your trip and dining experiences.",
-                      "thought_signature": "CqADAY89a18Ybfh1kgaLcfYsKh2LDr-SduMwr6BpVfMtZPnKdLnMBC-vqbcj-fV2TgcYgkaMXB3FB9FuOEh4h0nYdk6eINCmE0X2y0yljk-a2ibwg2T8NbrgdJMLCxjuXuAthT9BKGvbwPuN0y3BU-d4NSNZBAoNgYIew78S1oxOMpJWZpJ-2Ob7Vw7yUap2iiU6rC9H0QXhEpSoZcHobJ0QIrCk7_GF0V-ZLjqNG0g55daxX-XqfiqT_6VbvSCT-z22DEM-DPDea481TKaCvPodB7JxUuovsdtFNNSP7UeU0lNVF4mvP4fmwokGxWB2Rr-nx0f0xoHlW_4ZNuWBot_hxTjbxzQ-S9kziI1ZmiaDDjgtgMKkF3pWVhkwCIqgjS3uj7gSexxj7UKALnFln0g3XZbSbQISOa5oS9DmrWryG6WyEvYC6gxSqTGJDnVux8gKhmB5IYDWWdsQon9zZQ9ZiVnairxbnY97SClnBpMHO5LFsijwUELxudBxaiKI_Jnk7O1tCJjnKary7LugEh6AE6iwMlSk-l7chb35FzsRSL0="
-                    },
-                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
                       "function_call": {
-                        "id": "adk-33cc1328-cc11-4ee5-9e82-8a3565bb6628",
+                        "id": "adk-260fbc90-ae80-440e-bbf6-5553b117d6ff",
                         "args": {
                           "agent_name": "Cameriere"
                         },
-                        "name": "transfer_to_agent"
-                      }
+                        "name": "transfer_to_agent",
+                        "partial_args": null,
+                        "will_continue": null
+                      },
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "model"
@@ -177,13 +286,29 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
                       "function_response": {
-                        "id": "adk-33cc1328-cc11-4ee5-9e82-8a3565bb6628",
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-260fbc90-ae80-440e-bbf6-5553b117d6ff",
                         "name": "transfer_to_agent",
                         "response": {
                           "result": null
                         }
-                      }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "user"
@@ -194,14 +319,28 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
                       "function_call": {
-                        "id": "adk-31764609-e83d-48f5-92c2-12eab5aa8b40",
+                        "id": "adk-e4edda55-2155-4ecc-a989-99782b916537",
                         "args": {
                           "user_id": "usr_7c0adf"
                         },
-                        "name": "extract_user_profile"
+                        "name": "extract_user_profile",
+                        "partial_args": null,
+                        "will_continue": null
                       },
-                      "thought_signature": "CrsDAY89a1_WPOu3EV4Ch4Qu5wlzNZcPOU4NdFEEUEo8bqlSbnp0PL81u_drUwxpoA80x3D6yAe8HqQ5Ik5KcENOx-OZeazcqXM0c5vKfTUHq8CJ8DVduybXEEQkAenNyO3M92PilsvDJQa0HCof5r-x-XqtWgALZHEIbIrd1zykDwGlRmRJ3CHmQI7tAd8ZRs83sUZCxbs2MAUfO_-dxAvQnlg6pDvwSqlEcMFZKs2Rjyn7Ku1Xo9YntO7z6btLwXKL325yPlU1v6_1SSnZ5yuB5hlhMKdEryQra2JYbgFisoFfsKMXd01IibBa1BxW622ogct_cAccKVthhErGL1zBgC41mwZ6ENU6vsyCQ8NtRcVlNEyhaUwWw8lTWGKyt7uTCco08YoojOTvgOLa-4eu5SqAm8cYwcgNi7bV-eMcfBmtykk9qO5LfEPPNibD-dGpEFoPLB81-ZWHoR0dY59pqi_x3TisHTqKxc82dzCMdPkg_B4sos1lwuqc2p6hUZ3I9yKrZFF6UGN80gQCfYWJIpGDIqEgOLFBQxiUemzFWoWAqjF5rFviHKjpFkbbRBS7WO1g0MPeq83Bhgc="
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": "AY89a1-F2_YfAvjIxPX8nz9oYgXlp5NEKwhZ_-pbJ9Y-CCCdABywPwGFBiLjuZYE5VAuiOVkT7bCHcSwHURrp0LeWno8qerF8F8MudHej2xEOSO_pOmfbdo-F025IxUfiJVFBuP5NzkqkL7muQeT515tXpz0Rb8i72TG2SQKcpPnCuWVnxarrToHgJ7rIMkX9fQeJH3uoA-oVTgQoYQqJefgdYiYCigzSYD8XPy94LYAjzljfpIq17T_VuBKgq0ux2fPkIGkMjYWvs7IGCcK448P79OEDw_9gPki04qG2jwwBDKCU6ixLskXhCL8P7yG7c2cWy_pHHLwNsy4b5oEGM0pBzA0zNgPvTw9YA9RKZCVOehVymSco1rtOkX3Rfj0zzpucT94tHep3yTM8CsFMssBTttfo7bo7SeKoCocr5_q0beouGjWxxrM9F2Lcbd09L_neL1HDYnZFcJ1bLYW5mQVb0ScJZ8P7wbTwDQC0Y85VN3rOAaPhsSQqy97OeGiLzV8etCEr19DuuZ7_BfvY7MbeLvRP5BHB7_OI-k5ukHGD7m1HxO3IK7tvvZbIg4HRjvElmJLJgD6MZB5Lya-TH1frKCj-J3kcGf9i7ajtqT1N_3p1GEuXvS1QV_39JBcHEWRP3DY9YGgMb6dLx8_JA==",
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "model"
@@ -212,30 +351,46 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
                       "function_response": {
-                        "id": "adk-31764609-e83d-48f5-92c2-12eab5aa8b40",
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-e4edda55-2155-4ecc-a989-99782b916537",
                         "name": "extract_user_profile",
                         "response": {
                           "status": "success",
                           "message": "Session loaded for Zelda Ailine Luconi.",
                           "profile": {
-                            "vehicle": {
-                              "connector_type": null,
-                              "battery_capacity_kWh": null,
-                              "vehicle_type": "Electric"
-                            },
-                            "full_name": "Zelda Ailine Luconi",
-                            "created_at": "2026-09-15T08:41:37.736065Z",
                             "culinary_preferences": [
                               "Vegan"
                             ],
-                            "preferred_language": "English",
+                            "created_at": "2026-11-09T19:09:17.410905Z",
                             "user_id": "usr_7c0adf",
+                            "account_status": "active",
                             "email": "zelda.luconi@gmail.com",
-                            "account_status": "active"
+                            "preferred_language": "English",
+                            "vehicle": {
+                              "vehicle_type": "Electric",
+                              "connector_type": null,
+                              "battery_capacity_kWh": null
+                            },
+                            "full_name": "Zelda Ailine Luconi"
                           }
                         }
-                      }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "user"
@@ -258,13 +413,27 @@
           "final_response": {
             "parts": [
               {
-                "text": "Excellent! So, to confirm, you are Zelda Ailine Luconi (User ID: usr_7c0adf), your culinary preference is Vegan, and you drive an Electric car. You're traveling alone, and your destination is Rome.\n\nDoes this all sound correct?",
-                "thought_signature": "CqQGAY89a18SRlFFGSVwinQc4PoULfGQFRSWnY7xkzfUDprfTUVXxTwZaTAyoZBzzO6e0EkjpF0SfexfeHudkxYWyiYr1nmNn-7kjJrxHjNIRfEFk48urdxRnexzOx09O1WItku-9c-VQjhlaGD49UCNvUNFmyfqJ3iwvaG0zoolCIDwxOAT6upuQMGESEKEQPiGhcoTtp-eQbmZdOzQku-vXcssmcis7RVj1Ddlnh1XuiOJFQ3IiAKcq1J3kCazeHRz5o6p13f34GQx80zwmJMPhJrl1jYW9qvAxzLtCXD2FyD44DEiGpG9Zw6MBFi9guJ8BXq8gjiePsmsOBCmNXseXACkQP-QyhfKjWhDV6kKT62gJaWTBUJ3EPgtQN3sbIB6WLNzh7bWne7nV8GZXxyKRRDFNNwTIbg81I5Hu8tTiLAQ-P5pNN9PDW2oCWPhhVSXutrE3WexQjxrV8kIGB1T7yden8gm3pxgv8kmoVhTXxUWwLH-rUFcZaVyBXochJ4z7S1BUDXW3QhUaiTV-qBaqPapZ31_ZbUa_JlgsBnzBCGo1D3K4IvkFpxuS6UnDs1jblcpvK1ctPL84-dzE2QFlFmzQv1ZJJ0UF4ey0ylmvAlBwM39L1svgrsBb8pf-21kR2SgFFxzmy5omIIqMG2r6DjSd4XKVvqQnWypiTlS70qWpD14U9A-bsH9FkPjF0U3IqVrscC-ghYGjvKsxOd071AYv_aJgvCjZP5T9kyQnqhqqQZZcN6lgn4iHgEODcGkKM4cVryGbc37Q3YjVc8RMXt3ymbwpjcR0CUmy58CPjl2S9EessGmmYP3xDjePGS_tFqzP7pZWnQ1GHW1pTpDhsst-jhYWwiLGcycRZvYEuhFG4k9QJSQQquyS-qdmxKvNuQhFkvxsA8gOw2aMThNAWMF7HuBm-AbSD1HYeSsP-lO3B3Xniwyod3cbdVOFG8Q1etRwGC5Ckr1Y2Gfm9C_ZKz6y59TCs50PVBQtHxQcoG9sffzes_6ah7x_8tdYeWpA1Fq4Ttms7ze4bnLdAza6jj028sRxFn_zpcr8kFErhSDvnq2"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Thank you for the information. To confirm, here is a summary of the details:\n\n*   **User ID:** usr_7c0adf\n*   **Profile Preferences:** Vegan\n*   **Traveling with companions?** No\n*   **Destination:** Rome\n\nIs this summary correct?",
+                "thought": null,
+                "thought_signature": "AY89a19f5Pfpj68FX2McRRplchJRbL0OtaaUo_4eXh2EUc7PQ1IwC60jaOcxSbgd6B-yhiFCYJjjvpfZrY4ZLwk-YbNhUM-l-QmLyEkfBvaaH9HHBCAerzAmn-k1AUEMg-ySKBHT2JPOm-Y_jhh-ony2Th6GpcfAd0fUf9qWona2xm4rry4LlOozhGzT_AqR411jk-yIu0k5-_SlTcaGD_W_aBgE1YaR8C42Qaf4fiHXGrfHLjAjhzxHQ7ozrJkDhyMVcabV8fWoifyK96xncOGaAGfK_zAVkL3LdkIjdpSoYUgSHPP-KdpTYOCyaAxBl8aJ4FzH2SDcm-RT29B6BiXL2NVFcvRpFPb3Rh_kthXlmtVkV1i6X2i0q70f4xNIO2LOHH4dz_eeNjKWVYtggJpkMamNN1q1QrPbzmOScAoiVo18OjE3XSPQL-eHZ_33rfoHZyr7oNX4EGXQneoRJqXbH2lMmk67YAILEhkSGAOGeEQURkEl8tkahx5itiSt9oUHrH19OBGHNNORbrb2U-q3d81dUm4d1lB0rR6BdO6BBOO_tr1qEXdG3xB-4dPJhSmxjsT3e56-pYeVXj_aLo3kT2xb6ub7Khf-zM6zh0XBtF3OCKsVnQlW3DwBGK9lO_JPR6PBHLtz1w==",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {},
+          "intermediate_data": {
+            "invocation_events": []
+          },
           "creation_timestamp": 1789461733.156924
         },
         {
@@ -280,53 +449,26 @@
           "final_response": {
             "parts": [
               {
-                "text": "Hello again! Welcome back to Sosta. Are you already registered with us?",
-                "thought_signature": "CpoVAY89a1-vbhgwtYECzKNsAIeH7qfP_kH8PTrB62BPEOIFbPD1yovUp4AUIu0ccDX3YllKOEA0J2gmE-ukc9swJpsxzEQhc1XF-e57vEHzGY8k7mzSiN_6FPhm0OGhJWfamPCYaR1tk_aciQgT287ooRNAc0ZrjbxujmspB_VEdHBU-3H0rwRjnxJ_bIOPXUoH6kLEf9QGo5I8k-ZijYsn73115inmP_WxxcStjVvS6zLQm-RDjDZ_G0X7A8T1rJtVumn06XsoGqJ1P7ahyKd-pIZJxq5SIKTZl8SGwj3USoTB0Obb4Z3j5Z-eGsaMNoZbMK5m19gr53Omh4iuk5f45taLqLLl_viR9ern7bEzByCNKT5JUtovGwjg4h_8LAXYqpUbG4P7VGv5csHS41GjGwdvDjr7cM_fwm6fjWputzsWekPrzH1pdd33uOIO7UyEenWq4cy1EVaoyyInaNO4WhtCY-OEH1l-Xncd8u12saWw0dfX1-sccpRL3Ci0mMzJqUdXSgJFhj38SctByUOmMcsoDWKVf9x0L-x9z6W97FK6YN3aJsIWyXomt5jgAeLMTXKP5U2sCA_qlpOFop46B6Zjgi9WC9Zx6wy3Zc5A__-9rYgo8VfYd3SsoA6CgVOVTnZPQTYUKzjUcPZ0e2zPcjCclqN9Yl2VHg6GrXl1PsYUBHeBXGsycdEWkKopJV2wavuFZJmJwW3CM7NPNorAfSxG6AEJ8BW32470v1GrGqr-mqJH64Zgv0HHb9A1QMLTnJsMi-80OHH2f1T4RcvKHVHGYiRQYgl84N6RLNUD6ojAYZXXoLYrdQnb-60M7ZdYzecouJSED7KvCFEW2Noyf-iFh0giKA5A4wsR5yKzljIBDmkA8ldoKE_VPaKQd_AbQVTuMNFLdYKRgqRwoAa6tNnauvp85_vMxYdZ-K_r8wMAh49EthRGWki9Ik9xyZQgD30zuRpQeypbdToPZhqlmTOyJpTk0c6eteOk42BATXqVgLD2f32jnft9EMFz1x8hKTzifZI6gYdgM5nGBFxIvw8bSxdkvQYNCNZRDf6acR9aTpO9QYcI68QkQYmoNDSlApsTo2nr4NRLjieQVkG7LuN6f2rbQXMhFMFXoqkLOCQFP1kCrdmqFUlhVtN6UJqsPlDXtoc7Y4O1_YAvDvnexw1BgueNvgP_pzsSYqNUU4U8DNhpNhb7zILjWFiqPxshS-olbxb4fqteRH-ysMfd_eMh_fH2dBP1ARcy_qza_0SGLhiEwiO4yVzED3mNefmM01NPCYX0WOXn3vNR2xeH59iT4qytncR55kMgTVOXO-n-p9pdbcsZGX6GVL667-8yRlsxmYAUhm2Zj2uBv8yGQqbwdhpw_gQcYxhs3eadxScdFqsiMChai8zd1FcdDX-ATxjfxV-ngM_0rVsnLX7W53MsE_SS9VFGAJzg9Xgf9e4t8FI46I1J2CJUh9q-LF3u5SXbJA6kl1YiUMKtUX8NhcegboOq271DT5DqSXH0JfxxdSX9SmeQ7c-qnhUKhgJqGTriv4YM35M-KeY5qJ21amtvOxvgZ0bQDd7JHotaIzLV5u1D-VnF0UOLLmnozV10rev8IzXf7K1TU3737FVA6FAq1M0LiOiuNKPXBnR4_pu_zPkTVJaspWCGVqu5m_SW0toBdJTwqlmIaCcL5XSJFqHeV7_GQN3UMglh2zr0GciHa593SsmKcEeyVdq6zocB8eYBdgqWhqw-M40pMsY5DUN5kZWkPzAobaQqerjRnX6FUUxlrYuyg9U1ioNkV55G6cg2RMpF8uaA_N6nPNBySnEg5pcNL7TLTU-aseNPlpPbzDO3_Ut1wabObd6aGNydllYsSQblXLfeQrk7FkuFlinDB5PYIbVEO17eDcOtcV6NEciyLukwcDuAaUFKNQT9X8IqvsFK8pcwlQ4VepfoAaMIxSiqLifI0PDFLheGSoDMXCOsvwWxMmGfnW4xUjONeRiM4sR-piKiebTE3vhrItvmB-ahf8rK1_64_JFr8FlqCNeD_lZtNnJS0ZhlDZ9bZbCp7HtH2R6XxOv83P4QkEDwQLc9NFWfZfpBBb_3n0belWNr1otEZOZXjjN6IaeKJneAqBevz66aDHGn8mvcw7QimDzEPHzMYktYDKg2zKAJdZOjcXskTztcRi1H1Cu-xx0My_ZTeJnbAqmlPfhw7wStwQ2SyDJTWjyEZ29q-F6WkUBUJuUot9Xip-NY2SDm95Ubq87o1ctXBmdOOvFwcjHHV_OhAcgImyfBMh327RYLVT5kM746Yro0sHDEorey2oH-Rj8wRVUOBYu5abn9E4BNhtlOYrA8omH7DPm4fmoU5o2paU5j_09KUEKcepuWFL9khbypdj9FA1elrp2nU88NJesNJGTtjAiJpuyyYVV6aW13Jju8uilgfq6_uoY4xGxfurGXQVoBQtud2DXx0_38PX-aRtqxIi_vJB8TXv6kJZ3QO-ksq7spaligSAkze6ghUG2GHVIHv-f4CFmSWv0abJmAWK8oTli0hptMiOKf2rd5-VkM9GGwpD3ekTM1v0PotEdf7ozU-hqqPjxtkJIroMfP6LZzFpDBFIN2O_vhFD0JDy5mPNZendhcE_WkDo0gcec-FNGQzd2MZA9kZr2FRKJAme9BGc7ZdUZpw5hMBazQxw6u29ys-rvJWas1uhlHzF_TyoEAQqlJe-K1lZJVYjNDendfSvtn6ISYeVZnOuSqUe3u8DKqJ7nYua6pDOMI5W2EgLY2FEJrOtREFPOHPgZCDlr_BfkE4qniXQY157bSESXlz9iuZTQwXBXv1FRaYoOC8kwH6nXA5_ZRAcXdiGngayTW9SgpwugY9g40r_sFuil_1n3OzUx_RnzcYQdbuEAjZ8EOv_2lYATaiNQRSfQW0p0Mfol1ad1Hbs99p7VN4etMcDY4erfCofM5onZIsWq8YxPVQpyniY0rk6Qiduf_yJUxUnFtbfClb3XUzRrzswZzh9ODxY1xpDF_MHekzX1D849Ra4ZQdOolxg_bOFcHlrUvJk7bN2hIDezBSvejxENE1sF2fETWlZQgmb7-FRc1LJgztTfqj9ZBHomEWEvoO0LEKR89ZnvRY9ZznYdQlx5drBGH4t_Wjcb-anR_p09vLSSpnrSAwKDvVfk3Nv6PKCCk5eysccNVnYKvm7v9Si341dAGfPGinplI8ctQ7axt3HAuHpWDTTGxDeC6EkgGUcU8bR7q7luLRajV-f-CDyNxGhLYJ_eBpd-UYlW-8f6ha5RrjFLid3pobFOgDT2Yem6wUUDxj0fOlgoLkELFKthCh8u_mBdSXrBNiA4A7vcTYbzwZEMgknohCRb_PwQd23ev8B_Iu6ahgEK6Fpxzu-uk9jnC64i2L5RoQ8JLm5y_67TjY7V_k4pKLnjXImokMxxPlIcT0cbhM14eDnYTIBWlHDdxLo1mDnZxYlK5QDGwmcfXpaG_kXf8M3YFCdPlxi2uCW6kQEhUgyudm59t-ZcTS21ai-7CaVYwPQ_jIti8vsFgdxKNdAs_0_aTunYefiAk3qnO-YLsuuhTI8ISlc07nuhtmv7u2Xry1jylgRwRl0NDQbux6AWc_qKjHM2CunzWrpo="
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Great! I'll pass all these details to Suggeritore to prepare your personalized recommendations for Rome.",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
           "intermediate_data": {
-            "invocation_events": [
-              {
-                "author": "Cameriere",
-                "content": {
-                  "parts": [
-                    {
-                      "text": "Great! I'll just pass all these details along.\n",
-                      "thought_signature": "Cu4EAY89a198PXHwiTkfbL3vSRrE32GN7ax3C1qmK6fLloh9MMOZ4BO-71mmX5oxWU8_vDo8Z4mUGNQGLP1pWY_Fw7rvp7ksiqspJO4QjUq6qJfoJNW6InSKub9_rocrWWa5CcUJOjOXoJonFy2os0qUtOFsH_7NcVRc23fRazovVIV571bEjzTloIeNSgyfucfbVMWIMtArnCC5gL7TNIhN4RH9jpnNtkrA6ECsItUnQm0GyzXBFlbKie4IwA2B8y7F5ol0_Pq0oOYq0dGBnbhlS-YNr9V6JYbJqIGvgKqWXaLWVmmLvRf5zga5cl-AIWZDu8FQq5817gKKOeY2aDqJozXYl2BzaHjSss-NduErDYiP8n8Sdsb3lVgIvRwV_zeTe9L7Y7icOWjy09bbalWRYVYhcK1vyQBQBFWe86DLrZ92HTVVU5_liPsoyaICT5Nkv_nfqMaQ9Vrn-Gbrh-NU5F5_ArkS18fjJiE6hOHgNHz-BMIxhekmqsKdxZOy3Kt33JEHfWyiYEoF5KZ44WXJjGWSJaR5zY1-CE0TSCXEEilcLfWcsqjjh-FHr-wJ5qhhQYR2cLnIN81Crke3NMz1bFjPmI5qGM9HsgH0LSNb9gMDPz5V-TkiE2ewJzsCU9LKC1qmS35iIRo9VWEu424HD6DyXEZCS4ftZWlI_HTIACb1OdaZS6a-t6JscpJcB7vin6DSk31t03jx3Abl6AjMcwSO7B67XnF9TSCVvJlnl7DgYRsKzMbQFCGxfQ6TWLLdIaS50maR6GE6FMOwVMwvw1UpcmL-2xs2_BbXrDjhHfVaa3FQ9s1NCRaLjRDAYw=="
-                    },
-                    {
-                      "function_call": {
-                        "id": "adk-04bbd0e9-d4e0-4021-8c1a-4ab23bc59316",
-                        "args": {
-                          "agent_name": "Gatekeeper"
-                        },
-                        "name": "transfer_to_agent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Cameriere",
-                "content": {
-                  "parts": [
-                    {
-                      "function_response": {
-                        "id": "adk-04bbd0e9-d4e0-4021-8c1a-4ab23bc59316",
-                        "name": "transfer_to_agent",
-                        "response": {
-                          "result": null
-                        }
-                      }
-                    }
-                  ],
-                  "role": "user"
-                }
-              }
-            ]
+            "invocation_events": []
           },
           "creation_timestamp": 1789461748.3490272
         }
