@@ -1,7 +1,8 @@
 # adk_agent_app/tools/registratore_agent_tools.py
 from datetime import datetime, timezone
+import hashlib
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 import uuid
 
 from google.cloud import firestore
@@ -15,10 +16,14 @@ def _get_firestore_client() -> firestore.Client:
     return firestore.Client(project=PROJECT_ID, database=FIRESTORE_APP_DB)
 
 
-def get_user_id() -> str:
-    """Deterministic static key when running under ADK eval CLI."""
+def get_user_id(email: str) -> str:
+    """Deterministic email-based ID when running under ADK eval CLI."""
     if os.getenv("ADK_EVAL_MODE") == "true":
-        return "usr_f93207"
+        # Returns a deterministic hash based on email
+        # ('usr_7c0adf' for zelda.luconi@gmail.com, 'usr_ba7db8' for f.rossi@gmail.com)
+        clean_email = email.strip().lower()
+        email_hash = hashlib.md5(clean_email.encode()).hexdigest()[:6]
+        return f"usr_{email_hash}"
     return f"usr_{uuid.uuid4().hex[:6]}"
 
 
@@ -28,18 +33,16 @@ def save_new_user(
     preferred_language: str,
     culinary_preferences: List[str],
     vehicle_type: str,
-    connector_type: Optional[str] = None,
-    battery_capacity_kWh: Optional[float] = None,
 ) -> Dict[str, Any]:
     """
     Registers a new user in the Application Database with complete profile details.
     """
     try:
         db = _get_firestore_client()
-        new_id = get_user_id()
+        new_id = get_user_id(email=email)
 
         clean_preferences = (
-            [p.capitalize() for p in culinary_preferences]
+            [p.capitalize() if p != "No specific preferences" else p for p in culinary_preferences]
             if isinstance(culinary_preferences, list)
             else [str(culinary_preferences).capitalize()]
         )
@@ -53,8 +56,8 @@ def save_new_user(
             "culinary_preferences": clean_preferences,
             "vehicle": {
                 "vehicle_type": clean_vehicle,
-                "connector_type": connector_type,
-                "battery_capacity_kWh": battery_capacity_kWh,
+                "connector_type": None,
+                "battery_capacity_kWh": None,
             },
             "account_status": "active",
             "created_at": datetime.now(timezone.utc),
