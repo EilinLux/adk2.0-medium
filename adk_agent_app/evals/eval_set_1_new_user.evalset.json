@@ -38,7 +38,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Great! I can help you with that. To get started, what is your full name?"
+                "text": "Great! Let's get you registered. To start, what is your full name and email address?"
               }
             ],
             "role": "model"
@@ -77,7 +77,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Thank you, Zelda. What is your email address?"
+                "text": "Thanks, Zelda Ailine Luconi! What is your email address?"
               }
             ],
             "role": "model"
@@ -117,7 +117,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Perfect! Now, what are your culinary or dietary preferences? For example, are you Vegetarian, Gluten-free, or do you have any allergies?"
+                "text": "Understood. Do you have any culinary or dietary preferences, such as Vegetarian or Gluten-free?"
               }
             ],
             "role": "model"
@@ -137,7 +137,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Great, thank you! Lastly, what type of vehicle do you drive? (e.g., Electric, Gasoline, Hybrid)"
+                "text": "Thanks for sharing your culinary preferences! Lastly, what type of vehicle do you drive (e.g., Electric, Gasoline, Hybrid)?"
               }
             ],
             "role": "model"
@@ -157,7 +157,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Welcome, Zelda Ailine Luconi! I am the Cameriere and I am here to help you organize your trip and dining experiences.\n\nBefore we begin, are you traveling with companions? If so, do they have any additional dietary restrictions I should be aware of?\n\nAnd what is your final destination?"
+                "text": "Wonderful! Your registration is complete, Zelda. Your User ID is `usr_7c0adf`.\n\nI'm now handing you over to the Cameriere, our Dining Concierge, who will help you organize your trip and dining experiences."
               }
             ],
             "role": "model"
@@ -185,7 +185,30 @@
                   ],
                   "role": "model"
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "invocation_id": "e-4755d416-62c9-4d49-80f9-8f9e3b577c2c",
+          "user_content": {
+            "parts": [
+              {
+                "text": "I am traveling alone and going to Rome"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Perfect, I have loaded your details.\n\nHere is a summary of what I have gathered so far:\n*   **User ID:** `usr_7c0adf`\n*   **Name:** Zelda Ailine Luconi\n*   **Preferred Language:** English\n*   **Dietary Preferences:** Vegan\n*   **Vehicle Type:** Electric\n*   **Travel Companions:** None (traveling alone)\n*   **Destination:** Rome\n\nIs everything correct?"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
               {
                 "author": "Registratore",
                 "content": {
@@ -222,26 +245,6 @@
           }
         },
         {
-          "invocation_id": "e-4755d416-62c9-4d49-80f9-8f9e3b577c2c",
-          "user_content": {
-            "parts": [
-              {
-                "text": "I am traveling alone and going to Rome"
-              }
-            ],
-            "role": "user"
-          },
-          "final_response": {
-            "parts": [
-              {
-                "text": "Perfect, Zelda. To summarize:\n\n* **User ID:** `usr_7c0adf`\n* **Name:** Zelda Ailine Luconi\n* **Dietary Preferences:** Vegan, loves pasta.\n* **Vehicle:** Electric car.\n* **Travel Companions:** None.\n* **Destination:** Rome.\n\nIs this summary correct?"
-              }
-            ],
-            "role": "model"
-          },
-          "intermediate_data": {}
-        },
-        {
           "invocation_id": "e-644ffcf3-af9c-4f9a-86bd-4ba3adfdc4a8",
           "user_content": {
             "parts": [
@@ -254,7 +257,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Fantastic! I will now pass all these details to Suggeritore, who will take care of providing you with the best recommendations for your trip and culinary experiences in Rome."
+                "text": "Great! All details are confirmed.\n\nI am ready to pass this information to our Suggeritore, who can start preparing your personalized recommendations for Rome, taking into account your vegan preferences and the fact that you are traveling alone."
               }
             ],
             "role": "model"
