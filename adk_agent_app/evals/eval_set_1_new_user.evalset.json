@@ -3,7 +3,7 @@
   "name": "eval_set_1_new_user",
   "eval_cases": [
     {
-      "eval_id": "Zelda, Italian",
+      "eval_id": "Zelda, English",
       "conversation": [
         {
           "invocation_id": "e-0fc4dc20-03e2-49de-ad82-87639ad3d966",
@@ -109,7 +109,7 @@
           "user_content": {
             "parts": [
               {
-                "text": "Italian"
+                "text": "English"
               }
             ],
             "role": "user"
@@ -117,7 +117,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Perfetto! Now, what are your culinary or dietary preferences? For example, are you Vegetarian, Gluten-free, or do you have any allergies?"
+                "text": "Perfect! Now, what are your culinary or dietary preferences? For example, are you Vegetarian, Gluten-free, or do you have any allergies?"
               }
             ],
             "role": "model"
@@ -149,7 +149,7 @@
           "user_content": {
             "parts": [
               {
-                "text": "Electic car"
+                "text": "Electric car"
               }
             ],
             "role": "user"
@@ -157,7 +157,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Benvenuta, Zelda Ailine Luconi! Sono il Cameriere e sono qui per aiutarti a organizzare il tuo viaggio e le tue esperienze culinarie.\n\nPrima di iniziare, vorrei sapere: stai viaggiando con dei compagni? Se sì, hanno delle restrizioni dietetiche aggiuntive di cui dovrei essere a conoscenza?\n\nE qual è la tua destinazione finale?"
+                "text": "Welcome, Zelda Ailine Luconi! I am the Cameriere and I am here to help you organize your trip and dining experiences.\n\nBefore we begin, are you traveling with companions? If so, do they have any additional dietary restrictions I should be aware of?\n\nAnd what is your final destination?"
               }
             ],
             "role": "model"
@@ -174,7 +174,7 @@
                         "args": {
                           "email": "zelda.luconi@gmail.com",
                           "full_name": "Zelda Ailine Luconi",
-                          "preferred_language": "Italian",
+                          "preferred_language": "English",
                           "vehicle_type": "Electric",
                           "culinary_preferences": [
                             "Vegan"
@@ -226,7 +226,7 @@
           "user_content": {
             "parts": [
               {
-                "text": "Sono sola e vado a Roma"
+                "text": "I am traveling alone and going to Rome"
               }
             ],
             "role": "user"
@@ -234,7 +234,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Perfetto, Zelda. Ricapitolando:\n\n* **User ID:** `usr_7c0adf`\n* **Nome:** Zelda Ailine Luconi\n* **Preferenze Dietetiche:** Vegana, ama la pasta.\n* **Veicolo:** Auto elettrica.\n* **Compagni di Viaggio:** Nessuno.\n* **Destinazione:** Roma.\n\nÈ corretto questo riepilogo?"
+                "text": "Perfect, Zelda. To summarize:\n\n* **User ID:** `usr_7c0adf`\n* **Name:** Zelda Ailine Luconi\n* **Dietary Preferences:** Vegan, loves pasta.\n* **Vehicle:** Electric car.\n* **Travel Companions:** None.\n* **Destination:** Rome.\n\nIs this summary correct?"
               }
             ],
             "role": "model"
@@ -254,7 +254,7 @@
           "final_response": {
             "parts": [
               {
-                "text": "Ecco l'itinerario consigliato per il tuo viaggio da Milano a Roma con il tuo veicolo elettrico e le tue preferenze vegane:\n\n1. **Badia al Pino Est**\n   * **Posizione:** Lungo il percorso da Milano a Roma.\n   * **Ricarica:** Dispone di ricarica rapida **ELECTRIC_FAST**.\n   * **Opzioni Vegane:** Ristorante con insalate, pasta al pomodoro e verdure grigliate.\n\n2. **Cantagallo**\n   * **Posizione:** Lungo il percorso da Milano a Roma.\n   * **Ricarica:** Dispone di ricarica rapida **ELECTRIC_FAST**.\n   * **Opzioni Vegane:** Offre opzioni vegane come insalate, primi piatti di pasta, verdure e latte vegetale per la colazione.\n\n3. **Sillaro Ovest** e **Secchia Ovest**\n   * **Ricarica:** Entrambe dispongono di colonnine **ELECTRIC_FAST** e servizi di ristorazione adatti a chi segue una dieta vegana.\n\nBuon viaggio verso Roma!"
+                "text": "Here is the recommended itinerary for your trip from Milan to Rome with your electric vehicle and vegan preferences:\n\n1. **Badia al Pino Est**\n   * **Location:** Along the route from Milan to Rome.\n   * **Charging:** Features **ELECTRIC_FAST** charging.\n   * **Vegan Options:** Restaurant offering salads, pasta with tomato sauce, and grilled vegetables.\n\n2. **Cantagallo**\n   * **Location:** Along the route from Milan to Rome.\n   * **Charging:** Features **ELECTRIC_FAST** charging.\n   * **Vegan Options:** Offers vegan options such as salads, pasta dishes, vegetables, and plant-based milk for breakfast.\n\n3. **Sillaro Ovest** and **Secchia Ovest**\n   * **Charging:** Both feature **ELECTRIC_FAST** charging stations and dining services suitable for those following a vegan diet.\n\nHave a great trip to Rome!"
               }
             ],
             "role": "model"
