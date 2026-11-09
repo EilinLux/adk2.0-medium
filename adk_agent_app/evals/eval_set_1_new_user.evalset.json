@@ -38,7 +38,20 @@
           "final_response": {
             "parts": [
               {
-                "text": "Great! Let's get you registered. To start, what is your full name and email address?"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Hello! I can help you with that. To get started with your registration, could you please tell me your full name?",
+                "thought": null,
+                "thought_signature": "AY89a19_1q9Vl2OfunI9ankA3TkRbcrsRr-bWot58xvghBy_83EoigZTnb4d_uQAZxXfD9isxBWGc0Sdh2Lk36yL1HbEb7AvfPCibBP3uirDq9xlwdlmHa5DZt3TPq3E3NN78BPoP35Cf64uO-0fX55aD-44kAVMuALk8Q2uOJyUlPuomDO_4PfmYqAscLalJaG-kOWPNVorCBE6E0aWMh9h2peKJ-oc8tTkT1IlxD_GK_VUJpObIy0pXo5vFcJ_5hi6qBAqbXE=",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
@@ -50,15 +63,64 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
                       "function_call": {
-                        "name": "transfer_to_agent",
+                        "id": "adk-ad5de7b3-93df-417e-93cb-77fd1ed9d7b6",
                         "args": {
                           "agent_name": "Registratore"
-                        }
-                      }
+                        },
+                        "name": "transfer_to_agent",
+                        "partial_args": null,
+                        "will_continue": null
+                      },
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": "AY89a1-JtvjFEMk5sDoyePLFM8C65syvcZBGiuXuYXdLgBTnZlMqcz9tkesRHBRKexHoVAbtIdNDAIFoeLQkqD0JvFlg7mhyENOoB3he0lp2LLqhohLkNOjFoAvdg7OzupKKhP38i9AhlEgQ9LsR2I5-jCbkQL3Xa9YPOakTxxvNje3AzZ_LvCyuHJpCQXVwcTUPAv1zp2jgZl91yyvnyNTdF8Zp9i6iQ5b_uPxDCrYvtMEDF-1twTNgRXT9M8jn_f1IyTkpv62I7RSgNYtkUO4oXwaEMoZZzGXG6PD9DnMD85dGUVNTYeJtZq9l6wSJzskvZH3LH-PY3htF0D11VgA2f2EKvULqHQuC_dGHpuc6e70F_9Ts25hfp0qZpbhDZTz6S94C0VgG2H-IkuqPFv8QCD_GFGpKBCuckb5vfvUHNuAA6EvLQD0ezxWGJqkxqAhSAtW7sqXP6is4QCtXvVQJpfMSThvMXBW2MNI6xHugrSYSfcmxcZWhFc8oxAl9nbumFQgAjDUfMyWahaP6kUywmlVHIcnZX3WmsuukMu4Pfh0Oq4QbS7UMAJ3vf5s0cc4nAhPY8lRd94f7g8mtYygBzZVWFFUh1kMFpcgrFmoOczkqAEBlnrr4Xl1elLc5wMVUV7P37XqniY_-k0fi3dbAhdVTQYtE1T2FT1rP9m_N-W4DE-JckiqvUZo1qRK-mBC6mZbQ5yAI2Ki347YsllTsZbxQcLw=",
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "model"
+                }
+              },
+              {
+                "author": "Gatekeeper",
+                "content": {
+                  "parts": [
+                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
+                      "function_response": {
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-ad5de7b3-93df-417e-93cb-77fd1ed9d7b6",
+                        "name": "transfer_to_agent",
+                        "response": {
+                          "result": null
+                        }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
+                    }
+                  ],
+                  "role": "user"
                 }
               }
             ]
@@ -117,12 +179,27 @@
           "final_response": {
             "parts": [
               {
-                "text": "Understood. Do you have any culinary or dietary preferences, such as Vegetarian or Gluten-free?"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Understood. Now, could you please tell me about your culinary or dietary preferences? For example, are you vegetarian, vegan, gluten-free, or do you have any allergies? If you don't have any specific preferences, you can just say \"No specific preferences.\"",
+                "thought": null,
+                "thought_signature": "AY89a19HLJDTcvsmiN3RkAI47jmh27DqyaELqHhLT-AP6q62xejQatWM2c4IIi1oLUeZAkJkB47dG6cNJxeR-el6YfeMHAPvhp7d_grejSFZPQNvD4TT3dfp0StAq5dkY2QK-BrLzpf1vzRi9pqsR_OxA1iyBHzyAYdKcGaix33SNbvGFoF0S-zoy6X1eINag_WAUl5X1Wq8ksbJmXuXO1JsPxpj04ilbAxh7_TlbOt9ugEt1s1wh2ktIHCw0oSD4COovi-CofP3f89tmq2a4v1XGeYBsQqo4BoZ4ZSqpDqg5RpFMBiQ9zDrq3XZASnoWmFqJIUs",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
-          "intermediate_data": {}
+          "intermediate_data": {
+            "invocation_events": []
+          }
         },
         {
           "invocation_id": "e-c8b76ab5-487c-4870-82f4-cb759a808ee3",
@@ -157,7 +234,20 @@
           "final_response": {
             "parts": [
               {
-                "text": "Wonderful! Your registration is complete, Zelda. Your User ID is `usr_7c0adf`.\n\nI'm now handing you over to the Cameriere, our Dining Concierge, who will help you organize your trip and dining experiences."
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Hello Zelda Ailine Luconi! Your saved preferred language is English. Do you prefer to continue in English?\n\nAlso, are you traveling with companions? If so, do they have any dietary restrictions? And what is your final destination?",
+                "thought": null,
+                "thought_signature": "AY89a18ADklczZVQAaLqVFMxO632YCB1H0i931vdcHdiudLpD0abv4L4uorDmTIymPSldmBIjJft5oOX2gvEetB8APKacpRN5oPMvc6RyllmjnXe24RGeZLvHUVNNaDPj3J3fms--fLbwVcyBDNkmmqXT4UOq0HVWPNC68IlZE6X6ahdkGyP8dr3e_PePD_Jdd_3-WjOPh3VaZsGpBgOvLFGy8c0fH10RjQI4RJaByDlbkBLiMlcuHc4oym-zDW6T4MRlPrBaurmanx8qyiPjoKNgGLOIT_nlv01OhQ_-O-vIn_aqqc43YfdW08P82MCgyqhjE0_3pcHnKMvG1lLYjWHreFdBDMh6DPjuftQsNWBNz45wDyWWMSwo1j_m4nOIqBc91t7XfpgESjRY8GlQs25nJCe7qtt2xXDP93-WcpVX4eu89Hs4aV0-tyx2A44GXp1pqPc6japJSpLdX0=",
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
@@ -169,21 +259,219 @@
                 "content": {
                   "parts": [
                     {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
                       "function_call": {
-                        "name": "save_new_user",
+                        "id": "adk-49be60b2-36b3-439b-be46-07d5b42ee2f6",
                         "args": {
-                          "email": "zelda.luconi@gmail.com",
-                          "full_name": "Zelda Ailine Luconi",
-                          "preferred_language": "English",
                           "vehicle_type": "Electric",
+                          "email": "zelda.luconi@gmail.com",
+                          "preferred_language": "English",
                           "culinary_preferences": [
                             "Vegan"
-                          ]
-                        }
-                      }
+                          ],
+                          "full_name": "Zelda Ailine Luconi"
+                        },
+                        "name": "save_new_user",
+                        "partial_args": null,
+                        "will_continue": null
+                      },
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": "AY89a187GvEYM1vujj_3bnWLtvWQ4cyBfipXSBvSY9c-XoWMmVNaVQYJ46jtQ3w1Tsw8TX_EtBB2TrD0991cz3sfNBbOB2Akr9c7CMA99ix96iLk7uw7nlphiuyZ4o4Y3xUK-aYBQlDl6rAoPFRK74i6glBzZHb6X6CAK0eBs-3tBf0O5sep1YWUVu4wKZCoJIQgEItGTM8Od0TDxVbu8H8cGKYwFnF-oukkcB6WoNmzraJDGWY-E7qZ-L3ZyjfFT68gHcQrJGyY_97V5fUJi0GcYoGn3TKgkXf4CEDQt2NrNuxu5H1B1XfI7GbsOHfjc-mZQsXi134NCNt9TkeNqojkTOVGoIC7_wHbRkuA09MV1nqio38SHh1nsoeVb7nkoNi4dqpy-0F0RTdcGsrkth-jqBZHV47i9xzKz1vIo8Q-B8fp7mmlR0Fr6XK44xjL7lq6hPklWxwvwRDu6d8KfAWHHdrIzHFnFF3Fjn1t3QWWd8r5DZSC61J09xZynKo1kTbUWtWRK1zF46srx0eRwzQgKSke9IqOpA==",
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
                     }
                   ],
                   "role": "model"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
+                      "function_response": {
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-49be60b2-36b3-439b-be46-07d5b42ee2f6",
+                        "name": "save_new_user",
+                        "response": {
+                          "status": "success",
+                          "user_id": "usr_7c0adf",
+                          "message": "Successfully registered Zelda Ailine Luconi with ID 'usr_7c0adf'."
+                        }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
+                    }
+                  ],
+                  "role": "user"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": {
+                        "id": "adk-70341512-c997-463e-9f6b-6df48526defa",
+                        "args": {
+                          "agent_name": "Cameriere"
+                        },
+                        "name": "transfer_to_agent",
+                        "partial_args": null,
+                        "will_continue": null
+                      },
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Registratore",
+                "content": {
+                  "parts": [
+                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
+                      "function_response": {
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-70341512-c997-463e-9f6b-6df48526defa",
+                        "name": "transfer_to_agent",
+                        "response": {
+                          "result": null
+                        }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
+                    }
+                  ],
+                  "role": "user"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": {
+                        "id": "adk-bf1898d2-13fc-46bf-946f-17c3de87c841",
+                        "args": {
+                          "user_id": "usr_7c0adf"
+                        },
+                        "name": "extract_user_profile",
+                        "partial_args": null,
+                        "will_continue": null
+                      },
+                      "function_response": null,
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": "AY89a19UhMclf5ZmmuGq3XyBVn6ym0OisZ5EYZzv-vv4-ONjz-jSRAz95N5j4ELHEYRaIH27FfvlnFWFeWXZsluvJA0vDLVD_wWcEGdounr5WIIqgEmfclEDTE6S7YOyOLzn4Fgqt9WaSm38NDYRTVZbv9pG9KvGRU8ZaTdn-Z8EHKJxrBDv1sBAxHmtdMQ6jLl429NKOEjUDB1vfF23gHDxvWwo9p-0_elX-OJH3V1YUCuYkJO-kSr9x-53CvK_Xxrc23J5D63wKajE9tKIXTtU1WQ_z_LQcuNjO7iSSJwuqJsoaXlu-dpnJHL6Rn-oLCaHkYt8PLQQWcRxqu6CpktvqB60cTm_2dHqnKnBosbsKsv-UsI9ArYRQvNvLjMXnYpcZqyU7sFWbDKT6J984zxf5VfiNgVZ1kb64xRHT8rgUxWqA1oRYYrVrxnbHfZ_4zZhwKPtAv3Nb1pZd_ZaGux_Qf9SwvJZlvuXb7jCJ4yVsJUz4HmfTCzBcoeVOAkxXpHp2cNhhoVIDLmHhjSZyn95x8065tpibEJrM8ofsZEe",
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "Cameriere",
+                "content": {
+                  "parts": [
+                    {
+                      "media_resolution": null,
+                      "code_execution_result": null,
+                      "executable_code": null,
+                      "file_data": null,
+                      "function_call": null,
+                      "function_response": {
+                        "will_continue": null,
+                        "scheduling": null,
+                        "parts": null,
+                        "id": "adk-bf1898d2-13fc-46bf-946f-17c3de87c841",
+                        "name": "extract_user_profile",
+                        "response": {
+                          "status": "success",
+                          "message": "Session loaded for Zelda Ailine Luconi.",
+                          "profile": {
+                            "user_id": "usr_7c0adf",
+                            "full_name": "Zelda Ailine Luconi",
+                            "email": "zelda.luconi@gmail.com",
+                            "account_status": "active",
+                            "created_at": "2026-11-09T18:28:42.272023Z",
+                            "preferred_language": "English",
+                            "vehicle": {
+                              "vehicle_type": "Electric",
+                              "battery_capacity_kWh": null,
+                              "connector_type": null
+                            },
+                            "culinary_preferences": [
+                              "Vegan"
+                            ]
+                          }
+                        }
+                      },
+                      "inline_data": null,
+                      "text": null,
+                      "thought": null,
+                      "thought_signature": null,
+                      "video_metadata": null,
+                      "tool_call": null,
+                      "tool_response": null,
+                      "part_metadata": null
+                    }
+                  ],
+                  "role": "user"
                 }
               }
             ]
@@ -202,46 +490,26 @@
           "final_response": {
             "parts": [
               {
-                "text": "Perfect, I have loaded your details.\n\nHere is a summary of what I have gathered so far:\n*   **User ID:** `usr_7c0adf`\n*   **Name:** Zelda Ailine Luconi\n*   **Preferred Language:** English\n*   **Dietary Preferences:** Vegan\n*   **Vehicle Type:** Electric\n*   **Travel Companions:** None (traveling alone)\n*   **Destination:** Rome\n\nIs everything correct?"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Great! So, to summarize:\n\n*   **User ID:** usr_7c0adf\n*   **Profile Preferences:** Vegan, Electric vehicle\n*   **Companion Restrictions:** None (traveling alone)\n*   **Destination:** Rome\n\nIs this summary correct?",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
           "intermediate_data": {
-            "invocation_events": [
-              {
-                "author": "Registratore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "name": "transfer_to_agent",
-                        "args": {
-                          "agent_name": "Cameriere"
-                        }
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Cameriere",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "name": "extract_user_profile",
-                        "args": {
-                          "user_id": "usr_7c0adf"
-                        }
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              }
-            ]
+            "invocation_events": []
           }
         },
         {
@@ -257,89 +525,26 @@
           "final_response": {
             "parts": [
               {
-                "text": "Here is the recommended itinerary for your trip from Milan to Rome with your electric vehicle and vegan preferences:\n\n1. **Badia al Pino Est**\n   * **Location:** Along the route from Milan to Rome.\n   * **Charging:** Features **ELECTRIC_FAST** charging.\n   * **Vegan Options:** Restaurant offering salads, pasta with tomato sauce, and grilled vegetables.\n\n2. **Cantagallo**\n   * **Location:** Along the route from Milan to Rome.\n   * **Charging:** Features **ELECTRIC_FAST** charging.\n   * **Vegan Options:** Offers vegan options such as salads, pasta dishes, vegetables, and plant-based milk for breakfast.\n\n3. **Sillaro Ovest** and **Secchia Ovest**\n   * **Charging:** Both feature **ELECTRIC_FAST** charging stations and dining services suitable for those following a vegan diet.\n\nHave a great trip to Rome!"
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Wonderful! I'll pass all these details to Suggeritore to prepare your personalized recommendations for your trip to Rome.",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
               }
             ],
             "role": "model"
           },
           "intermediate_data": {
-            "invocation_events": [
-              {
-                "author": "Cameriere",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "agent_name": "Suggeritore"
-                        },
-                        "name": "transfer_to_agent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "destination_city": "Roma",
-                          "origin_city": "Milano"
-                        },
-                        "name": "RoutePlannerAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "fuel_type": "ELECTRIC_FAST",
-                          "latitude": 43.678,
-                          "longitude": 10.8506
-                        },
-                        "name": "SosteSearchAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              },
-              {
-                "author": "Suggeritore",
-                "content": {
-                  "parts": [
-                    {
-                      "function_call": {
-                        "args": {
-                          "dietary_preferences": [
-                            "Vegan"
-                          ],
-                          "stop_names": [
-                            "Badia al Pino Est",
-                            "Cantagallo",
-                            "Sillaro Ovest",
-                            "Secchia Ovest"
-                          ]
-                        },
-                        "name": "MenuCheckerAgent"
-                      }
-                    }
-                  ],
-                  "role": "model"
-                }
-              }
-            ]
+            "invocation_events": []
           }
         }
       ],
