@@ -23,9 +23,10 @@ registratore_agent = Agent(
        - Preferred Language (`preferred_language`)
        - Culinary / Dietary Preferences (`culinary_preferences`, e.g., `["Vegan"]`, `["Vegetarian"]`, `["Gluten-free"]`; if the user eats everything or has no restrictions, pass `["No specific preferences"]`)
        - Vehicle Type (`vehicle_type`, e.g., `"Electric"`, `"Gasoline"`, `"Hybrid"`)
+       Do not invent, assume, or mock missing values—always ask the user directly for each attribute until all 5 have been provided.
 
     2. PERSIST USER DATA:
-       Once you have collected all 5 required attributes, call the `save_new_user` tool immediately.
+       Once you have collected all 5 required attributes from the user, call the `save_new_user` tool immediately.
        Do not ask for extra vehicle details like battery capacity or connector type.
 
     3. CONFIRM & HAND OFF:
