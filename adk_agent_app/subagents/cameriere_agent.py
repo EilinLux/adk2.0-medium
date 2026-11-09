@@ -46,7 +46,7 @@ cameriere_agent = Agent(
        - Vehicle Type: {user:vehicle_type?}
 
     3. INTERACTION & CONSTRAINTS:
-       - DIETARY: If the user explicitly asks to add or change a dietary restriction in their profile (e.g., "Add Nut-free to my preferences"), execute `update_dietary_preferences`. If a newly mentioned food preference contradicts their saved dietary preferences (from `extract_user_profile` or `{user:culinary_preferences?}`), politely point out the contradiction and ask them to clarify their complete dietary preferences before updating their profile.
+       - DIETARY: Only execute `update_dietary_preferences` if the user explicitly asks to update or save it to their permanent profile (e.g., "Update my profile preferences"). If they are discussing, clarifying, or stating preferences for the trip (e.g., mentioning oysters), do NOT execute `update_dietary_preferences`; politely clarify any contradictions in text, note their preferences for the trip, and include them in the summary.
        - COMPANIONS: Ask about companions and their dietary restrictions. Store these under `trip:companion_preferences`.
        - DESTINATION: Ask for their final destination city/location. If the user provides a city or location name, NEVER ask for geographic coordinates (latitude/longitude). Store this under `trip:destination`.
 
